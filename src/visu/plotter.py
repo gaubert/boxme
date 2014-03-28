@@ -73,12 +73,18 @@ class AnalogStaticPlotter:
         # set plot to animated
         fig = plt.figure(figsize=(20, 15))
         sub_plot = fig.add_subplot(311)
+        sub_plot.set_autoscaley_on(False)
+        sub_plot.set_ylim([-4096, 4096])
         self.axline, = plt.plot(analogData.ax)
         sub_plot.set_title('x axis acceleration')
         sub_plot = fig.add_subplot(312)
+        sub_plot.set_autoscaley_on(False)
+        sub_plot.set_ylim([-4096, 4096])
         sub_plot.set_title('y axis acceleration')
         self.ayline, = plt.plot(analogData.ay, color = "red")
         sub_plot = fig.add_subplot(313)
+        sub_plot.set_autoscaley_on(False)
+        sub_plot.set_ylim([-4096, 4096])
         sub_plot.set_title('z axis acceleration')
         self.azline, = plt.plot(analogData.az, color = "green")
         
@@ -288,7 +294,7 @@ def plot_file(filename):
     
     try:
         analogPlot.save_fig("/tmp/%s.png" % (filename))
-        analogPlot.show()
+        #analogPlot.show()
         #time.sleep(20)
     except KeyboardInterrupt:
         print 'existing'
