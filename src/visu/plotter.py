@@ -268,10 +268,37 @@ def test_sample1():
         #time.sleep(20)
     except KeyboardInterrupt:
         print 'existing'
+
+def plot_file(filename):
+    """
+       draw a plot once from a sample file
+    """    
+    the_dir = "."
+    file_path = "%s/etc/%s" % (the_dir, filename)
+    
+    analogData = AnalogData(1962)
+    data_elems, min_max = read_sample_data(file_path)
+    
+    
+    for data in data_elems:
+        analogData.add((data['ax'], data['ay'], data['az']))
+    
+    analogPlot = AnalogStaticPlotter(analogData)
+    analogPlot.set_plt_dim(min_max["min"] - 100, min_max["max"] + 100)
+    
+    try:
+        analogPlot.save_fig("/tmp/%s.png" % (filename))
+        analogPlot.show()
+        #time.sleep(20)
+    except KeyboardInterrupt:
+        print 'existing'
         
 
 
 if __name__ == '__main__':
-    #test1()
-    #test_2()
-    test_sample1()
+    #test_sample1()
+    plot_file("crochet_sample")
+    plot_file("direct_sample")
+    plot_file("uppercuts_sample")
+    plot_file("real_session")
+    
