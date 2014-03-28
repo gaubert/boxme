@@ -245,7 +245,7 @@ def test_2():
             print 'exiting'
             break 
 
-def test_3():
+def test_sample1():
     """
        draw a plot once from a sample file
     """    
@@ -274,4 +274,4 @@ def test_3():
 if __name__ == '__main__':
     #test1()
     #test_2()
-    test_3()
+    test_sample1()
