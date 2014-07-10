@@ -157,7 +157,7 @@ plt.show()
 
 #Timestamp:15773#A-Raw=62.00,263.00,101.00
 
-line_expr = "Timestamp:(?P<timestamp>.*)#A-Raw=(?P<ax>.*),(?P<ay>.*),(?P<az>.*)"
+line_expr = "Tstamp:(?P<mtimestamp>.*)#AM-Raw=(?P<amx>.*),(?P<amy>.*),(?P<amz>.*)Tim:(?P<timestamp>.*)#AG-Raw=(?P<ax>.*),(?P<ay>.*),(?P<az>.*)#YPR=(?P<yy>.*),(?P<pp>.*),(?P<rr>.*)"
 line_re = re.compile(line_expr)
 
 #         #acc de la plateform    #        #magneto metre             #        # gyro scope
@@ -410,7 +410,8 @@ def plot_file(filename, min_s= None, max_s = None):
        draw from sampling value index min_sampling and value index max_sampling
     """    
     the_dir = "."
-    file_path = "%s/etc/%s" % (the_dir, filename)
+    file_path = "../../etc/samples/2014-04-09/%s" % (filename)
+    #file_path = "%s/etc/%s" % (the_dir, filename)
     
     analogData = AnalogData(5000)
     data_elems, min_max = read_sample_data(file_path)
@@ -420,13 +421,11 @@ def plot_file(filename, min_s= None, max_s = None):
     for data in data_elems:
         analogData.add((data['ax'], data['ay'], data['az']))
     
-    
-    
     analogPlot = AnalogStaticPlotter(analogData, min_s, max_s)
     analogPlot.set_plt_dim(min_max["min"] - 100, min_max["max"] + 100)
     
     try:
-        analogPlot.save_fig("/tmp/%s.png" % (filename))
+        analogPlot.save_fig("../../plots/%s.png" % (filename))
         #analogPlot.show()
         #time.sleep(20)
     except KeyboardInterrupt:
@@ -442,4 +441,3 @@ if __name__ == '__main__':
     #plot_file("direct_sample", 0, 600)
     #plot_file("uppercuts_sample", 0, 600)
     #plot_file("real_session", 0, 600)
-    
