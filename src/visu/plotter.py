@@ -160,6 +160,10 @@ plt.show()
 line_expr = "Timestamp:(?P<timestamp>.*)#A-Raw=(?P<ax>.*),(?P<ay>.*),(?P<az>.*)"
 line_re = re.compile(line_expr)
 
+#         #acc de la plateform    #        #magneto metre             #        # gyro scope
+#T-acc:118#Am-Raw=6.00,9.00,266.00T-mag:122#Mm-Raw=-3.00,686.00,977.00T-gyr:129#Gm-Raw=30.00,46.00,-464.00
+newline_expr = "T-acc:(?P<timestamp_tacc>.*)#Am-Raw=(?P<r_ax>.*),(?P<r_ay>.*),(?P<r_az>.*)T-mag:(?P<timestamp_tmag>.*)#Mm-Raw=(?P<m_ax>.*),(?P<m_ay>.*),(?P<m_az>.*)T-gyr:(?P<timestamp_tgyr>.*)#Gm-Raw=(?P<g_ax>.*),(?P<g_ay>.*),(?P<g_az>.*)"
+new_line_re  = re.compile(newline_expr)
 
 def update_min_max(elem, new_val):
     """
@@ -176,7 +180,7 @@ def update_min_max(elem, new_val):
 
 def read_sample_data(file_path):
     """
-       Read the data sample
+       Read old the data sample
     """
     the_file = open(file_path)
     
@@ -206,6 +210,59 @@ def read_sample_data(file_path):
             min_max_all_axes = update_min_max(min_max_all_axes, ay)
             
             az        = float(matched.group('az'))
+            
+            #min_max_all_axes = update_min_max(min_max_all_axes, az)
+            
+            data_elems.append({"ts" : timestamp,
+                               "ax" : ax,
+                               "ay" : ay,
+                               "az" : az
+                               })
+            nb_line += 1
+            
+            #print("ts = %s, ax = %s, ay = %s, az = %s" % (timestamp, ax, ay, az))
+        
+    print("nb lines in file: %d " % (nb_line))
+    print("min all axes = %f, max all axes = %f" %(min_max_all_axes['min'], min_max_all_axes['max']))
+    
+    return data_elems, min_max_all_axes
+
+def read_new_sample_data(file_path):
+    """
+       Read old the data sample
+    """
+    the_file = open(file_path)
+    
+    data_elems = []
+    
+    nb_line = 0
+    
+    #min_max_x = { "min" : 4096.00, "max": -4096.00, }
+    #min_max_y = { "min" : 4096.00, "max": -4096.00, }
+    #min_max_z = { "min" : 4096.00, "max": -4096.00, }
+    
+    min_max_all_axes = { "min" : 4096.00, "max": -4096.00, }
+    
+    for line in the_file:
+        #print("The line = %s" % (line))
+        
+        matched = new_line_re.match(line)
+        if matched:
+            try:
+                timestamp = float(matched.group('timestamp_tacc'))
+            except:
+                print("Error cannot convert %s in float" % (matched.group('timestamp_tacc')))
+                timestamp = -1
+            
+            ax        = float(matched.group('r_ax'))
+            
+            #min_max_all_axes = update_min_max(min_max_all_axes, ax)
+             
+            ay        = float(matched.group('r_ay'))
+            
+            min_max_all_axes = update_min_max(min_max_all_axes, ay)
+            
+            az        = float(matched.group('r_az'))
             
             #min_max_all_axes = update_min_max(min_max_all_axes, az)
             
@@ -294,6 +351,59 @@ def test_sample1():
     except KeyboardInterrupt:
         print 'existing'
 
+def test_new_sample():
+    """
+       draw a plot once from a sample file
+    """    
+    the_dir = "."
+    file_path = "%s/etc/new_acc_data_scenario_without_impact" % (the_dir)
+    
+    analogData = AnalogData(1962)
+    data_elems, min_max = read_new_sample_data(file_path)
+    
+    
+    for data in data_elems:
+        analogData.add((data['ax'], data['ay'], data['az']))
+    
+    analogPlot = AnalogStaticPlotter(analogData)
+    analogPlot.set_plt_dim(min_max["min"] - 100, min_max["max"] + 100)
+    
+    try:
+        analogPlot.save_fig("/tmp/sample_plot.png")
+        analogPlot.show()
+        #time.sleep(20)
+    except KeyboardInterrupt:
+        print 'existing'
+
+def plot_new_file(filename, min_s= None, max_s = None):
+    """
+       draw a plot once from a sample file
+       draw from sampling value index min_sampling and value index max_sampling
+    """    
+    the_dir = "."
+    file_path = "%s/etc/%s" % (the_dir, filename)
+    
+    analogData = AnalogData(5000)
+    data_elems, min_max = read_new_sample_data(file_path)
+    
+    print("nb points: %d\n" % len(data_elems))
+    
+    for data in data_elems:
+        analogData.add((data['ax'], data['ay'], data['az']))
+    
+    
+    
+    analogPlot = AnalogStaticPlotter(analogData, min_s, max_s)
+    analogPlot.set_plt_dim(min_max["min"] - 100, min_max["max"] + 100)
+    
+    try:
+        analogPlot.save_fig("/tmp/%s.png" % (filename))
+        #analogPlot.show()
+        #time.sleep(20)
+    except KeyboardInterrupt:
+        print 'existing'
+
+
 def plot_file(filename, min_s= None, max_s = None):
     """
        draw a plot once from a sample file
@@ -305,6 +415,7 @@ def plot_file(filename, min_s= None, max_s = None):
     analogData = AnalogData(5000)
     data_elems, min_max = read_sample_data(file_path)
     
+    print("nb points: %d\n" % len(data_elems))
     
     for data in data_elems:
         analogData.add((data['ax'], data['ay'], data['az']))
@@ -325,8 +436,10 @@ def plot_file(filename, min_s= None, max_s = None):
 
 if __name__ == '__main__':
     #test_sample1()
-    plot_file("crochet_sample", 0, 600)
-    plot_file("direct_sample", 0, 600)
-    plot_file("uppercuts_sample", 0, 600)
-    plot_file("real_session", 0, 600)
+    plot_new_file("new_acc_data_scenario1_without_impact", 0, 2000)
+    plot_new_file("new_acc_data_scenario2_with_impact", 0, 1000)
+    #plot_file("crochet_sample", 0, 600)
+    #plot_file("direct_sample", 0, 600)
+    #plot_file("uppercuts_sample", 0, 600)
+    #plot_file("real_session", 0, 600)
     
