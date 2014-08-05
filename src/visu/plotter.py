@@ -2,6 +2,9 @@
 Created on Mar 28, 2014
 
 @author: guillaume.aubert@gmail.com
+
+test for plotting
+
 '''
 import re
 import time
