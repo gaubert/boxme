@@ -6,6 +6,7 @@ Created on Mar 28, 2014
 test for plotting
 
 '''
+import sys
 import re
 import time
 
@@ -107,7 +108,13 @@ class AnalogStaticPlotter:
         #plt.axis(y_axis)
         #set default plt dim
         #plt.ylim([-4096, 4096])
- 
+        
+    def clean(self):
+        """
+           clean matplotlib resources
+        """
+        matplotlib.pyplot.close()
+        
     def update(self, analogData, min_s = None, max_s = None):
         """
     
@@ -429,7 +436,6 @@ def plot_file(filename, min_s= None, max_s = None):
     
     try:
         analogPlot.save_fig("../../plots/%s.png" % (filename))
-        #analogPlot.show()
         #time.sleep(20)
     except KeyboardInterrupt:
         print 'existing'
@@ -444,3 +450,4 @@ if __name__ == '__main__':
     #plot_file("direct_sample", 0, 600)
     #plot_file("uppercuts_sample", 0, 600)
     #plot_file("real_session", 0, 600)
+    sys.exit(0)
