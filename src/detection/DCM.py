@@ -8,6 +8,74 @@ https://github.com/jmesmon/imu_9drazor/blob/master/src/SF9DOF_AHRS/SF9DOF_AHRS.p
 '''
 
 import numpy as np
+from cmath import sqrt
+
+def drift_correction(accel_vector, gravity, err_roll_pitch):
+    """
+    /**************************************************/
+        void Drift_correction(void)
+        {
+          float mag_heading_x;
+          float mag_heading_y;
+          float errorCourse;
+          //Compensation the Roll, Pitch and Yaw drift. 
+          static float Scaled_Omega_P[3];
+          static float Scaled_Omega_I[3];
+          float Accel_magnitude;
+          float Accel_weight;
+          
+          
+          //*****Roll and Pitch***************
+        
+          // Calculate the magnitude of the accelerometer vector
+          Accel_magnitude = sqrt(Accel_Vector[0]*Accel_Vector[0] + Accel_Vector[1]*Accel_Vector[1] + Accel_Vector[2]*Accel_Vector[2]);
+          Accel_magnitude = Accel_magnitude / GRAVITY; // Scale to gravity.
+          // Dynamic weighting of accelerometer info (reliability filter)
+          // Weight for accelerometer info (<0.5G = 0.0, 1G = 1.0 , >1.5G = 0.0)
+          Accel_weight = constrain(1 - 2*abs(1 - Accel_magnitude),0,1);  //  
+        
+          Vector_Cross_Product(&errorRollPitch[0],&Accel_Vector[0],&DCM_Matrix[2][0]); //adjust the ground of reference
+          Vector_Scale(&Omega_P[0],&errorRollPitch[0],Kp_ROLLPITCH*Accel_weight);
+          
+          Vector_Scale(&Scaled_Omega_I[0],&errorRollPitch[0],Ki_ROLLPITCH*Accel_weight);
+          Vector_Add(Omega_I,Omega_I,Scaled_Omega_I);     
+          
+          //*****YAW***************
+          // We make the gyro YAW drift correction based on compass magnetic heading
+         
+          mag_heading_x = cos(MAG_Heading);
+          mag_heading_y = sin(MAG_Heading);
+          errorCourse=(DCM_Matrix[0][0]*mag_heading_y) - (DCM_Matrix[1][0]*mag_heading_x);  //Calculating YAW error
+          Vector_Scale(errorYaw,&DCM_Matrix[2][0],errorCourse); //Applys the yaw correction to the XYZ rotation of the aircraft, depeding the position.
+          
+          Vector_Scale(&Scaled_Omega_P[0],&errorYaw[0],Kp_YAW);//.01proportional of YAW.
+          Vector_Add(Omega_P,Omega_P,Scaled_Omega_P);//Adding  Proportional.
+          
+          Vector_Scale(&Scaled_Omega_I[0],&errorYaw[0],Ki_YAW);//.00001Integrator
+          Vector_Add(Omega_I,Omega_I,Scaled_Omega_I);//adding integrator to the Omega_I
+        }
+    """
+    
+    #calculate the magnitude of the accelerometer vector
+    accel_magnitude = sqrt( (accel_vector[0]*accel_vector[0]) + (accel_vector[1]*accel_vector[1]) + accel_vector[2]*accel_vector[2])
+    #scale to gravity
+    accel_magnitude = accel_magnitude / gravity
+    
+    # Dynamic weighting of accelerometer info (reliability filter)
+    # Weight for accelerometer info (<0.5G = 0.0, 1G = 1.0 , >1.5G = 0.0)
+    #Accel_weight = constrain(1 - 2*abs(1 - Accel_magnitude),0,1);  //  
+        
+    accel_weigth =  (1 - 2 * abs(1 - accel_magnitude))
+    
+    np.cross(a, b, axisa, axisb, axisc, axis)
+          
+          Vector_Cross_Product(&errorRollPitch[0],&Accel_Vector[0],&DCM_Matrix[2][0]); //adjust the ground of reference
+          Vector_Scale(&Omega_P[0],&errorRollPitch[0],Kp_ROLLPITCH*Accel_weight);
+          
+          Vector_Scale(&Scaled_Omega_I[0],&errorRollPitch[0],Ki_ROLLPITCH*Accel_weight);
+          Vector_Add(Omega_I,Omega_I,Scaled_Omega_I);   
+   
+    
 
 def normalize_matrix(a_mat):
     """
@@ -103,6 +171,8 @@ def dcm_implementation():
     
     #normalize the matrix
     dcm_matrix = normalize_matrix(dcm_matrix)
+    
+    
     
     
     
