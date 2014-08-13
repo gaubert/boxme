@@ -279,6 +279,24 @@ class DCMizer(object):
 
 if __name__ == '__main__':
     
+    """
+       info: The full-scale range of the gyro sensors is preset to ±2000 degrees per second (°/s). 
+       acceleration => divide by 256 to get a value in m/s-2 (x, y, z)
+       gyro => rad/s-1
+       Voila les donnees:
+        Example:
+        #T-gyr#178#Gm-Raw#24.00,42.00,-2.00#T-acc#182#Am-Raw#7.00,-3.00,265.00#T-mag#188#Mm-Raw#-119.00,66.00,585.00
+        #YPR=#T-YPR#198-151.41,-1.21,-0.39
+        
+        Ca veut dire: 
+        au temps 178ms, le gyro a donne en RAW 24.00,42.00,-2.00
+        au temps 182ms, l accel a donne en RAW 7.00,-3.00,265.00
+        au temps 188ms, le mag a donne en RAW -119.00,66.00,585.00
+        
+        Ces donnees ont ete utilisees par l algo sur la carte et donnent les angles d Euler suivant au temps:
+        198ms: -151.41,-1.21,-0.39
+    """
+    
     #values from magnetometer to be read
     magnetom = np.array(0,0,0)
     
