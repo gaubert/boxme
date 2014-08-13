@@ -161,9 +161,6 @@ def drift_correction(accel_vector, dcm_matrix, err_roll_pitch, err_yaw, omega_p,
     #Adding integrator to the Omega_I
     omega_i += scaled_omega_i
     
-        
-    
-
 def normalize_matrix(a_mat):
     """
        Normalize something
