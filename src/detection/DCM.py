@@ -240,7 +240,7 @@ def dcm_implementation(mag_heading, magnetom, roll, pitch, yaw, omega_p, omega_i
     accel_vector  = np.array([6.00,9.00,266.00])
     
     omega_integr = np.array([0,0,0]) #omega integrator
-    omega_propor = np.array([0,0,0]) #omega proportional
+    omega_propor = np.array([0,0,0]) #omega proportional 
     
     #add omega integrator and proportional
     omega_vector = gyro_vector + omega_integr + omega_propor
