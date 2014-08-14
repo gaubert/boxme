@@ -234,34 +234,87 @@ class DCMizer(object):
         omega_i += scaled_omega_i
         
         return (omega_p, omega_i)
-
-    def compute_dcm(self, mag_heading, magnetom, omega_p, omega_i, omega_vector):
+    
+    
+    def _matrix_update(self, omega, gyro_vector, omega_vector, gyro_Dt, accel_vector, omega_i, omega_p, output_mode):
         """
-           tentative implementation of DCM
+           matrix update
+           void Matrix_update(void)
+            {
+              Gyro_Vector[0]=Gyro_Scaled_X(read_adc(0)); //gyro x roll
+              Gyro_Vector[1]=Gyro_Scaled_Y(read_adc(1)); //gyro y pitch
+              Gyro_Vector[2]=Gyro_Scaled_Z(read_adc(2)); //gyro Z yaw
+            
+              Accel_Vector[0]=accel_x;
+              Accel_Vector[1]=accel_y;
+              Accel_Vector[2]=accel_z;
+            
+              Vector_Add(&Omega[0], &Gyro_Vector[0], &Omega_I[0]);  //adding proportional term
+              Vector_Add(&Omega_Vector[0], &Omega[0], &Omega_P[0]); //adding Integrator term
+            
+              //Accel_adjust();    //Remove centrifugal acceleration.   We are not using this function in this version - we have no speed measurement
+            
+             #if OUTPUTMODE==1
+              Update_Matrix[0][0]=0;
+              Update_Matrix[0][1]=-G_Dt*Omega_Vector[2];//-z
+              Update_Matrix[0][2]=G_Dt*Omega_Vector[1];//y
+              Update_Matrix[1][0]=G_Dt*Omega_Vector[2];//z
+              Update_Matrix[1][1]=0;
+              Update_Matrix[1][2]=-G_Dt*Omega_Vector[0];//-x
+              Update_Matrix[2][0]=-G_Dt*Omega_Vector[1];//-y
+              Update_Matrix[2][1]=G_Dt*Omega_Vector[0];//x
+              Update_Matrix[2][2]=0;
+             #else                    // Uncorrected data (no drift correction)
+              Update_Matrix[0][0]=0;
+              Update_Matrix[0][1]=-G_Dt*Gyro_Vector[2];//-z
+              Update_Matrix[0][2]=G_Dt*Gyro_Vector[1];//y
+              Update_Matrix[1][0]=G_Dt*Gyro_Vector[2];//z
+              Update_Matrix[1][1]=0;
+              Update_Matrix[1][2]=-G_Dt*Gyro_Vector[0];
+              Update_Matrix[2][0]=-G_Dt*Gyro_Vector[1];
+              Update_Matrix[2][1]=G_Dt*Gyro_Vector[0];
+              Update_Matrix[2][2]=0;
+             #endif
+            
+              Matrix_Multiply(DCM_Matrix,Update_Matrix,Temporary_Matrix); //a*b=c
+            
+              for(int x=0; x<3; x++) //Matrix Addition (update)
+              {
+                for(int y=0; y<3; y++)
+                {
+                  DCM_Matrix[x][y]+=Temporary_Matrix[x][y];
+                }
+              }
+            }
         """
-        
-        #gyro integration time in ms
-        gyro_Dt = 129 #what to put here ?
-        gyro_vector  = np.array([30.00,46.00,-464.00])
-        accel_vector  = np.array([6.00,9.00,266.00])
-        
-        omega_integr = np.array([0,0,0]) #omega integrator
-        omega_propor = np.array([0,0,0]) #omega proportional 
-        
+                
         #add omega integrator and proportional
-        omega_vector = gyro_vector + omega_integr + omega_propor
+        omega[0]        = gyro_vector[0] + omega_i[0]
+        omega_vector[0] = omega[0] + omega_p[0]
         
-        #Matrix Update
-        #currently no drift correction
-        update_matrix = np.matrix([[ 0 , - gyro_Dt * gyro_vector[2], gyro_Dt * gyro_vector[1]] ,
-                                   [ gyro_Dt * gyro_vector[2], 0, - gyro_Dt * gyro_vector[0]] ,
-                                   [ - gyro_Dt * gyro_vector[1], gyro_Dt * gyro_vector[0], 0]])
-        
+        # if output mode == 1 in original code ?
+        if output_mode == 1:
+            vec = omega_vector
+        else:
+            vec = gyro_vector
+            
+            #Matrix Update
+            #currently no drift correction
+            update_matrix = np.matrix([[ 0 , - gyro_Dt * vec[2], gyro_Dt * vec[1]] ,
+                                       [ gyro_Dt * vec[2], 0, - gyro_Dt * vec[0]] ,
+                                       [ - gyro_Dt * vec[1], gyro_Dt * vec[0], 0]])
+                
         tempo_matrix = self._dcm_matrix * update_matrix
         
         self._dcm_matrix = self._dcm_matrix + tempo_matrix
         
-        ######## End of update matrix
+    def compute_dcm(self, mag_heading, magnetom, omega, omega_p, omega_i, omega_vector, gyro_Dt, gyro_vector):
+        """
+           tentative implementation of DCM
+        """     
+        
+        # update dcm matrix 
+        self._matrix_update(omega, gyro_vector, omega_vector, gyro_Dt, accel_vector, omega_i, omega_p, output_mode)
         
         #NORMALIZE the matrix
         self._dcm_matrix = DCMizer.normalize_matrix(self._dcm_matrix)
@@ -308,14 +361,22 @@ if __name__ == '__main__':
     err_yaw = np.array(0,0,0)
     err_roll_pitch = np.array(0,0,0)
     
+    gyro_Dt = 129 #what to put here ?
+    gyro_vector = np.array(0, 0 , 0) #to be measured
+    
+    accel_vector  = np.array([6.00,9.00,266.00]) #to be measured
+    
     omega_vector = np.array(0,0,0) #Corrected Gyro_Vector data
+    omega = np.array(0,0,0)
     omega_p = np.array(0, 0, 0) # Omega Proportional correction
     omega_i= np.array(0,0,0) # Omega Integrator
 
+    #add omega integrator and proportional
+    omega_vector = gyro_vector + omega_i + omega_p
+   
     #init values
     mag_heading = DCMizer.compass_heading()
     
     dcmizer = DCMizer()
     
-    dcmizer.compute_dcm(mag_heading, magnetom, roll, pitch, yaw, omega_p, omega_i, err_roll_pitch, err_yaw, omega_vector)
-    dcm_implementation(mag_heading, magnetom, roll, pitch, yaw, omega_p, omega_i, err_roll_pitch, err_yaw, omega_vector )
+    dcmizer.compute_dcm(mag_heading, magnetom, omega, omega_p, omega_i, omega_vector, gyro_Dt, gyro_vector)
