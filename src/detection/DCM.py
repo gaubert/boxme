@@ -23,10 +23,13 @@ class DCMizer(object):
         """
         """
         #init dcm matrix
-        self._dcm_matrix = np.matrix('1 0 0 ; 0 1 0 ; 0 0 1')
+        self._dcm_matrix     = np.matrix('1 0 0 ; 0 1 0 ; 0 0 1')
         
         self._err_roll_pitch = np.array([0,0,0])
-        self._err_yaw = np.array([0, 0, 0])
+        self._err_yaw        = np.array([0, 0, 0])
+        
+        self._omega_p        = np.array([0, 0, 0]) # Omega Proportional correction
+        self._omega_i        = np.array([0,0,0])   # Omega Integrator
     
     @classmethod
     def compass_heading(cls, magnetom, roll, pitch):
@@ -142,7 +145,7 @@ class DCMizer(object):
     
         return (pitch, roll, yaw)
     
-    def drift_correction(self, accel_vector, omega_p, omega_i):
+    def drift_correction(self, accel_vector, a_omega_p, a_omega_i):
         """
         /**************************************************/
             void Drift_correction(void)
@@ -187,6 +190,9 @@ class DCMizer(object):
               Vector_Add(Omega_I,Omega_I,Scaled_Omega_I);//adding integrator to the Omega_I
             }
         """
+        returned_omega_p = a_omega_p
+        returned_omega_i = a_omega_i
+        
         scaled_omega_p = np.array([0,0,0])
         scaled_omega_i = np.array([0,0,0])
          
@@ -203,13 +209,19 @@ class DCMizer(object):
         accel_weigth =  (1 - 2 * abs(1 - accel_magnitude))
         
         #adjust ground reference
-        self._err_roll_pitch[0] = np.cross(accel_vector[0], self._dcm_matrix[2][0])
+        print("dcm_matrix = %s" % (self._dcm_matrix[2][0]))
         
-        omega_p[0] = self._err_roll_pitch[0] * (KP_ROLLPITCH * accel_weigth)
+        #need to resize that part using numpy features when I will have the doc
+        calc_val = np.cross(accel_vector, self._dcm_matrix[2][0])
+        self._err_roll_pitch = calc_val[0]
         
-        scaled_omega_i[0] = self._err_roll_pitch[0] * (KI_ROLLPITCH * accel_weigth) 
+        v = self._err_roll_pitch[0] * (KP_ROLLPITCH * accel_weigth)
+        returned_omega_p[0] = v
         
-        omega_i += scaled_omega_i
+        v1 = self._err_roll_pitch[0] * (KI_ROLLPITCH * accel_weigth) 
+        scaled_omega_i[0] = v1
+        
+        return_omega_i += scaled_omega_i
         
         #YAW   
         #We make the gyro YAW drift correction based on compass magnetic heading
@@ -226,17 +238,17 @@ class DCMizer(object):
         #.01proportional of YAW.
         scaled_omega_p[0] = self._err_yaw[0] * KP_YAW
         #Adding Proportional 
-        omega_p += scaled_omega_p
+        returned_omega_p += scaled_omega_p
         #.00001Integrator
         scaled_omega_i[0] = self._err_yaw[0] * KI_YAW
         
         #Adding integrator to the Omega_I
-        omega_i += scaled_omega_i
+        returned_omega_i += scaled_omega_i
         
-        return (omega_p, omega_i)
+        return (returned_omega_p, returned_omega_i)
     
     
-    def _matrix_update(self, omega, gyro_vector, omega_vector, gyro_Dt, accel_vector, omega_i, omega_p, output_mode):
+    def _matrix_update(self, omega, gyro_vector, omega_vector, gyro_Dt, accel_vector, omega_i, omega_p, use_omega):
         """
            matrix update
            void Matrix_update(void)
@@ -293,34 +305,39 @@ class DCMizer(object):
         omega_vector[0] = omega[0] + omega_p[0]
         
         # if output mode == 1 in original code ?
-        if output_mode == 1:
+        if use_omega:
             vec = omega_vector
         else:
             vec = gyro_vector
             
-            #Matrix Update
-            #currently no drift correction
-            update_matrix = np.matrix([[ 0 , - gyro_Dt * vec[2], gyro_Dt * vec[1]] ,
-                                       [ gyro_Dt * vec[2], 0, - gyro_Dt * vec[0]] ,
-                                       [ - gyro_Dt * vec[1], gyro_Dt * vec[0], 0]])
+        #Matrix Update
+        #currently no drift correction
+        update_matrix = np.matrix([[ 0 , - gyro_Dt * vec[2], gyro_Dt * vec[1]] ,
+                                   [ gyro_Dt * vec[2], 0, - gyro_Dt * vec[0]] ,
+                                   [ - gyro_Dt * vec[1], gyro_Dt * vec[0], 0]])
                 
         tempo_matrix = self._dcm_matrix * update_matrix
         
         self._dcm_matrix = self._dcm_matrix + tempo_matrix
         
-    def compute_dcm(self, mag_heading, magnetom, omega, omega_p, omega_i, omega_vector, gyro_Dt, gyro_vector):
+    def compute_dcm(self, mag_heading, magnetom, omega, gyro_Dt, gyro_vector):
         """
            tentative implementation of DCM
         """     
+        use_omega = False # OUTPUTMODE=1 use omega or gyro
+        
+        # Corrected Gyro Vector
+        # Add omega integrator and proportional
+        omega_vector = gyro_vector + self._omega_i + self._omega_p
         
         # update dcm matrix 
-        self._matrix_update(omega, gyro_vector, omega_vector, gyro_Dt, accel_vector, omega_i, omega_p, output_mode)
+        self._matrix_update(omega, gyro_vector, omega_vector, gyro_Dt, accel_vector, use_omega)
         
         #NORMALIZE the matrix
         self._dcm_matrix = DCMizer.normalize_matrix(self._dcm_matrix)
         
-        #DRIFT_CORRECTION
-        (omega_p, omega_i) = self.drift_correction(accel_vector, self._dcm_matrix, omega_p, omega_i)
+        #DRIFT_CORRECTION                              
+        (self._omega_p, self._omega_i) = self.drift_correction(accel_vector)
         
         #Euler angles
         (pitch, roll, yaw) = self.euler_angles(self._dcm_matrix)
@@ -329,11 +346,17 @@ class DCMizer(object):
         print("pitch = %s, roll = %s, yaw = %s" %(pitch, roll, yaw))
         
         return (pitch, roll, yaw)  
+    
+def raw_to_rad(a_in):
+    """
+       Transform raw val to Rad
+    """
+    return a_in * 0.01745329252 # pi/180
 
 if __name__ == '__main__':
     
     """
-       info: The full-scale range of the gyro sensors is preset to ±2000 degrees per second (°/s). 
+       info: The full-scale range of the gyro sensors is preset to +-2000 degrees per second (deg/s). 
        acceleration => divide by 256 to get a value in m/s-2 (x, y, z)
        gyro => rad/s-1
        Voila les donnees:
@@ -348,35 +371,34 @@ if __name__ == '__main__':
         
         Ces donnees ont ete utilisees par l algo sur la carte et donnent les angles d Euler suivant au temps:
         198ms: -151.41,-1.21,-0.39
+        
+        
+        #T-YPR#149.00#YPR=#-129.58,-1.24,-0.60#T-acc#143.00#Am-Raw#8.19,-3.07,271.36#T-mag#143.00#Mm-Raw#-12.83,17.50,93.83#T-gyr#141.00#Gm-Raw#23.00,44.00,-628.00#DCM:#-0.64,0.77,0.02,-0.77,-0.64,0.01,0.02,-0.01,1.00,
+
     """
     
+    ### Input values
+    
     #values from magnetometer to be read
-    magnetom = np.array(0,0,0)
+    magnetom      = np.array([-12.83, 17.50, 93.83])
+    gyro_Dt       = 0.2  #integration time (Delta time between each measure
+    gyro_vector   = np.array([raw_to_rad(23.00), raw_to_rad(44.00), raw_to_rad(-628.00)]) #to be measured
+    accel_vector  = np.array([(8.19/256),(-3.07/256),(271.36/256)]) #to be measured
     
-    #roll angle in rad
-    roll     = 0.5
-    pitch    = 0.5
-    yaw      = 0.5
+    #starting values (they are used for every steps)
+    #init values are null
+    roll     = 0.0 
+    pitch    = 0.0
+    yaw      = 0.0
     
-    err_yaw = np.array(0,0,0)
-    err_roll_pitch = np.array(0,0,0)
+    err_yaw = np.array([0,0,0])
+    err_roll_pitch = np.array([0,0,0])
     
-    gyro_Dt = 129 #what to put here ?
-    gyro_vector = np.array(0, 0 , 0) #to be measured
-    
-    accel_vector  = np.array([6.00,9.00,266.00]) #to be measured
-    
-    omega_vector = np.array(0,0,0) #Corrected Gyro_Vector data
-    omega = np.array(0,0,0)
-    omega_p = np.array(0, 0, 0) # Omega Proportional correction
-    omega_i= np.array(0,0,0) # Omega Integrator
+    omega = np.array([0,0,0])
 
-    #add omega integrator and proportional
-    omega_vector = gyro_vector + omega_i + omega_p
-   
     #init values
-    mag_heading = DCMizer.compass_heading()
+    mag_heading = DCMizer.compass_heading(magnetom, roll, pitch)
     
     dcmizer = DCMizer()
     
-    dcmizer.compute_dcm(mag_heading, magnetom, omega, omega_p, omega_i, omega_vector, gyro_Dt, gyro_vector)
+    dcmizer.compute_dcm(mag_heading, magnetom, omega, gyro_Dt, gyro_vector)
