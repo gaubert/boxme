@@ -68,6 +68,43 @@ class DCMizer(object):
         
         # Magnetic Heading
         return math.atan2(-mag_y, mag_x);
+    
+    @classmethod
+    def euler_angles(cls, a_dcm_matrix):
+        """
+           Get euler angles
+           void Euler_angles(void)
+            {
+              pitch = -asin(DCM_Matrix[2][0]);
+              roll = atan2(DCM_Matrix[2][1],DCM_Matrix[2][2]);
+              yaw = atan2(DCM_Matrix[1][0],DCM_Matrix[0][0]);
+            }
+        """
+        #TODO Need also to resize properly the matrix as a 1D array
+        # Use the vector trigonometric operators 
+        #pitch = - math.asin( a_dcm_matrix[2][0] )
+        #roll  = math.atan2(  (np.array(a_dcm_matrix[2][1]))[0], (np.array(a_dcm_matrix[2][2])[0]) )
+        #yaw   = math.atan2(  (np.array(a_dcm_matrix[1][0]))[0], (np.array(a_dcm_matrix[0][0]))[0] );
+    
+        val   = np.array(a_dcm_matrix[2][0])[0]
+        pitch = np.array([-math.asin(val[0]), -math.asin(val[1]), -math.asin(val[2])])
+        
+        val1  = np.array(a_dcm_matrix[2][1])[0]
+        val2  = np.array(a_dcm_matrix[2][2])[0]
+        roll  = np.array( [ math.atan2(val1[0], val2[0]), 
+                            math.atan2(val1[1], val2[1]), 
+                            math.atan2(val1[1], val[2])] )
+        
+        
+        val1 = np.array(a_dcm_matrix[1][0])[0]
+        val2 = np.array(a_dcm_matrix[0][0])[0]
+        yaw = np.array( [ math.atan2(val1[0], val2[0]), 
+                          math.atan2(val1[1], val2[1]), 
+                          math.atan2(val1[2], val2[2])] )
+    
+    
+        return (pitch, roll, yaw)
+
 
     @classmethod
     def normalize_matrix(cls, a_mat):
@@ -127,23 +164,6 @@ class DCMizer(object):
         result[2][0] = tempo[2][0] * renorm
         
         return result
-
-
-    def euler_angles(self):
-        """
-    	   Get euler angles
-    	   void Euler_angles(void)
-            {
-              pitch = -asin(DCM_Matrix[2][0]);
-              roll = atan2(DCM_Matrix[2][1],DCM_Matrix[2][2]);
-              yaw = atan2(DCM_Matrix[1][0],DCM_Matrix[0][0]);
-            }
-        """
-        pitch = - math.asin(self._dcm_matrix[2][0])
-        roll  = math.atan2(self._dcm_matrix[2][1], self._dcm_matrix[2][2])
-        yaw   = math.atan2(self._dcm_matrix[1][0], self._dcm_matrix[0][0]);
-    
-        return (pitch, roll, yaw)
     
     def drift_correction(self, accel_vector, a_omega_p, a_omega_i):
         """
@@ -190,8 +210,8 @@ class DCMizer(object):
               Vector_Add(Omega_I,Omega_I,Scaled_Omega_I);//adding integrator to the Omega_I
             }
         """
-        returned_omega_p = a_omega_p
-        returned_omega_i = a_omega_i
+        ret_omega_p = a_omega_p
+        ret_omega_i = a_omega_i
         
         scaled_omega_p = np.array([0,0,0])
         scaled_omega_i = np.array([0,0,0])
@@ -216,12 +236,12 @@ class DCMizer(object):
         self._err_roll_pitch = calc_val[0]
         
         v = self._err_roll_pitch[0] * (KP_ROLLPITCH * accel_weigth)
-        returned_omega_p[0] = v
+        ret_omega_p[0] = v
         
         v1 = self._err_roll_pitch[0] * (KI_ROLLPITCH * accel_weigth) 
         scaled_omega_i[0] = v1
         
-        return_omega_i += scaled_omega_i
+        ret_omega_i += scaled_omega_i
         
         #YAW   
         #We make the gyro YAW drift correction based on compass magnetic heading
@@ -230,25 +250,30 @@ class DCMizer(object):
         mag_heading_y = math.sin(mag_heading)
         
         #calculate yaw error
+        #TODO. It is a matrix [[]] when it should be an array
+        #change dimension
         error_course = (self._dcm_matrix[2][0] * mag_heading_y) - (self._dcm_matrix[1][0] * mag_heading_x)
+        error_course = np.array(error_course)[0]
         
         #Applys the yaw correction to the XYZ rotation of the aircraft, depeding the position.
-        self._err_yaw = self._dcm_matrix[2][0] * error_course
+        #TODO Need to resize dcm_matrix[2][0] as an array to have the rigth dim
+        dum = self._dcm_matrix[2][0]
+        
+        self._err_yaw = np.array(self._dcm_matrix[2][0])[0] * error_course
         
         #.01proportional of YAW.
         scaled_omega_p[0] = self._err_yaw[0] * KP_YAW
         #Adding Proportional 
-        returned_omega_p += scaled_omega_p
+        ret_omega_p += scaled_omega_p
         #.00001Integrator
         scaled_omega_i[0] = self._err_yaw[0] * KI_YAW
         
         #Adding integrator to the Omega_I
-        returned_omega_i += scaled_omega_i
+        ret_omega_i += scaled_omega_i
         
-        return (returned_omega_p, returned_omega_i)
+        return (ret_omega_p, ret_omega_i)
     
-    
-    def _matrix_update(self, omega, gyro_vector, omega_vector, gyro_Dt, accel_vector, omega_i, omega_p, use_omega):
+    def _matrix_update(self, omega, gyro_vector, omega_vector, gyro_Dt, accel_vector, use_omega):
         """
            matrix update
            void Matrix_update(void)
@@ -300,9 +325,10 @@ class DCMizer(object):
             }
         """
                 
+        #TODO need to change that
         #add omega integrator and proportional
-        omega[0]        = gyro_vector[0] + omega_i[0]
-        omega_vector[0] = omega[0] + omega_p[0]
+        omega[0]        = gyro_vector[0] + self._omega_i[0]
+        omega_vector[0] = omega[0] + self._omega_p[0]
         
         # if output mode == 1 in original code ?
         if use_omega:
@@ -337,10 +363,10 @@ class DCMizer(object):
         self._dcm_matrix = DCMizer.normalize_matrix(self._dcm_matrix)
         
         #DRIFT_CORRECTION                              
-        (self._omega_p, self._omega_i) = self.drift_correction(accel_vector)
+        (self._omega_p, self._omega_i) = self.drift_correction(accel_vector, self._omega_p, self._omega_i)
         
         #Euler angles
-        (pitch, roll, yaw) = self.euler_angles(self._dcm_matrix)
+        (pitch, roll, yaw) = DCMizer.euler_angles(self._dcm_matrix)
         
         
         print("pitch = %s, roll = %s, yaw = %s" %(pitch, roll, yaw))
