@@ -1,0 +1,239 @@
+0- DCM_Mí
+- Read_Gyro start -#T-gyr#118#Gm-Raw#164.00,97.00,-133.00- Read_Gyro end -
+
+- Read_Accel start -#T-acc#124#Am-Raw#-159.00,-75.00,-176.00- Read_Accel end -
+
+- Read_Magn start -#T-mag#139#Mm-Raw#-434.00,-202.00,-307.00- Read_Magn end -
+
+- Compass_Heading start - - magnetom[0]: -434.00- magnetom[1]: -202.00- magnetom[2]: -307.00- cos_roll: -0.92- sin_roll: -0.39- cos_pitch: 0.77- sin_pitch: 0.64- mag_x: -102.64- mag_y: 65.48- MAG_Heading: -2.57- Compass_Heading end - 
+
+#--------------------##Loop iter - old_ts = 147- new_ts = 190- G_Dt = 0.04
+- Read_Gyro start -#T-gyr#206#Gm-Raw#27.00,42.00,3.00- Read_Gyro end -
+
+- Read_Accel start -#T-acc#219#Am-Raw#-161.00,-75.00,-174.00- Read_Accel end -
+
+- Read_Magn start -#T-mag#233#Mm-Raw#-432.00,-198.00,-311.00- Read_Magn end -
+
+- Compass_Heading start - - magnetom[0]: -72.00- magnetom[1]: -33.00- magnetom[2]: -51.83- cos_roll: -0.92- sin_roll: -0.39- cos_pitch: 0.77- sin_pitch: 0.64- mag_x: -16.63- mag_y: 10.04- MAG_Heading: -2.60- Compass_Heading end - 
+
+- Matrix_update start - - Drift correction used - - G_Dt: 0.04- Omega_Vector[0]: 0.03- Omega_Vector[1]: 0.05- Omega_Vector[2]: 0.00
+- [x]: 0- [y]: 0- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: -0.65
+- [x]: 0- [y]: 1- Temporary_Matrix[x][y]: 0.00- DCM_Matrix[x][y]: -0.28
+- [x]: 0- [y]: 2- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: 0.71
+- [x]: 1- [y]: 0- Temporary_Matrix[x][y]: 0.00- DCM_Matrix[x][y]: -0.41
+- [x]: 1- [y]: 1- Temporary_Matrix[x][y]: 0.00- DCM_Matrix[x][y]: 0.91
+- [x]: 1- [y]: 2- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: -0.01
+- [x]: 2- [y]: 0- Temporary_Matrix[x][y]: 0.00- DCM_Matrix[x][y]: -0.64
+- [x]: 2- [y]: 1- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: -0.30
+- [x]: 2- [y]: 2- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: -0.71
+- Matrix_update end - 
+
+- Euler_angles start - #Euler_ang timestamp:428- DCM_Matrix[0][0]: -0.65- DCM_Matrix[1][0]: -0.41- DCM_Matrix[2][0]: -0.64- DCM_Matrix[2][1]: -0.30- DCM_Matrix[2][2]: -0.71- pitch: 0.69- roll: -2.74- yaw: -2.58- Euler_angles end - 
+
+
+#--------------------##Loop iter - old_ts = 190- new_ts = 460- G_Dt = 0.27
+- Read_Gyro start -#T-gyr#479#Gm-Raw#28.00,40.00,2.00- Read_Gyro end -
+
+- Read_Accel start -#T-acc#491#Am-Raw#-161.00,-74.00,-174.00- Read_Accel end -
+
+- Read_Magn start -#T-mag#505#Mm-Raw#-423.00,-197.00,-304.00- Read_Magn end -
+
+- Compass_Heading start - - magnetom[0]: -70.50- magnetom[1]: -32.83- magnetom[2]: -50.67- cos_roll: -0.92- sin_roll: -0.39- cos_pitch: 0.77- sin_pitch: 0.64- mag_x: -16.37- mag_y: 10.31- MAG_Heading: -2.58- Compass_Heading end - 
+
+- Matrix_update start - - Drift correction used - - G_Dt: 0.27- Omega_Vector[0]: 0.06- Omega_Vector[1]: -0.01- Omega_Vector[2]: 0.04
+- [x]: 0- [y]: 0- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: -0.65
+- [x]: 0- [y]: 1- Temporary_Matrix[x][y]: 0.02- DCM_Matrix[x][y]: -0.28
+- [x]: 0- [y]: 2- Temporary_Matrix[x][y]: 0.01- DCM_Matrix[x][y]: 0.71
+- [x]: 1- [y]: 0- Temporary_Matrix[x][y]: 0.01- DCM_Matrix[x][y]: -0.41
+- [x]: 1- [y]: 1- Temporary_Matrix[x][y]: 0.00- DCM_Matrix[x][y]: 0.91
+- [x]: 1- [y]: 2- Temporary_Matrix[x][y]: -0.01- DCM_Matrix[x][y]: -0.02
+- [x]: 2- [y]: 0- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: -0.64
+- [x]: 2- [y]: 1- Temporary_Matrix[x][y]: -0.01- DCM_Matrix[x][y]: -0.30
+- [x]: 2- [y]: 2- Temporary_Matrix[x][y]: 0.01- DCM_Matrix[x][y]: -0.71
+- Matrix_update end - 
+
+- Euler_angles start - #Euler_ang timestamp:700- DCM_Matrix[0][0]: -0.65- DCM_Matrix[1][0]: -0.40- DCM_Matrix[2][0]: -0.64- DCM_Matrix[2][1]: -0.31- DCM_Matrix[2][2]: -0.70- pitch: 0.70- roll: -2.73- yaw: -2.59- Euler_angles end - 
+
+
+#--------------------##Loop iter - old_ts = 460- new_ts = 733- G_Dt = 0.27
+- Read_Gyro start -#T-gyr#751#Gm-Raw#26.00,42.00,-1.00- Read_Gyro end -
+
+- Read_Accel start -#T-acc#763#Am-Raw#-160.00,-74.00,-176.00- Read_Accel end -
+
+- Read_Magn start -#T-mag#778#Mm-Raw#-430.00,-199.00,-311.00- Read_Magn end -
+
+- Compass_Heading start - - magnetom[0]: -71.67- magnetom[1]: -33.17- magnetom[2]: -51.83- cos_roll: -0.92- sin_roll: -0.40- cos_pitch: 0.77- sin_pitch: 0.64- mag_x: -15.91- mag_y: 9.60- MAG_Heading: -2.60- Compass_Heading end - 
+
+- Matrix_update start - - Drift correction used - - G_Dt: 0.27- Omega_Vector[0]: -0.00- Omega_Vector[1]: 0.02- Omega_Vector[2]: 0.04
+- [x]: 0- [y]: 0- Temporary_Matrix[x][y]: -0.01- DCM_Matrix[x][y]: -0.65
+- [x]: 0- [y]: 1- Temporary_Matrix[x][y]: 0.01- DCM_Matrix[x][y]: -0.27
+- [x]: 0- [y]: 2- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: 0.71
+- [x]: 1- [y]: 0- Temporary_Matrix[x][y]: 0.01- DCM_Matrix[x][y]: -0.40
+- [x]: 1- [y]: 1- Temporary_Matrix[x][y]: 0.00- DCM_Matrix[x][y]: 0.91
+- [x]: 1- [y]: 2- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: -0.03
+- [x]: 2- [y]: 0- Temporary_Matrix[x][y]: 0.00- DCM_Matrix[x][y]: -0.64
+- [x]: 2- [y]: 1- Temporary_Matrix[x][y]: 0.01- DCM_Matrix[x][y]: -0.31
+- [x]: 2- [y]: 2- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: -0.70
+- Matrix_update end - 
+
+- Euler_angles start - #Euler_ang timestamp:972- DCM_Matrix[0][0]: -0.66- DCM_Matrix[1][0]: -0.40- DCM_Matrix[2][0]: -0.64- DCM_Matrix[2][1]: -0.30- DCM_Matrix[2][2]: -0.71- pitch: 0.70- roll: -2.74- yaw: -2.60- Euler_angles end - 
+
+
+#--------------------##Loop iter - old_ts = 733- new_ts = 1005- G_Dt = 0.27
+- Read_Gyro start -#T-gyr#1024#Gm-Raw#26.00,44.00,-1.00- Read_Gyro end -
+
+- Read_Accel start -#T-acc#1036#Am-Raw#-159.00,-72.00,-172.00- Read_Accel end -
+
+- Read_Magn start -#T-mag#1050#Mm-Raw#-435.00,-205.00,-310.00- Read_Magn end -
+
+- Compass_Heading start - - magnetom[0]: -72.50- magnetom[1]: -34.17- magnetom[2]: -51.67- cos_roll: -0.92- sin_roll: -0.39- cos_pitch: 0.77- sin_pitch: 0.64- mag_x: -16.63- mag_y: 11.19- MAG_Heading: -2.55- Compass_Heading end - 
+
+- Matrix_update start - - Drift correction used - - G_Dt: 0.27- Omega_Vector[0]: 0.02- Omega_Vector[1]: 0.05- Omega_Vector[2]: 0.01
+- [x]: 0- [y]: 0- Temporary_Matrix[x][y]: -0.01- DCM_Matrix[x][y]: -0.66
+- [x]: 0- [y]: 1- Temporary_Matrix[x][y]: 0.01- DCM_Matrix[x][y]: -0.26
+- [x]: 0- [y]: 2- Temporary_Matrix[x][y]: -0.01- DCM_Matrix[x][y]: 0.71
+- [x]: 1- [y]: 0- Temporary_Matrix[x][y]: 0.00- DCM_Matrix[x][y]: -0.40
+- [x]: 1- [y]: 1- Temporary_Matrix[x][y]: 0.00- DCM_Matrix[x][y]: 0.92
+- [x]: 1- [y]: 2- Temporary_Matrix[x][y]: -0.01- DCM_Matrix[x][y]: -0.03
+- [x]: 2- [y]: 0- Temporary_Matrix[x][y]: 0.01- DCM_Matrix[x][y]: -0.64
+- [x]: 2- [y]: 1- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: -0.30
+- [x]: 2- [y]: 2- Temporary_Matrix[x][y]: -0.01- DCM_Matrix[x][y]: -0.71
+- Matrix_update end - 
+
+- Euler_angles start - #Euler_ang timestamp:1247- DCM_Matrix[0][0]: -0.67- DCM_Matrix[1][0]: -0.39- DCM_Matrix[2][0]: -0.63- DCM_Matrix[2][1]: -0.30- DCM_Matrix[2][2]: -0.71- pitch: 0.68- roll: -2.74- yaw: -2.61- Euler_angles end - 
+
+
+#--------------------##Loop iter - old_ts = 1005- new_ts = 1280- G_Dt = 0.27
+- Read_Gyro start -#T-gyr#1296#Gm-Raw#27.00,37.00,-4.00- Read_Gyro end -
+
+- Read_Accel start -#T-acc#1310#Am-Raw#-161.00,-72.00,-174.00- Read_Accel end -
+
+- Read_Magn start -#T-mag#1325#Mm-Raw#-437.00,-204.00,-311.00- Read_Magn end -
+
+- Compass_Heading start - - magnetom[0]: -72.83- magnetom[1]: -34.00- magnetom[2]: -51.83- cos_roll: -0.92- sin_roll: -0.39- cos_pitch: 0.77- sin_pitch: 0.63- mag_x: -17.84- mag_y: 11.10- MAG_Heading: -2.58- Compass_Heading end - 
+
+- Matrix_update start - - Drift correction used - - G_Dt: 0.27- Omega_Vector[0]: -0.01- Omega_Vector[1]: -0.06- Omega_Vector[2]: 0.00
+- [x]: 0- [y]: 0- Temporary_Matrix[x][y]: 0.01- DCM_Matrix[x][y]: -0.67
+- [x]: 0- [y]: 1- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: -0.25
+- [x]: 0- [y]: 2- Temporary_Matrix[x][y]: 0.01- DCM_Matrix[x][y]: 0.70
+- [x]: 1- [y]: 0- Temporary_Matrix[x][y]: 0.00- DCM_Matrix[x][y]: -0.39
+- [x]: 1- [y]: 1- Temporary_Matrix[x][y]: 0.00- DCM_Matrix[x][y]: 0.92
+- [x]: 1- [y]: 2- Temporary_Matrix[x][y]: 0.01- DCM_Matrix[x][y]: -0.04
+- [x]: 2- [y]: 0- Temporary_Matrix[x][y]: -0.01- DCM_Matrix[x][y]: -0.63
+- [x]: 2- [y]: 1- Temporary_Matrix[x][y]: 0.00- DCM_Matrix[x][y]: -0.30
+- [x]: 2- [y]: 2- Temporary_Matrix[x][y]: 0.01- DCM_Matrix[x][y]: -0.71
+- Matrix_update end - 
+
+- Euler_angles start - #Euler_ang timestamp:1519- DCM_Matrix[0][0]: -0.66- DCM_Matrix[1][0]: -0.39- DCM_Matrix[2][0]: -0.65- DCM_Matrix[2][1]: -0.30- DCM_Matrix[2][2]: -0.70- pitch: 0.70- roll: -2.74- yaw: -2.60- Euler_angles end - 
+
+
+#--------------------##Loop iter - old_ts = 1280- new_ts = 1552- G_Dt = 0.27
+- Read_Gyro start -#T-gyr#1570#Gm-Raw#25.00,42.00,0.00- Read_Gyro end -
+
+- Read_Accel start -#T-acc#1583#Am-Raw#-159.00,-74.00,-173.00- Read_Accel end -
+
+- Read_Magn start -#T-mag#1597#Mm-Raw#-435.00,-200.00,-308.00- Read_Magn end -
+
+- Compass_Heading start - - magnetom[0]: -72.50- magnetom[1]: -33.33- magnetom[2]: -51.33- cos_roll: -0.92- sin_roll: -0.39- cos_pitch: 0.76- sin_pitch: 0.65- mag_x: -16.51- mag_y: 10.63- MAG_Heading: -2.57- Compass_Heading end - 
+
+- Matrix_update start - - Drift correction used - - G_Dt: 0.27- Omega_Vector[0]: -0.01- Omega_Vector[1]: 0.03- Omega_Vector[2]: 0.02
+- [x]: 0- [y]: 0- Temporary_Matrix[x][y]: -0.01- DCM_Matrix[x][y]: -0.66
+- [x]: 0- [y]: 1- Temporary_Matrix[x][y]: 0.00- DCM_Matrix[x][y]: -0.26
+- [x]: 0- [y]: 2- Temporary_Matrix[x][y]: -0.01- DCM_Matrix[x][y]: 0.71
+- [x]: 1- [y]: 0- Temporary_Matrix[x][y]: 0.01- DCM_Matrix[x][y]: -0.39
+- [x]: 1- [y]: 1- Temporary_Matrix[x][y]: 0.00- DCM_Matrix[x][y]: 0.92
+- [x]: 1- [y]: 2- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: -0.03
+- [x]: 2- [y]: 0- Temporary_Matrix[x][y]: 0.00- DCM_Matrix[x][y]: -0.65
+- [x]: 2- [y]: 1- Temporary_Matrix[x][y]: 0.00- DCM_Matrix[x][y]: -0.30
+- [x]: 2- [y]: 2- Temporary_Matrix[x][y]: -0.01- DCM_Matrix[x][y]: -0.70
+- Matrix_update end - 
+
+- Euler_angles start - #Euler_ang timestamp:1794- DCM_Matrix[0][0]: -0.66- DCM_Matrix[1][0]: -0.39- DCM_Matrix[2][0]: -0.64- DCM_Matrix[2][1]: -0.29- DCM_Matrix[2][2]: -0.71- pitch: 0.70- roll: -2.75- yaw: -2.61- Euler_angles end - 
+
+
+#--------------------##Loop iter - old_ts = 1552- new_ts = 1826- G_Dt = 0.27
+- Read_Gyro start -#T-gyr#1845#Gm-Raw#26.00,41.00,1.00- Read_Gyro end -
+
+- Read_Accel start -#T-acc#1857#Am-Raw#-159.00,-73.00,-173.00- Read_Accel end -
+
+- Read_Magn start -#T-mag#1871#Mm-Raw#-434.00,-199.00,-309.00- Read_Magn end -
+
+- Compass_Heading start - - magnetom[0]: -72.33- magnetom[1]: -33.17- magnetom[2]: -51.50- cos_roll: -0.92- sin_roll: -0.38- cos_pitch: 0.77- sin_pitch: 0.64- mag_x: -16.78- mag_y: 10.92- MAG_Heading: -2.56- Compass_Heading end - 
+
+- Matrix_update start - - Drift correction used - - G_Dt: 0.27- Omega_Vector[0]: 0.04- Omega_Vector[1]: 0.01- Omega_Vector[2]: -0.04
+- [x]: 0- [y]: 0- Temporary_Matrix[x][y]: 0.00- DCM_Matrix[x][y]: -0.66
+- [x]: 0- [y]: 1- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: -0.25
+- [x]: 0- [y]: 2- Temporary_Matrix[x][y]: 0.00- DCM_Matrix[x][y]: 0.71
+- [x]: 1- [y]: 0- Temporary_Matrix[x][y]: -0.01- DCM_Matrix[x][y]: -0.39
+- [x]: 1- [y]: 1- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: 0.92
+- [x]: 1- [y]: 2- Temporary_Matrix[x][y]: -0.01- DCM_Matrix[x][y]: -0.03
+- [x]: 2- [y]: 0- Temporary_Matrix[x][y]: 0.00- DCM_Matrix[x][y]: -0.64
+- [x]: 2- [y]: 1- Temporary_Matrix[x][y]: -0.02- DCM_Matrix[x][y]: -0.29
+- [x]: 2- [y]: 2- Temporary_Matrix[x][y]: 0.00- DCM_Matrix[x][y]: -0.71
+- Matrix_update end - 
+
+- Euler_angles start - #Euler_ang timestamp:2066- DCM_Matrix[0][0]: -0.66- DCM_Matrix[1][0]: -0.40- DCM_Matrix[2][0]: -0.64- DCM_Matrix[2][1]: -0.31- DCM_Matrix[2][2]: -0.71- pitch: 0.69- roll: -2.73- yaw: -2.60- Euler_angles end - 
+
+
+#--------------------##Loop iter - old_ts = 1826- new_ts = 2099- G_Dt = 0.27
+- Read_Gyro start -#T-gyr#2117#Gm-Raw#23.00,43.00,-6.00- Read_Gyro end -
+
+- Read_Accel start -#T-acc#2131#Am-Raw#-162.00,-75.00,-174.00- Read_Accel end -
+
+- Read_Magn start -#T-mag#2144#Mm-Raw#-436.00,-204.00,-309.00- Read_Magn end -
+
+- Compass_Heading start - - magnetom[0]: -72.67- magnetom[1]: -34.00- magnetom[2]: -51.50- cos_roll: -0.92- sin_roll: -0.40- cos_pitch: 0.77- sin_pitch: 0.64- mag_x: -17.27- mag_y: 10.54- MAG_Heading: -2.59- Compass_Heading end - 
+
+- Matrix_update start - - Drift correction used - - G_Dt: 0.27- Omega_Vector[0]: -0.03- Omega_Vector[1]: 0.00- Omega_Vector[2]: 0.02
+- [x]: 0- [y]: 0- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: -0.66
+- [x]: 0- [y]: 1- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: -0.25
+- [x]: 0- [y]: 2- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: 0.71
+- [x]: 1- [y]: 0- Temporary_Matrix[x][y]: 0.01- DCM_Matrix[x][y]: -0.40
+- [x]: 1- [y]: 1- Temporary_Matrix[x][y]: 0.00- DCM_Matrix[x][y]: 0.92
+- [x]: 1- [y]: 2- Temporary_Matrix[x][y]: 0.01- DCM_Matrix[x][y]: -0.04
+- [x]: 2- [y]: 0- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: -0.64
+- [x]: 2- [y]: 1- Temporary_Matrix[x][y]: 0.01- DCM_Matrix[x][y]: -0.31
+- [x]: 2- [y]: 2- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: -0.71
+- Matrix_update end - 
+
+- Euler_angles start - #Euler_ang timestamp:2340- DCM_Matrix[0][0]: -0.66- DCM_Matrix[1][0]: -0.39- DCM_Matrix[2][0]: -0.64- DCM_Matrix[2][1]: -0.30- DCM_Matrix[2][2]: -0.71- pitch: 0.69- roll: -2.74- yaw: -2.61- Euler_angles end - 
+
+
+#--------------------##Loop iter - old_ts = 2099- new_ts = 2373- G_Dt = 0.27
+- Read_Gyro start -#T-gyr#2392#Gm-Raw#26.00,46.00,-12.00- Read_Gyro end -
+
+- Read_Accel start -#T-acc#2404#Am-Raw#-159.00,-74.00,-175.00- Read_Accel end -
+
+- Read_Magn start -#T-mag#2418#Mm-Raw#-436.00,-201.00,-310.00- Read_Magn end -
+
+- Compass_Heading start - - magnetom[0]: -72.67- magnetom[1]: -33.50- magnetom[2]: -51.67- cos_roll: -0.92- sin_roll: -0.39- cos_pitch: 0.77- sin_pitch: 0.64- mag_x: -17.19- mag_y: 10.76- MAG_Heading: -2.58- Compass_Heading end - 
+
+- Matrix_update start - - Drift correction used - - G_Dt: 0.27- Omega_Vector[0]: 0.05- Omega_Vector[1]: -0.02- Omega_Vector[2]: -0.01
+- [x]: 0- [y]: 0- Temporary_Matrix[x][y]: 0.01- DCM_Matrix[x][y]: -0.66
+- [x]: 0- [y]: 1- Temporary_Matrix[x][y]: 0.01- DCM_Matrix[x][y]: -0.26
+- [x]: 0- [y]: 2- Temporary_Matrix[x][y]: 0.01- DCM_Matrix[x][y]: 0.70
+- [x]: 1- [y]: 0- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: -0.39
+- [x]: 1- [y]: 1- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: 0.92
+- [x]: 1- [y]: 2- Temporary_Matrix[x][y]: -0.01- DCM_Matrix[x][y]: -0.03
+- [x]: 2- [y]: 0- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: -0.64
+- [x]: 2- [y]: 1- Temporary_Matrix[x][y]: -0.01- DCM_Matrix[x][y]: -0.30
+- [x]: 2- [y]: 2- Temporary_Matrix[x][y]: 0.01- DCM_Matrix[x][y]: -0.71
+- Matrix_update end - 
+
+- Euler_angles start - #Euler_ang timestamp:2615- DCM_Matrix[0][0]: -0.66- DCM_Matrix[1][0]: -0.40- DCM_Matrix[2][0]: -0.64- DCM_Matrix[2][1]: -0.31- DCM_Matrix[2][2]: -0.70- pitch: 0.70- roll: -2.73- yaw: -2.60- Euler_angles end - 
+
+
+#--------------------##Loop iter - old_ts = 2373- new_ts = 2648- G_Dt = 0.27
+- Read_Gyro start -#T-gyr#2666#Gm-Raw#30.00,37.00,-9.00- Read_Gyro end -
+
+- Read_Accel start -#T-acc#2678#Am-Raw#-159.00,-72.00,-175.00- Read_Accel end -
+
+- Read_Magn start -#T-mag#2693#Mm-Raw#-434.00,-205.00,-309.00- Read_Magn end -
+
+- Compass_Heading start - - magnetom[0]: -72.33- magnetom[1]: -34.17- magnetom[2]: -51.50- cos_roll: -0.91- sin_roll: -0.40- cos_pitch: 0.77- sin_pitch: 0.64- mag_x: -16.31- mag_y: 10.41- MAG_Heading: -2.57- Compass_Heading end - 
+
+- Matrix_update start - - Drift correction used - - G_Dt: 0.27- Omega_Vector[0]: -0.02- Omega_Vector[1]: 0.06- Omega_Vector[2]: 0.01
+- [x]: 0- [y]: 0- Temporary_Matrix[x][y]: -0.01- DCM_Matrix[x][y]: -0.66
+- [x]: 0- [y]: 1- Temporary_Matrix[x][y]: -0.00- DCM_Matrix[x][y]: -0.25
+- [x]: 0- [y]: 2- Temporary_Matrix[x][y]: -0.01- DCM_Matrix[x][y]: 0.71
+- [x]: 1- [y]: 0- Tempora
