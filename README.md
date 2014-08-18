@@ -10,6 +10,8 @@ https://github.com/jmesmon/imu_9drazor/blob/master/src/SF9DOF_AHRS/SF9DOF_AHRS.p
 Kalman filters
 http://autopilot.sourceforge.net/kalman.html
 
+Add more info
+
 Quaterion example in python
 http://www.gamedev.net/page/resources/_/technical/math-and-physics/quaternion-powers-r1095
 http://forums.xkcd.com/viewtopic.php?f=11&t=72233
