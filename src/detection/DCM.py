@@ -324,11 +324,18 @@ class DCMizer(object):
               }
             }
         """
+        #Matrix_update start - - 
+        #Drift correction used - - G_Dt: 0.04- Omega_Vector[0]: 0.03- Omega_Vector[1]: 0.05- Omega_Vector[2]: 0.00
+   
                 
         #TODO need to change that
         #add omega integrator and proportional
-        omega[0]        = gyro_vector[0] + self._omega_i[0]
-        omega_vector[0] = omega[0] + self._omega_p[0]
+        #omega[0]        = gyro_vector[0] + self._omega_i[0]
+        #omega_vector[0] = omega[0] + self._omega_p[0]
+        
+        omega_vector[0] = 0.03
+        
+        print("omega[0] = %s\n" % (omega_vector[0]))
         
         # if output mode == 1 in original code ?
         if use_omega:
@@ -337,7 +344,6 @@ class DCMizer(object):
             vec = gyro_vector
             
         #Matrix Update
-        #currently no drift correction
         update_matrix = np.matrix([[ 0 , - gyro_Dt * vec[2], gyro_Dt * vec[1]] ,
                                    [ gyro_Dt * vec[2], 0, - gyro_Dt * vec[0]] ,
                                    [ - gyro_Dt * vec[1], gyro_Dt * vec[0], 0]])
@@ -350,12 +356,13 @@ class DCMizer(object):
         """
            tentative implementation of DCM
         """     
-        use_omega = False # OUTPUTMODE=1 use omega or gyro
+        use_omega = True # OUTPUTMODE=1 use omega or gyro
         
         # Corrected Gyro Vector
         # Add omega integrator and proportional
-        omega_vector = gyro_vector + self._omega_i + self._omega_p
-        
+        #omega_vector = gyro_vector + self._omega_i + self._omega_p
+        omega_vector = np.array([0.03, 0.05, 0.00])
+
         # update dcm matrix 
         self._matrix_update(omega, gyro_vector, omega_vector, gyro_Dt, accel_vector, use_omega)
         
@@ -406,10 +413,10 @@ if __name__ == '__main__':
     ### Input values
     
     #values from magnetometer to be read
-    magnetom      = np.array([-12.83, 17.50, 93.83])
-    gyro_Dt       = 0.2  #integration time (Delta time between each measure
-    gyro_vector   = np.array([raw_to_rad(23.00), raw_to_rad(44.00), raw_to_rad(-628.00)]) #to be measured
-    accel_vector  = np.array([(8.19/256),(-3.07/256),(271.36/256)]) #to be measured
+    magnetom      = np.array([-72.00, -33.00, -51.83])
+    gyro_Dt       = 0.04  #integration time (Delta time between each measure
+    gyro_vector   = np.array([raw_to_rad(27.00), raw_to_rad(42.00), raw_to_rad(3.00)]) #to be measured
+    accel_vector  = np.array([(-161/256),(-75/256),(-174/256)]) #to be measured
     
     #starting values (they are used for every steps)
     #init values are null
@@ -424,6 +431,11 @@ if __name__ == '__main__':
 
     #init values
     mag_heading = DCMizer.compass_heading(magnetom, roll, pitch)
+    
+    #Compass_Heading start - - magnetom[0]: -72.00- magnetom[1]: -33.00- magnetom[2]: -51.83- cos_roll: -0.92- sin_roll: -0.39- cos_pitch: 0.77- sin_pitch: 0.64- mag_x: -16.63- mag_y: 10.04- MAG_Heading: -2.60- Compass_Heading end - 
+    mag_heading = -2.6
+    
+    print("mag_heading = %s\n" % (mag_heading))
     
     dcmizer = DCMizer()
     
