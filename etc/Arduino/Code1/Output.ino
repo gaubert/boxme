@@ -13,10 +13,9 @@ void output_angles()
   }
   else if (output_format == OUTPUT__FORMAT_TEXT)
   {
-    Serial.print("#YPR=");
-    Serial.print(TO_DEG(yaw)); Serial.print(",");
-    Serial.print(TO_DEG(pitch)); Serial.print(",");
-    Serial.print(TO_DEG(roll)); Serial.println();
+
+    
+    Serial.println();
   }
 }
 
@@ -129,4 +128,3 @@ void output_sensors()
     }
   }
 }
-
