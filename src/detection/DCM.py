@@ -16,6 +16,49 @@ KP_YAW       = 1.2
 KI_YAW       = 0.00002
 GRAVITY      = 248  # this equivalent to 1G in the raw data coming from the accelerometer
 
+# SENSOR CALIBRATION
+#*****************************************************************/
+# How to calibrate? Read the tutorial at http://dev.qu.tu-berlin.de/projects/sf-razor-9dof-ahrs
+# Put MIN/MAX and OFFSET readings for your board here!
+# Accelerometer
+# "accel x,y,z (min/max) = X_MIN/X_MAX  Y_MIN/Y_MAX  Z_MIN/Z_MAX"
+ACCEL_X_MIN = -250.0
+ACCEL_X_MAX = 250.0
+ACCEL_Y_MIN = -250.0
+ACCEL_Y_MAX = 250.0
+ACCEL_Z_MIN = -250.0
+ACCEL_Z_MAX = 250.0
+
+# Magnetometer (standard calibration mode)
+# "magn x,y,z (min/max) = X_MIN/X_MAX  Y_MIN/Y_MAX  Z_MIN/Z_MAX"
+MAGN_X_MIN  = -600.0
+MAGN_X_MAX = 600
+MAGN_Y_MIN = -600
+MAGN_Y_MAX = 600
+MAGN_Z_MIN = -600
+MAGN_Z_MAX = 600
+
+# Gyroscope
+# "gyro x,y,z (current/average) = .../OFFSET_X  .../OFFSET_Y  .../OFFSET_Z
+GYRO_AVERAGE_OFFSET_X = 0.0
+GYRO_AVERAGE_OFFSET_Y = 0.0
+GYRO_AVERAGE_OFFSET_Z = 0.0
+
+# Sensor calibration scale and offset values
+ACCEL_X_OFFSET = (ACCEL_X_MIN + ACCEL_X_MAX) / 2.0
+ACCEL_Y_OFFSET = (ACCEL_Y_MIN + ACCEL_Y_MAX) / 2.0
+ACCEL_Z_OFFSET = (ACCEL_Z_MIN + ACCEL_Z_MAX) / 2.0
+ACCEL_X_SCALE  = GRAVITY / (ACCEL_X_MAX - ACCEL_X_OFFSET)
+ACCEL_Y_SCALE  = GRAVITY / (ACCEL_Y_MAX - ACCEL_Y_OFFSET)
+ACCEL_Z_SCALE  = GRAVITY / (ACCEL_Z_MAX - ACCEL_Z_OFFSET)
+
+MAGN_X_OFFSET = (MAGN_X_MIN + MAGN_X_MAX) / 2.0
+MAGN_Y_OFFSET = (MAGN_Y_MIN + MAGN_Y_MAX) / 2.0
+MAGN_Z_OFFSET = (MAGN_Z_MIN + MAGN_Z_MAX) / 2.0
+MAGN_X_SCALE  = 100.0 / (MAGN_X_MAX - MAGN_X_OFFSET)
+MAGN_Y_SCALE  = 100.0 / (MAGN_Y_MAX - MAGN_Y_OFFSET)
+MAGN_Z_SCALE  = 100.0 / (MAGN_Z_MAX - MAGN_Z_OFFSET)
+
 class DCMizer(object):
 
 
@@ -30,6 +73,113 @@ class DCMizer(object):
         
         self._omega_p        = np.array([0, 0, 0]) # Omega Proportional correction
         self._omega_i        = np.array([0,0,0])   # Omega Integrator
+    
+    @classmethod
+    def init_rotation_matrix(cls, roll, pitch, yaw):
+        """
+        
+           // Init rotation matrix using euler angles
+            void init_rotation_matrix(float m[3][3], float yaw, float pitch, float roll)
+            {
+              float c1 = cos(roll);
+              float s1 = sin(roll);
+              float c2 = cos(pitch);
+              float s2 = sin(pitch);
+              float c3 = cos(yaw);
+              float s3 = sin(yaw);
+            
+              // Euler angles, right-handed, intrinsic, XYZ convention
+              // (which means: rotate around body axes Z, Y', X'') 
+              m[0][0] = c2 * c3;
+              m[0][1] = c3 * s1 * s2 - c1 * s3;
+              m[0][2] = s1 * s3 + c1 * c3 * s2;
+            
+              m[1][0] = c2 * s3;
+              m[1][1] = c1 * c3 + s1 * s2 * s3;
+              m[1][2] = c1 * s2 * s3 - c3 * s1;
+            
+              m[2][0] = -s2;
+              m[2][1] = c2 * s1;
+              m[2][2] = c1 * c2;
+            }
+
+        
+        """
+        
+        c1 = math.cos(roll)
+        s1 = math.sin(roll);
+        
+        c2 = math.cos(pitch)
+        s2 = math.sin(pitch);
+        
+        c3 = math.cos(yaw)
+        s3 = math.sin(yaw);
+        
+        # Euler angles, right-handed, intrinsic, XYZ convention
+        # (which means: rotate around body axes Z, Y', X'')     
+        return np.matrix([[ c2*c3 , c3*s1*s2 - c1*s3, s1*c3 + c1 *c3 *s2] ,
+                            [ c2*s3, c1*c3 + s1*s2*s3, c1*s2*s3 - c3*s1] ,
+                            [ -s2, c2*s1, c1*c2]])
+        
+    
+    @classmethod
+    def reset_sensor_fusion(cls, accel, magnetom):
+        """
+            // Read every sensor and record a time stamp
+            // Init DCM with unfiltered orientation
+            // TODO re-init global vars?
+            void reset_sensor_fusion() {
+              float temp1[3];
+              float temp2[3];
+              float xAxis[] = {1.0f, 0.0f, 0.0f};
+            
+              read_sensors();
+              timestamp = millis();
+              
+              // GET PITCH
+              // Using y-z-plane-component/x-component of gravity vector
+              pitch = -atan2(accel[0], sqrt(accel[1] * accel[1] + accel[2] * accel[2]));
+                
+              // GET ROLL
+              // Compensate pitch of gravity vector 
+              Vector_Cross_Product(temp1, accel, xAxis);
+              Vector_Cross_Product(temp2, xAxis, temp1);
+              // Normally using x-z-plane-component/y-component of compensated gravity vector
+              // roll = atan2(temp2[1], sqrt(temp2[0] * temp2[0] + temp2[2] * temp2[2]));
+              // Since we compensated for pitch, x-z-plane-component equals z-component:
+              roll = atan2(temp2[1], temp2[2]);
+              
+              // GET YAW
+              Compass_Heading();
+              yaw = MAG_Heading;
+              
+              // Init rotation matrix
+              init_rotation_matrix(DCM_Matrix, yaw, pitch, roll);
+            }
+        """
+        
+        x_axis = np.array([1.0, 0.0, 0.0])
+        # GET PITCH
+        #Using y-z-plane-component/x-component of gravity vector
+        pitch = - math.atan2(accel[0], math.sqrt(accel[1] * accel[1] + accel[2] * accel[2]));
+                
+        # GET ROLL
+        # Compensate pitch of gravity vector 
+        temp1 = np.cross(accel, x_axis);
+        temp2 = np.cross(x_axis, temp1);
+        
+        # Normally using x-z-plane-component/y-component of compensated gravity vector
+        # roll = atan2(temp2[1], sqrt(temp2[0] * temp2[0] + temp2[2] * temp2[2]));
+        # Since we compensated for pitch, x-z-plane-component equals z-component:
+        roll = math.atan2(temp2[1], temp2[2]);
+              
+        # GET YAW
+        yaw = cls.compass_heading(magnetom, roll, pitch);
+        
+        dcm_matrix = cls.init_rotation_matrix(roll, pitch, yaw)
+        
+        return (dcm_matrix, yaw, pitch, roll)
+        
     
     @classmethod
     def compass_heading(cls, magnetom, roll, pitch):
@@ -164,6 +314,55 @@ class DCMizer(object):
         result[2][0] = tempo[2][0] * renorm
         
         return result
+    
+    def compensate_sensor_error(self, accel, magnetom, gyro):
+        """
+        
+        // Apply calibration to raw sensor readings
+        void compensate_sensor_errors() {
+            // Compensate accelerometer error
+            accel[0] = (accel[0] - ACCEL_X_OFFSET) * ACCEL_X_SCALE;
+            accel[1] = (accel[1] - ACCEL_Y_OFFSET) * ACCEL_Y_SCALE;
+            accel[2] = (accel[2] - ACCEL_Z_OFFSET) * ACCEL_Z_SCALE;
+        
+            // Compensate magnetometer error
+        #if CALIBRATION__MAGN_USE_EXTENDED == true
+            for (int i = 0; i < 3; i++)
+              magnetom_tmp[i] = magnetom[i] - magn_ellipsoid_center[i];
+            Matrix_Vector_Multiply(magn_ellipsoid_transform, magnetom_tmp, magnetom);
+        #else
+            magnetom[0] = (magnetom[0] - MAGN_X_OFFSET) * MAGN_X_SCALE;
+            magnetom[1] = (magnetom[1] - MAGN_Y_OFFSET) * MAGN_Y_SCALE;
+            magnetom[2] = (magnetom[2] - MAGN_Z_OFFSET) * MAGN_Z_SCALE;
+        #endif
+        
+            // Compensate gyroscope error
+            gyro[0] -= GYRO_AVERAGE_OFFSET_X;
+            gyro[1] -= GYRO_AVERAGE_OFFSET_Y;
+            gyro[2] -= GYRO_AVERAGE_OFFSET_Z;
+        }
+        
+        """
+        
+        res_accel = np.array([ (accel[0] - ACCEL_X_OFFSET) * ACCEL_X_SCALE ,
+                               (accel[1] - ACCEL_Y_OFFSET) * ACCEL_Y_SCALE ,
+                               (accel[2] - ACCEL_Z_OFFSET) * ACCEL_Z_SCALE
+                             ])
+        
+        #currently only use the simple error compensation
+        res_magnetom = np.array([ (magnetom[0] - MAGN_X_OFFSET) * MAGN_X_SCALE,
+                                  (magnetom[1] - MAGN_Y_OFFSET) * MAGN_Y_SCALE,
+                                  (magnetom[2] - MAGN_Z_OFFSET) * MAGN_Z_SCALE
+                                ])
+        
+        #compensate gyro erro
+        res_gyro = np.array( [ gyro[0] - GYRO_AVERAGE_OFFSET_X,
+                               gyro[1] - GYRO_AVERAGE_OFFSET_Y,
+                               gyro[2] - GYRO_AVERAGE_OFFSET_Z
+                             ])
+        
+        return (res_accel, res_magnetom, res_gyro)
+        
     
     def drift_correction(self, accel_vector, a_omega_p, a_omega_i):
         """
@@ -380,9 +579,9 @@ class DCMizer(object):
         
         return (pitch, roll, yaw)  
     
-def raw_to_rad(a_in):
+def deg_to_rad(a_in):
     """
-       Transform raw val to Rad
+       Transform degrees val to radians
     """
     return a_in * 0.01745329252 # pi/180
 
@@ -413,10 +612,10 @@ if __name__ == '__main__':
     ### Input values
     
     #values from magnetometer to be read
-    magnetom      = np.array([-72.00, -33.00, -51.83])
-    gyro_Dt       = 0.04  #integration time (Delta time between each measure
-    gyro_vector   = np.array([raw_to_rad(27.00), raw_to_rad(42.00), raw_to_rad(3.00)]) #to be measured
-    accel_vector  = np.array([(-161/256),(-75/256),(-174/256)]) #to be measured
+    magnetom_vector = np.array([-72.00, -33.00, -51.83])
+    gyro_Dt         = 0.04  #integration time (Delta time between each measure
+    gyro_vector     = np.array([deg_to_rad(27.00), deg_to_rad(42.00), deg_to_rad(3.00)]) #to be measured
+    accel_vector    = np.array([(-161/256),(-75/256),(-174/256)]) #to be measured
     
     #starting values (they are used for every steps)
     #init values are null
@@ -428,9 +627,11 @@ if __name__ == '__main__':
     err_roll_pitch = np.array([0,0,0])
     
     omega = np.array([0,0,0])
+    
+    DCMizer.compensate_sensor_error(accel_vector, magnetom_vector, gyro_vector)
 
     #init values
-    mag_heading = DCMizer.compass_heading(magnetom, roll, pitch)
+    mag_heading = DCMizer.compass_heading(magnetom_vector, roll, pitch)
     
     #Compass_Heading start - - magnetom[0]: -72.00- magnetom[1]: -33.00- magnetom[2]: -51.83- cos_roll: -0.92- sin_roll: -0.39- cos_pitch: 0.77- sin_pitch: 0.64- mag_x: -16.63- mag_y: 10.04- MAG_Heading: -2.60- Compass_Heading end - 
     mag_heading = -2.6
@@ -439,4 +640,4 @@ if __name__ == '__main__':
     
     dcmizer = DCMizer()
     
-    dcmizer.compute_dcm(mag_heading, magnetom, omega, gyro_Dt, gyro_vector)
+    dcmizer.compute_dcm(mag_heading, magnetom_vector, omega, gyro_Dt, gyro_vector)
