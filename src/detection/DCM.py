@@ -216,6 +216,12 @@ class DCMizer(object):
         # Tilt compensated magnetic field Y
         mag_y = magnetom[1] * cos_roll - magnetom[2] * sin_roll;
         
+        print("magnetom[0]=%s, magnetom[1]=%s, magnetom[2]=%s\n" %(magnetom[0], magnetom[1], magnetom[2]))
+        
+        print("cos_roll=%s, sin_roll=%s, cos_pitch=%s, sin_pitch=%s\n" % (cos_roll, sin_roll, cos_pitch, sin_pitch))
+        
+        print("mag_x=%s, mag_y=%s, mag_heading=%s\n" % (mag_x, mag_y, math.atan2(-mag_y, mag_x)))
+  
         # Magnetic Heading
         return math.atan2(-mag_y, mag_x);
     
@@ -315,6 +321,7 @@ class DCMizer(object):
         
         return result
     
+    @classmethod
     def compensate_sensor_error(self, accel, magnetom, gyro):
         """
         
@@ -364,7 +371,7 @@ class DCMizer(object):
         return (res_accel, res_magnetom, res_gyro)
         
     
-    def drift_correction(self, accel_vector, a_omega_p, a_omega_i):
+    def drift_correction(self, accel_vector, a_omega_p, a_omega_i, mag_heading):
         """
         /**************************************************/
             void Drift_correction(void)
@@ -551,7 +558,8 @@ class DCMizer(object):
         
         self._dcm_matrix = self._dcm_matrix + tempo_matrix
         
-    def compute_dcm(self, mag_heading, magnetom, omega, gyro_Dt, gyro_vector):
+                    
+    def compute_dcm(self, mag_heading, magnetom, omega, gyro_Dt, gyro_vector, accel_vector):
         """
            tentative implementation of DCM
         """     
@@ -585,6 +593,51 @@ def deg_to_rad(a_in):
     """
     return a_in * 0.01745329252 # pi/180
 
+def run_dcm():
+    """
+       test DCM
+    """
+    ### Input values
+    
+    #init values
+    gyro_Dt     = 0.24  #integration time (Delta time between each measure
+    gyro_vec    = np.array([-1547.00, 1689.00, 224.00])
+    accel_vec   = np.array([-55.00, 10.00, 288.00])
+    mag_vec     = np.array([-83.00, 131.00, 658.00])
+    
+    """  - Gyr -#T-gyr#36845#Gm-Raw#-1547.00,1689.00,224.00
+- Acc -#T-acc#36853#Am-Raw#-55.00,10.00,288.00
+- Mag -#T-mag#36861#Mm-Raw#-83.00,131.00,658.00
+
+   Note: roll and pitch, yaw are not set as in the software. Check how they are set
+   """ 
+   
+    #starting values (they are used for every steps)
+    #init values are null
+    roll     = 0.0 
+    pitch    = 0.0
+    yaw      = 0.0
+    
+    err_yaw = np.array([0,0,0])
+    err_roll_pitch = np.array([0,0,0])
+    
+    omega = np.array([0,0,0])
+    
+    accel_vec, mag_vec, gyro_vec = DCMizer.compensate_sensor_error(accel_vec, mag_vec, gyro_vec)
+
+    #init values
+    mag_heading = DCMizer.compass_heading(mag_vec, roll, pitch)
+    
+    #Compass_Heading start - - magnetom[0]: -72.00- magnetom[1]: -33.00- magnetom[2]: -51.83- cos_roll: -0.92- sin_roll: -0.39- cos_pitch: 0.77- sin_pitch: 0.64- mag_x: -16.63- mag_y: 10.04- MAG_Heading: -2.60- Compass_Heading end - 
+    #mag_heading = -2.6
+    
+    print("mag_heading = %s\n" % (mag_heading))
+    
+    dcmizer = DCMizer()
+    
+    dcmizer.compute_dcm(mag_heading, mag_vec, omega, gyro_Dt, gyro_vec, accel_vec)
+
+
 if __name__ == '__main__':
     
     """
@@ -608,36 +661,5 @@ if __name__ == '__main__':
         #T-YPR#149.00#YPR=#-129.58,-1.24,-0.60#T-acc#143.00#Am-Raw#8.19,-3.07,271.36#T-mag#143.00#Mm-Raw#-12.83,17.50,93.83#T-gyr#141.00#Gm-Raw#23.00,44.00,-628.00#DCM:#-0.64,0.77,0.02,-0.77,-0.64,0.01,0.02,-0.01,1.00,
 
     """
+    run_dcm()
     
-    ### Input values
-    
-    #values from magnetometer to be read
-    magnetom_vector = np.array([-72.00, -33.00, -51.83])
-    gyro_Dt         = 0.04  #integration time (Delta time between each measure
-    gyro_vector     = np.array([deg_to_rad(27.00), deg_to_rad(42.00), deg_to_rad(3.00)]) #to be measured
-    accel_vector    = np.array([(-161/256),(-75/256),(-174/256)]) #to be measured
-    
-    #starting values (they are used for every steps)
-    #init values are null
-    roll     = 0.0 
-    pitch    = 0.0
-    yaw      = 0.0
-    
-    err_yaw = np.array([0,0,0])
-    err_roll_pitch = np.array([0,0,0])
-    
-    omega = np.array([0,0,0])
-    
-    DCMizer.compensate_sensor_error(accel_vector, magnetom_vector, gyro_vector)
-
-    #init values
-    mag_heading = DCMizer.compass_heading(magnetom_vector, roll, pitch)
-    
-    #Compass_Heading start - - magnetom[0]: -72.00- magnetom[1]: -33.00- magnetom[2]: -51.83- cos_roll: -0.92- sin_roll: -0.39- cos_pitch: 0.77- sin_pitch: 0.64- mag_x: -16.63- mag_y: 10.04- MAG_Heading: -2.60- Compass_Heading end - 
-    mag_heading = -2.6
-    
-    print("mag_heading = %s\n" % (mag_heading))
-    
-    dcmizer = DCMizer()
-    
-    dcmizer.compute_dcm(mag_heading, magnetom_vector, omega, gyro_Dt, gyro_vector)
