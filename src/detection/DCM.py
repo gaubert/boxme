@@ -567,11 +567,9 @@ class DCMizer(object):
         """     
         use_omega = True # OUTPUTMODE=1 use omega or gyro
         
-        # Corrected Gyro Vector
         # Add omega integrator and proportional
-        #omega_vector = gyro_vector + self._omega_i + self._omega_p
-        omega_vector = np.array([0.03, 0.05, 0.00])
-
+        omega_vector = gyro_vector + self._omega_i + self._omega_p
+        
         # update dcm matrix 
         self._matrix_update(omega, gyro_vector, omega_vector, gyro_Dt, accel_vector, use_omega)
         
@@ -594,6 +592,22 @@ def deg_to_rad(a_in):
        Transform degrees val to radians
     """
     return a_in * 0.01745329252 # pi/180
+
+def rad_to_deg(a_in):
+    """
+       rad to deg (180/pi)
+    """
+    return a_in * 57.2957795131
+
+GYRO_GAIN = 0.06957 # same gain on all axes
+
+def gyro_scaled_rad(a_gyro_val):
+    """ 
+       Gain for gyroscope 
+       Calculate the scaled gyro readings in radians per second
+    """
+    # Gain for gyroscope (ITG-3200)
+    return a_gyro_val * deg_to_rad(GYRO_GAIM)
 
 def run_dcm():
     """
@@ -637,6 +651,11 @@ def run_dcm():
     print("mag_heading = %s\n" % (mag_heading))
     
     dcmizer = DCMizer()
+    
+    # Corrected Gyro Vector
+    gyro_vec[0]    = gyro_scaled_rad(gyro[0]); //gyro x roll
+    gyro_Vector[1] = gyro_scaled_rad(gyro[1]); //gyro y pitch
+    gyro_Vector[2] = gyro_scaled_rad(gyro[2]); //gyro z yaw
     
     dcmizer.compute_dcm(mag_heading, mag_vec, omega, gyro_Dt, gyro_vec, accel_vec)
 
