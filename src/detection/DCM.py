@@ -536,12 +536,10 @@ class DCMizer(object):
                 
         #TODO need to change that
         #add omega integrator and proportional
-        #omega[0]        = gyro_vector[0] + self._omega_i[0]
-        #omega_vector[0] = omega[0] + self._omega_p[0]
+        omega[0]        = gyro_vector[0] + self._omega_i[0]
+        omega_vector[0] = omega[0] + self._omega_p[0]
         
-        omega_vector[0] = 0.03
-        
-        print("omega[0] = %s\n" % (omega_vector[0]))
+        print("omega_vector[0] = %s, omega_vector[1] = %s, omega_vector[2] = %s\n" % (omega_vector[0], omega_vector[1], omega_vector[2]))
         
         # if output mode == 1 in original code ?
         if use_omega:
@@ -557,6 +555,10 @@ class DCMizer(object):
         tempo_matrix = self._dcm_matrix * update_matrix
         
         self._dcm_matrix = self._dcm_matrix + tempo_matrix
+        
+        print("Tempo matrix = %s\n" % (tempo_matrix))
+        print("DCM matrix = %s\n" % (self._dcm_matrix))
+        print("End of _update_matrix \n")
         
                     
     def compute_dcm(self, mag_heading, magnetom, omega, gyro_Dt, gyro_vector, accel_vector):
@@ -613,9 +615,10 @@ def run_dcm():
    """ 
    
     #starting values (they are used for every steps)
-    #init values are null
-    roll     = 0.0 
-    pitch    = 0.0
+    #need to get the init values following the method
+    
+    roll     = 0.37 #got it with acos(0.93)
+    pitch    = - 0.20 #got it with acos(0.98)
     yaw      = 0.0
     
     err_yaw = np.array([0,0,0])
