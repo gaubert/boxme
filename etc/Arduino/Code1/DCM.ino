@@ -163,8 +163,6 @@ void Matrix_update(void)
       Serial.print("[x],[y]:");  Serial.print(x);Serial.print(",");Serial.print(y);
       Serial.print("    UM:");  Serial.println(Update_Matrix[x][y],6);
       Serial.print("    DM:");  Serial.println(DCM_Matrix[x][y],6);
-      
-      DCM_Matrix[x][y]+=Temporary_Matrix[x][y];
     } 
   }
 
@@ -174,10 +172,10 @@ void Matrix_update(void)
   {
     for(int y=0; y<3; y++)
     {
-//      Serial.println();
-//      Serial.print("[x],[y]:");  Serial.print(x);Serial.print(",");Serial.print(y);
-//      Serial.print("TM:");  Serial.print(Temporary_Matrix[x][y]);
-//      Serial.print("DM:");  Serial.print(DCM_Matrix[x][y]);
+      Serial.println();
+      Serial.print("[x],[y]:");  Serial.print(x);Serial.print(",");Serial.print(y);
+      Serial.print("TM:");  Serial.print(Temporary_Matrix[x][y]);
+      Serial.print("DM:");  Serial.print(DCM_Matrix[x][y]);
       
       DCM_Matrix[x][y]+=Temporary_Matrix[x][y];
     } 
