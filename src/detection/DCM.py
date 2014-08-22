@@ -448,10 +448,12 @@ class DCMizer(object):
         
         # Dynamic weighting of accelerometer info (reliability filter)
         # Weight for accelerometer info (<0.5G = 0.0, 1G = 1.0 , >1.5G = 0.0)
-        #Accel_weight = constrain(1 - 2*abs(1 - Accel_magnitude),0,1);  //  
-            
-        accel_weigth =  (1 - 2 * abs(1 - accel_magnitude))
-        
+        accel_weigth = (1 - 2 * math.abs(1 - Accel_magnitude))
+        if accel_weigth < 0:
+            accel_weigth = 0
+        elif accel_weigth > 1:
+            accel_weigth = 1
+    
         #adjust ground reference
         print("dcm_matrix = %s" % (self._dcm_matrix[2,0]))
         
