@@ -662,26 +662,31 @@ void loop()
 
     // Update sensor readings
     Serial.println();
-    Serial.print("- Tim - old_ts = ");
+    Serial.print("Timing info: old_ts = ");
     Serial.print(timestamp_old);
-    Serial.print("- new_ts = ");
+    Serial.print(", new_ts = ");
     Serial.print(timestamp);
-    Serial.print("- G_Dt = ");
+    Serial.print(", G_Dt = ");
     Serial.print(G_Dt);
     
     read_sensors();
 
     if (output_mode == OUTPUT__MODE_CALIBRATE_SENSORS)  // We're in calibration mode
     {
-      Serial.print("- cal_reset ");      
+      Serial.print(" check_reset_calibration_session() was performed ");      
       check_reset_calibration_session();  // Check if this session needs a reset
       if (output_stream_on || output_single_on) output_calibration(curr_calibration_sensor);
     }
     else if (output_mode == OUTPUT__MODE_ANGLES)  // Output angles
     {
+      Serial.println();
+      Serial.print("Beginning of the loop: pitch:");  Serial.print(pitch);
+      Serial.print(",roll:");  Serial.print(roll);
+      Serial.print(",yaw:");  Serial.print(yaw);
+      Serial.println();
+      
       // Apply sensor calibration
       compensate_sensor_errors();
-      Serial.print("- sensor_cal "); 
       // Run DCM algorithm
       Compass_Heading(); // Calculate magnetic heading
       Matrix_update();
