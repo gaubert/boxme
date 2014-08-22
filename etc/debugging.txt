@@ -1,139 +1,854 @@
-- Tim - old_ts = 36595- new_ts = 36833- G_Dt = 0.24
-- Gyr -#T-gyr#36845#Gm-Raw#-1547.00,1689.00,224.00
-- Acc -#T-acc#36853#Am-Raw#-55.00,10.00,288.00
-- Mag -#T-mag#36861#Mm-Raw#-83.00,131.00,658.00
-- Compass_Headi - - magnetom[0]: -13.83- magnetom[1]: 21.83- magnetom[2]: 109.67- cos_roll: 0.93- sin_roll: 0.36- cos_pitch: 0.98- sin_pitch: -0.21- mag_x: -37.11- mag_y: -18.81- MAG_Heading: 2.67
+ORE
+acc[0,1,2]: 134.00,-119.00,28?
+- Gyr -#T-gyr#118#Gm-Raw#279.00,191.00,-107.00
+- Acc -#T-acc#124#Am-Raw#35.00,31.00,234.00
+- Mag -#T-mag#129#Mm-Raw#254.00,356.00,621.00
+Timing info: old_ts = 133, new_ts = 153, G_Dt = 0.02
+- Gyr -#T-gyr#157#Gm-Raw#230.00,467.00,201.00
+- Acc -#T-acc#161#Am-Raw#12.00,66.00,259.00
+- Mag -#T-mag#169#Mm-Raw#249.00,366.00,628.00
+Beginning of the loop: pitch:-0.15,roll:0.13,yaw:-1.05
 
-- Matrix_update - (Drift correction used)- G_Dt: 0.24- Omega_Vector[0]: -1.40- Omega_Vector[1]: 1.39- Omega_Vector[2]: -0.36
-- [x]: 0- [y]: 0- Temporary_Matrix[x][y]: 0.09- DCM_Matrix[x][y]: 0.94
-- [x]: 0- [y]: 1- Temporary_Matrix[x][y]: 0.17- DCM_Matrix[x][y]: -0.03
-- [x]: 0- [y]: 2- Temporary_Matrix[x][y]: 0.30- DCM_Matrix[x][y]: -0.25
-- [x]: 1- [y]: 0- Temporary_Matrix[x][y]: 0.03- DCM_Matrix[x][y]: -0.05
-- [x]: 1- [y]: 1- Temporary_Matrix[x][y]: 0.10- DCM_Matrix[x][y]: 0.90
-- [x]: 1- [y]: 2- Temporary_Matrix[x][y]: 0.28- DCM_Matrix[x][y]: -0.33
-- [x]: 2- [y]: 0- Temporary_Matrix[x][y]: -0.27- DCM_Matrix[x][y]: 0.21
-- [x]: 2- [y]: 1- Temporary_Matrix[x][y]: -0.23- DCM_Matrix[x][y]: 0.29
-- [x]: 2- [y]: 2- Temporary_Matrix[x][y]: 0.17- DCM_Matrix[x][y]: 0.75
+compensate_s_err start
+BEFORE
+acc[0,1,2]: 12.00,66.00,259.00
+magnetom[0,1,2]: 249.00,366.00,628.00
+gyro[0,1,2]: 230.00,467.00,201.00
+(NOTcompensate magn error)
+AFTER
+acc[0,1,2]: 12.29,67.58,265.22
+magnetom[0,1,2]: 41.50,61.00,104.67
+gyro[0,1,2]: 230.00,467.00,201.00
 
-- Euler_angles  - #Euler_ang timestamp:37040- DCM_Matrix[0][0]: 0.99- DCM_Matrix[1][0]: -0.08- DCM_Matrix[2][0]: -0.05- DCM_Matrix[2][1]: 0.04- DCM_Matrix[2][2]: 1.00- pitch: 0.05- roll: 0.04- yaw: -0.08
+Matrix_update 
+gyro[0,1,2]:230.00,467.00,201.00
+Gyro_vector[0,1,2]:0.28,0.57,0.24
+Before Omega_I[0,1,2]:0.00,0.00,0.00
+Before Omega_P[0,1,2]:0.00,0.00,0.00
+After Omega_I[0,1,2]:0.00,0.00,0.00
+After Omega_P[0,1,2]:0.00,0.00,0.00
+(Drift correction used)
+G_Dt:0.02Omega_Vector[0]:0.28,Omega_Vector[1]:0.57,Omega_Vector[2]:0.24
+[x],[y]:0,0TM:0.01DM:0.49
+[x],[y]:0,1TM:-0.00DM:0.85
+[x],[y]:0,2TM:0.00DM:-0.19
+[x],[y]:1,0TM:0.00DM:-0.86
+[x],[y]:1,1TM:0.00DM:0.51
+[x],[y]:1,2TM:-0.01DM:0.06
+[x],[y]:2,0TM:-0.01DM:0.15
+[x],[y]:2,1TM:0.00DM:0.13
+[x],[y]:2,2TM:0.00DM:0.98
 
-
-- Tim - old_ts = 36833- new_ts = 37068- G_Dt = 0.23
-- Gyr -#T-gyr#37081#Gm-Raw#-2371.00,-182.00,615.00
-- Acc -#T-acc#37091#Am-Raw#-110.00,-125.00,264.00
-- Mag -#T-mag#37099#Mm-Raw#-250.00,-214.00,649.00
-- Compass_Headi - - magnetom[0]: -41.67- magnetom[1]: -35.67- magnetom[2]: 108.17- cos_roll: 1.00- sin_roll: 0.04- cos_pitch: 1.00- sin_pitch: 0.05- mag_x: -36.36- mag_y: -40.47- MAG_Heading: 2.30
-
-- Matrix_update - (Drift correction used)- G_Dt: 0.23- Omega_Vector[0]: -2.94- Omega_Vector[1]: 0.33- Omega_Vector[2]: 1.17
-- [x]: 0- [y]: 0- Temporary_Matrix[x][y]: 0.02- DCM_Matrix[x][y]: 0.99
-- [x]: 0- [y]: 1- Temporary_Matrix[x][y]: -0.31- DCM_Matrix[x][y]: 0.08
-- [x]: 0- [y]: 2- Temporary_Matrix[x][y]: 0.13- DCM_Matrix[x][y]: 0.05
-- [x]: 1- [y]: 0- Temporary_Matrix[x][y]: 0.28- DCM_Matrix[x][y]: -0.08
-- [x]: 1- [y]: 1- Temporary_Matrix[x][y]: 0.06- DCM_Matrix[x][y]: 1.00
-- [x]: 1- [y]: 2- Temporary_Matrix[x][y]: 0.68- DCM_Matrix[x][y]: -0.05
-- [x]: 2- [y]: 0- Temporary_Matrix[x][y]: -0.07- DCM_Matrix[x][y]: -0.05
-- [x]: 2- [y]: 1- Temporary_Matrix[x][y]: -0.68- DCM_Matrix[x][y]: 0.04
-- [x]: 2- [y]: 2- Temporary_Matrix[x][y]: 0.03- DCM_Matrix[x][y]: 1.00
-
-- Euler_angles  - #Euler_ang timestamp:37277- DCM_Matrix[0][0]: 0.95- DCM_Matrix[1][0]: 0.12- DCM_Matrix[2][0]: -0.21- DCM_Matrix[2][1]: -0.39- DCM_Matrix[2][2]: 0.72- pitch: 0.22- roll: -0.50- yaw: 0.12
-
-
-- Tim - old_ts = 37068- new_ts = 37306- G_Dt = 0.24
-- Gyr -#T-gyr#37318#Gm-Raw#-1373.00,1294.00,1147.00
-- Acc -#T-acc#37328#Am-Raw#-181.00,-164.00,241.00
-- Mag -#T-mag#37337#Mm-Raw#-583.00,-385.00,523.00
-- Compass_Headi - - magnetom[0]: -97.17- magnetom[1]: -64.17- magnetom[2]: 87.17- cos_roll: 0.88- sin_roll: -0.48- cos_pitch: 0.98- sin_pitch: 0.21- mag_x: -71.92- mag_y: -14.49- MAG_Heading: 2.94
-
-- Matrix_update - (Drift correction used)- G_Dt: 0.24- Omega_Vector[0]: -1.73- Omega_Vector[1]: 1.42- Omega_Vector[2]: 2.24
-- [x]: 0- [y]: 0- Temporary_Matrix[x][y]: -0.18- DCM_Matrix[x][y]: 0.95
-- [x]: 0- [y]: 1- Temporary_Matrix[x][y]: -0.57- DCM_Matrix[x][y]: -0.25
-- [x]: 0- [y]: 2- Temporary_Matrix[x][y]: 0.22- DCM_Matrix[x][y]: 0.15
-- [x]: 1- [y]: 0- Temporary_Matrix[x][y]: 0.26- DCM_Matrix[x][y]: 0.12
-- [x]: 1- [y]: 1- Temporary_Matrix[x][y]: -0.25- DCM_Matrix[x][y]: 0.77
-- [x]: 1- [y]: 2- Temporary_Matrix[x][y]: 0.36- DCM_Matrix[x][y]: 0.46
-- [x]: 2- [y]: 0- Temporary_Matrix[x][y]: -0.45- DCM_Matrix[x][y]: -0.21
-- [x]: 2- [y]: 1- Temporary_Matrix[x][y]: -0.18- DCM_Matrix[x][y]: -0.39
-- [x]: 2- [y]: 2- Temporary_Matrix[x][y]: -0.23- DCM_Matrix[x][y]: 0.72
-
-- Euler_angles  - #Euler_ang timestamp:37517- DCM_Matrix[0][0]: 0.60- DCM_Matrix[1][0]: 0.30- DCM_Matrix[2][0]: -0.66- DCM_Matrix[2][1]: -0.37- DCM_Matrix[2][2]: 0.54- pitch: 0.72- roll: -0.61- yaw: 0.47
+# Euler_angles  # #Euler_ang timestamp:337DM[0][0]:0.49,DM[1][0]:-0.86,DM[2][0]:0.14,DM[2][1]:0.13,DM[2][2]:0.98pitch:-0.14,roll:0.14,yaw:-1.05
 
 
-- Tim - old_ts = 37306- new_ts = 37545- G_Dt = 0.24
-- Gyr -#T-gyr#37556#Gm-Raw#297.00,-44.00,17.00
-- Acc -#T-acc#37564#Am-Raw#-174.00,-124.00,127.00
-- Mag -#T-mag#37574#Mm-Raw#-1133.00,-233.00,616.00
-- Compass_Headi - - magnetom[0]: -188.83- magnetom[1]: -38.83- magnetom[2]: 102.67- cos_roll: 0.82- sin_roll: -0.57- cos_pitch: 0.75- sin_pitch: 0.66- mag_x: -72.34- mag_y: 26.49- MAG_Heading: -2.79
+Timing info: old_ts = 153, new_ts = 356, G_Dt = 0.20
+- Gyr -#T-gyr#368#Gm-Raw#-121.00,577.00,-39.00
+- Acc -#T-acc#376#Am-Raw#9.00,51.00,238.00
+- Mag -#T-mag#385#Mm-Raw#221.00,348.00,656.00
+Beginning of the loop: pitch:-0.14,roll:0.14,yaw:-1.05
 
-- Matrix_update - (Drift correction used)- G_Dt: 0.24- Omega_Vector[0]: 0.04- Omega_Vector[1]: -0.57- Omega_Vector[2]: 0.08
-- [x]: 0- [y]: 0- Temporary_Matrix[x][y]: 0.02- DCM_Matrix[x][y]: 0.60
-- [x]: 0- [y]: 1- Temporary_Matrix[x][y]: -0.01- DCM_Matrix[x][y]: -0.70
-- [x]: 0- [y]: 2- Temporary_Matrix[x][y]: -0.07- DCM_Matrix[x][y]: 0.24
-- [x]: 1- [y]: 0- Temporary_Matrix[x][y]: 0.11- DCM_Matrix[x][y]: 0.30
-- [x]: 1- [y]: 1- Temporary_Matrix[x][y]: 0.00- DCM_Matrix[x][y]: 0.57
-- [x]: 1- [y]: 2- Temporary_Matrix[x][y]: -0.05- DCM_Matrix[x][y]: 0.76
-- [x]: 2- [y]: 0- Temporary_Matrix[x][y]: 0.07- DCM_Matrix[x][y]: -0.66
-- [x]: 2- [y]: 1- Temporary_Matrix[x][y]: 0.02- DCM_Matrix[x][y]: -0.37
-- [x]: 2- [y]: 2- Temporary_Matrix[x][y]: 0.09- DCM_Matrix[x][y]: 0.54
+compensate_s_err start
+BEFORE
+acc[0,1,2]: 9.00,51.00,238.00
+magnetom[0,1,2]: 221.00,348.00,656.00
+gyro[0,1,2]: -121.00,577.00,-39.00
+(NOTcompensate magn error)
+AFTER
+acc[0,1,2]: 9.22,52.22,243.71
+magnetom[0,1,2]: 36.83,58.00,109.33
+gyro[0,1,2]: -121.00,577.00,-39.00
 
-- Euler_angles  - #Euler_ang timestamp:37754- DCM_Matrix[0][0]: 0.65- DCM_Matrix[1][0]: 0.42- DCM_Matrix[2][0]: -0.63- DCM_Matrix[2][1]: -0.39- DCM_Matrix[2][2]: 0.67- pitch: 0.68- roll: -0.52- yaw: 0.58
+Matrix_update 
+gyro[0,1,2]:-121.00,577.00,-39.00
+Gyro_vector[0,1,2]:-0.15,0.70,-0.05
+Before Omega_I[0,1,2]:0.00,0.00,-0.00
+Before Omega_P[0,1,2]:0.52,0.41,-0.17
+After Omega_I[0,1,2]:0.00,0.00,-0.00
+After Omega_P[0,1,2]:0.52,0.41,-0.17
+(Drift correction used)
+G_Dt:0.20Omega_Vector[0]:0.37,Omega_Vector[1]:1.11,Omega_Vector[2]:-0.22
+[x],[y]:0,0TM:0.00DM:0.49
+[x],[y]:0,1TM:0.01DM:0.85
+[x],[y]:0,2TM:0.05DM:-0.19
+[x],[y]:1,0TM:-0.03DM:-0.86
+[x],[y]:1,1TM:-0.03DM:0.51
+[x],[y]:1,2TM:-0.23DM:0.05
+[x],[y]:2,0TM:-0.23DM:0.14
+[x],[y]:2,1TM:0.08DM:0.13
+[x],[y]:2,2TM:0.02DM:0.98
 
-
-- Tim - old_ts = 37545- new_ts = 37783- G_Dt = 0.24
-- Gyr -#T-gyr#37793#Gm-Raw#-384.00,220.00,721.00
-- Acc -#T-acc#37801#Am-Raw#-206.00,-122.00,129.00
-- Mag -#T-mag#37812#Mm-Raw#-1378.00,-14.00,757.00
-- Compass_Headi - - magnetom[0]: -229.67- magnetom[1]: -2.33- magnetom[2]: 126.17- cos_roll: 0.87- sin_roll: -0.50- cos_pitch: 0.78- sin_pitch: 0.63- mag_x: -109.76- mag_y: 60.83- MAG_Heading: -2.64
-
-- Matrix_update - (Drift correction used)- G_Dt: 0.24- Omega_Vector[0]: -1.30- Omega_Vector[1]: 0.94- Omega_Vector[2]: 0.80
-- [x]: 0- [y]: 0- Temporary_Matrix[x][y]: -0.18- DCM_Matrix[x][y]: 0.65
-- [x]: 0- [y]: 1- Temporary_Matrix[x][y]: -0.18- DCM_Matrix[x][y]: -0.73
-- [x]: 0- [y]: 2- Temporary_Matrix[x][y]: -0.08- DCM_Matrix[x][y]: 0.18
-- [x]: 1- [y]: 0- Temporary_Matrix[x][y]: -0.05- DCM_Matrix[x][y]: 0.42
-- [x]: 1- [y]: 1- Temporary_Matrix[x][y]: -0.30- DCM_Matrix[x][y]: 0.56
-- [x]: 1- [y]: 2- Temporary_Matrix[x][y]: 0.27- DCM_Matrix[x][y]: 0.71
-- [x]: 2- [y]: 0- Temporary_Matrix[x][y]: -0.22- DCM_Matrix[x][y]: -0.63
-- [x]: 2- [y]: 1- Temporary_Matrix[x][y]: -0.09- DCM_Matrix[x][y]: -0.39
-- [x]: 2- [y]: 2- Temporary_Matrix[x][y]: -0.26- DCM_Matrix[x][y]: 0.67
-
-- Euler_angles  - #Euler_ang timestamp:37992- DCM_Matrix[0][0]: 0.45- DCM_Matrix[1][0]: 0.33- DCM_Matrix[2][0]: -0.81- DCM_Matrix[2][1]: -0.37- DCM_Matrix[2][2]: 0.40- pitch: 0.95- roll: -0.74- yaw: 0.64
-
-
-- Tim - old_ts = 37783- new_ts = 38021- G_Dt = 0.24
-- Gyr -#T-gyr#38033#Gm-Raw#-69.00,65.00,161.00
-- Acc -#T-acc#38041#Am-Raw#-193.00,-91.00,99.00
-- Mag -#T-mag#38049#Mm-Raw#-1251.00,43.00,809.00
-- Compass_Headi - - magnetom[0]: -208.50- magnetom[1]: 7.17- magnetom[2]: 134.83- cos_roll: 0.74- sin_roll: -0.68- cos_pitch: 0.58- sin_pitch: 0.81- mag_x: -44.92- mag_y: 96.53- MAG_Heading: -2.01
-
-- Matrix_update - (Drift correction used)- G_Dt: 0.24- Omega_Vector[0]: -0.18- Omega_Vector[1]: -0.33- Omega_Vector[2]: -0.15
-- [x]: 0- [y]: 0- Temporary_Matrix[x][y]: 0.04- DCM_Matrix[x][y]: 0.45
-- [x]: 0- [y]: 1- Temporary_Matrix[x][y]: 0.01- DCM_Matrix[x][y]: -0.89
-- [x]: 0- [y]: 2- Temporary_Matrix[x][y]: -0.07- DCM_Matrix[x][y]: 0.08
-- [x]: 1- [y]: 0- Temporary_Matrix[x][y]: 0.06- DCM_Matrix[x][y]: 0.33
-- [x]: 1- [y]: 1- Temporary_Matrix[x][y]: -0.03- DCM_Matrix[x][y]: 0.25
-- [x]: 1- [y]: 2- Temporary_Matrix[x][y]: -0.01- DCM_Matrix[x][y]: 0.90
-- [x]: 2- [y]: 0- Temporary_Matrix[x][y]: 0.05- DCM_Matrix[x][y]: -0.81
-- [x]: 2- [y]: 1- Temporary_Matrix[x][y]: -0.05- DCM_Matrix[x][y]: -0.37
-- [x]: 2- [y]: 2- Temporary_Matrix[x][y]: 0.05- DCM_Matrix[x][y]: 0.40
-
-- Euler_angles  - #Euler_ang timestamp:38230- DCM_Matrix[0][0]: 0.48- DCM_Matrix[1][0]: 0.39- DCM_Matrix[2][0]: -0.78- DCM_Matrix[2][1]: -0.43- DCM_Matrix[2][2]: 0.46- pitch: 0.90- roll: -0.75- yaw: 0.68
+# Euler_angles  # #Euler_ang timestamp:552DM[0][0]:0.49,DM[1][0]:-0.86,DM[2][0]:-0.09,DM[2][1]:0.21,DM[2][2]:0.97pitch:0.09,roll:0.21,yaw:-1.05
 
 
-- Tim - old_ts = 38021- new_ts = 38258- G_Dt = 0.24
-- Gyr -#T-gyr#38268#Gm-Raw#242.00,870.00,-370.00
-- Acc -#T-acc#38277#Am-Raw#-241.00,-73.00,178.00
-- Mag -#T-mag#38287#Mm-Raw#-1131.00,169.00,860.00
-- Compass_Headi - - magnetom[0]: -188.50- magnetom[1]: 28.17- magnetom[2]: 143.33- cos_roll: 0.73- sin_roll: -0.68- cos_pitch: 0.63- sin_pitch: 0.78- mag_x: -51.44- mag_y: 118.69- MAG_Heading: -1.98
+Timing info: old_ts = 356, new_ts = 571, G_Dt = 0.22
+- Gyr -#T-gyr#583#Gm-Raw#-23.00,9.00,-55.00
+- Acc -#T-acc#591#Am-Raw#-24.00,32.00,258.00
+- Mag -#T-mag#600#Mm-Raw#221.00,338.00,667.00
+Beginning of the loop: pitch:0.09,roll:0.21,yaw:-1.05
 
-- Matrix_update - (Drift correction used)- G_Dt: 0.24- Omega_Vector[0]: 0.56- Omega_Vector[1]: 1.38- Omega_Vector[2]: -0.39
-- [x]: 0- [y]: 0- Temporary_Matrix[x][y]: 0.08- DCM_Matrix[x][y]: 0.48
-- [x]: 0- [y]: 1- Temporary_Matrix[x][y]: 0.05- DCM_Matrix[x][y]: -0.87
-- [x]: 0- [y]: 2- Temporary_Matrix[x][y]: 0.28- DCM_Matrix[x][y]: 0.01
-- [x]: 1- [y]: 0- Temporary_Matrix[x][y]: -0.31- DCM_Matrix[x][y]: 0.39
-- [x]: 1- [y]: 1- Temporary_Matrix[x][y]: 0.16- DCM_Matrix[x][y]: 0.23
-- [x]: 1- [y]: 2- Temporary_Matrix[x][y]: 0.10- DCM_Matrix[x][y]: 0.89
-- [x]: 2- [y]: 0- Temporary_Matrix[x][y]: -0.11- DCM_Matrix[x][y]: -0.78
-- [x]: 2- [y]: 1- Temporary_Matrix[x][y]: -0.01- DCM_Matrix[x][y]: -0.43
-- [x]: 2- [y]: 2- Temporary_Matrix[x][y]: -0.20- DCM_Matrix[x][y]: 0.46
+compensate_s_err start
+BEFORE
+acc[0,1,2]: -24.00,32.00,258.00
+magnetom[0,1,2]: 221.00,338.00,667.00
+gyro[0,1,2]: -23.00,9.00,-55.00
+(NOTcompensate magn error)
+AFTER
+acc[0,1,2]: -24.58,32.77,264.19
+magnetom[0,1,2]: 36.83,56.33,111.17
+gyro[0,1,2]: -23.00,9.00,-55.00
 
-- Euler_angles  - #Euler_ang timestamp:38467- DCM_Matrix[0][0]: 0.54- DCM_Matrix[1][0]: 0.07- DCM_Matrix[2][0]: -0.82- DCM_Matrix[2][1]: -0.47- DCM_Matrix[2][2]: 0.25- pitch: 0.97- roll: -1.08- yaw: 0.14
+Matrix_update 
+gyro[0,1,2]:-23.00,9.00,-55.00
+Gyro_vector[0,1,2]:-0.03,0.01,-0.07
+Before Omega_I[0,1,2]:0.00,-0.00,-0.00
+Before Omega_P[0,1,2]:0.01,-0.60,0.05
+After Omega_I[0,1,2]:0.00,-0.00,-0.00
+After Omega_P[0,1,2]:0.01,-0.60,0.05
+(Drift correction used)
+G_Dt:0.22Omega_Vector[0]:-0.02,Omega_Vector[1]:-0.58,Omega_Vector[2]:-0.02
+[x],[y]:0,0TM:-0.02DM:0.49
+[x],[y]:0,1TM:0.00DM:0.86
+[x],[y]:0,2TM:-0.06DM:-0.14
+[x],[y]:1,0TM:-0.02DM:-0.86
+[x],[y]:1,1TM:-0.00DM:0.47
+[x],[y]:1,2TM:0.11DM:-0.18
+[x],[y]:2,0TM:0.12DM:-0.09
+[x],[y]:2,1TM:-0.00DM:0.21
+[x],[y]:2,2TM:0.01DM:0.97
 
+# Euler_angles  # #Euler_ang timestamp:770DM[0][0]:0.47,DM[1][0]:-0.88,DM[2][0]:0.03,DM[2][1]:0.21,DM[2][2]:0.98pitch:-0.03,roll:0.21,yaw:-1.08
+
+
+Timing info: old_ts = 571, new_ts = 788, G_Dt = 0.22
+- Gyr -#T-gyr#800#Gm-Raw#73.00,39.00,5.00
+- Acc -#T-acc#806#Am-Raw#-18.00,42.00,257.00
+- Mag -#T-mag#815#Mm-Raw#225.00,338.00,668.00
+Beginning of the loop: pitch:-0.03,roll:0.21,yaw:-1.08
+
+compensate_s_err start
+BEFORE
+acc[0,1,2]: -18.00,42.00,257.00
+magnetom[0,1,2]: 225.00,338.00,668.00
+gyro[0,1,2]: 73.00,39.00,5.00
+(NOTcompensate magn error)
+AFTER
+acc[0,1,2]: -18.43,43.01,263.17
+magnetom[0,1,2]: 37.50,56.33,111.33
+gyro[0,1,2]: 73.00,39.00,5.00
+
+Matrix_update 
+gyro[0,1,2]:73.00,39.00,5.00
+Gyro_vector[0,1,2]:0.09,0.05,0.01
+Before Omega_I[0,1,2]:0.00,0.00,-0.00
+Before Omega_P[0,1,2]:-0.39,0.71,0.44
+After Omega_I[0,1,2]:0.00,0.00,-0.00
+After Omega_P[0,1,2]:-0.39,0.71,0.44
+(Drift correction used)
+G_Dt:0.22Omega_Vector[0]:-0.30,Omega_Vector[1]:0.76,Omega_Vector[2]:0.45
+[x],[y]:0,0TM:0.12DM:0.47
+[x],[y]:0,1TM:-0.03DM:0.86
+[x],[y]:0,2TM:0.13DM:-0.20
+[x],[y]:1,0TM:0.06DM:-0.88
+[x],[y]:1,1TM:0.09DM:0.46
+[x],[y]:1,2TM:-0.12DM:-0.07
+[x],[y]:2,0TM:-0.14DM:0.03
+[x],[y]:2,1TM:-0.07DM:0.21
+[x],[y]:2,2TM:0.02DM:0.98
+
+# Euler_angles  # #Euler_ang timestamp:983DM[0][0]:0.57,DM[1][0]:-0.81,DM[2][0]:-0.11,DM[2][1]:0.16,DM[2][2]:0.98pitch:0.11,roll:0.16,yaw:-0.96
+
+
+Timing info: old_ts = 788, new_ts = 1001, G_Dt = 0.21
+- Gyr -#T-gyr#1013#Gm-Raw#33.00,90.00,46.00
+- Acc -#T-acc#1021#Am-Raw#-23.00,39.00,259.00
+- Mag -#T-mag#1030#Mm-Raw#223.00,343.00,666.00
+Beginning of the loop: pitch:0.11,roll:0.16,yaw:-0.96
+
+compensate_s_err start
+BEFORE
+acc[0,1,2]: -23.00,39.00,259.00
+magnetom[0,1,2]: 223.00,343.00,666.00
+gyro[0,1,2]: 33.00,90.00,46.00
+(NOTcompensate magn error)
+AFTER
+acc[0,1,2]: -23.55,39.94,265.22
+magnetom[0,1,2]: 37.17,57.17,111.00
+gyro[0,1,2]: 33.00,90.00,46.00
+
+Matrix_update 
+gyro[0,1,2]:33.00,90.00,46.00
+Gyro_vector[0,1,2]:0.04,0.11,0.06
+Before Omega_I[0,1,2]:0.00,0.00,-0.00
+Before Omega_P[0,1,2]:-0.00,-0.18,0.26
+After Omega_I[0,1,2]:0.00,0.00,-0.00
+After Omega_P[0,1,2]:-0.00,-0.18,0.26
+(Drift correction used)
+G_Dt:0.21Omega_Vector[0]:0.04,Omega_Vector[1]:-0.07,Omega_Vector[2]:0.32
+[x],[y]:0,0TM:0.05DM:0.57
+[x],[y]:0,1TM:-0.04DM:0.82
+[x],[y]:0,2TM:-0.01DM:-0.06
+[x],[y]:1,0TM:0.03DM:-0.81
+[x],[y]:1,1TM:0.05DM:0.55
+[x],[y]:1,2TM:0.01DM:-0.18
+[x],[y]:2,0TM:0.03DM:-0.11
+[x],[y]:2,1TM:0.02DM:0.16
+[x],[y]:2,2TM:0.00DM:0.98
+
+# Euler_angles  # #Euler_ang timestamp:1198DM[0][0]:0.62,DM[1][0]:-0.78,DM[2][0]:-0.09,DM[2][1]:0.17,DM[2][2]:0.98pitch:0.09,roll:0.17,yaw:-0.89
+
+
+Timing info: old_ts = 1001, new_ts = 1216, G_Dt = 0.22
+- Gyr -#T-gyr#1228#Gm-Raw#69.00,44.00,27.00
+- Acc -#T-acc#1236#Am-Raw#-20.00,46.00,256.00
+- Mag -#T-mag#1245#Mm-Raw#222.00,352.00,662.00
+Beginning of the loop: pitch:0.09,roll:0.17,yaw:-0.89
+
+compensate_s_err start
+BEFORE
+acc[0,1,2]: -20.00,46.00,256.00
+magnetom[0,1,2]: 222.00,352.00,662.00
+gyro[0,1,2]: 69.00,44.00,27.00
+(NOTcompensate magn error)
+AFTER
+acc[0,1,2]: -20.48,47.10,262.14
+magnetom[0,1,2]: 37.00,58.67,110.33
+gyro[0,1,2]: 69.00,44.00,27.00
+
+Matrix_update 
+gyro[0,1,2]:69.00,44.00,27.00
+Gyro_vector[0,1,2]:0.08,0.05,0.03
+Before Omega_I[0,1,2]:0.00,0.00,-0.00
+Before Omega_P[0,1,2]:-0.13,0.05,0.26
+After Omega_I[0,1,2]:0.00,0.00,-0.00
+After Omega_P[0,1,2]:-0.13,0.05,0.26
+(Drift correction used)
+G_Dt:0.22Omega_Vector[0]:-0.04,Omega_Vector[1]:0.10,Omega_Vector[2]:0.30
+[x],[y]:0,0TM:0.05DM:0.62
+[x],[y]:0,1TM:-0.04DM:0.78
+[x],[y]:0,2TM:0.02DM:-0.08
+[x],[y]:1,0TM:0.04DM:-0.78
+[x],[y]:1,1TM:0.05DM:0.61
+[x],[y]:1,2TM:-0.01DM:-0.17
+[x],[y]:2,0TM:-0.01DM:-0.09
+[x],[y]:2,1TM:-0.00DM:0.17
+[x],[y]:2,2TM:-0.00DM:0.98
+
+# Euler_angles  # #Euler_ang timestamp:1413DM[0][0]:0.67,DM[1][0]:-0.73,DM[2][0]:-0.10,DM[2][1]:0.17,DM[2][2]:0.98pitch:0.10,roll:0.17,yaw:-0.83
+
+
+Timing info: old_ts = 1216, new_ts = 1431, G_Dt = 0.22
+- Gyr -#T-gyr#1443#Gm-Raw#51.00,21.00,25.00
+- Acc -#T-acc#1452#Am-Raw#-21.00,48.00,257.00
+- Mag -#T-mag#1460#Mm-Raw#224.00,360.00,655.00
+Beginning of the loop: pitch:0.10,roll:0.17,yaw:-0.83
+
+compensate_s_err start
+BEFORE
+acc[0,1,2]: -21.00,48.00,257.00
+magnetom[0,1,2]: 224.00,360.00,655.00
+gyro[0,1,2]: 51.00,21.00,25.00
+(NOTcompensate magn error)
+AFTER
+acc[0,1,2]: -21.50,49.15,263.17
+magnetom[0,1,2]: 37.33,60.00,109.17
+gyro[0,1,2]: 51.00,21.00,25.00
+
+Matrix_update 
+gyro[0,1,2]:51.00,21.00,25.00
+Gyro_vector[0,1,2]:0.06,0.03,0.03
+Before Omega_I[0,1,2]:0.00,0.00,-0.00
+Before Omega_P[0,1,2]:0.03,-0.07,0.18
+After Omega_I[0,1,2]:0.00,0.00,-0.00
+After Omega_P[0,1,2]:0.03,-0.07,0.18
+(Drift correction used)
+G_Dt:0.22Omega_Vector[0]:0.09,Omega_Vector[1]:-0.05,Omega_Vector[2]:0.21
+[x],[y]:0,0TM:0.03DM:0.67
+[x],[y]:0,1TM:-0.03DM:0.74
+[x],[y]:0,2TM:-0.02DM:-0.06
+[x],[y]:1,0TM:0.03DM:-0.73
+[x],[y]:1,1TM:0.03DM:0.65
+[x],[y]:1,2TM:-0.01DM:-0.18
+[x],[y]:2,0TM:0.02DM:-0.10
+[x],[y]:2,1TM:0.02DM:0.17
+[x],[y]:2,2TM:-0.00DM:0.98
+
+# Euler_angles  # #Euler_ang timestamp:1628DM[0][0]:0.71,DM[1][0]:-0.70,DM[2][0]:-0.08,DM[2][1]:0.19,DM[2][2]:0.98pitch:0.08,roll:0.19,yaw:-0.78
+
+
+Timing info: old_ts = 1431, new_ts = 1646, G_Dt = 0.22
+- Gyr -#T-gyr#1660#Gm-Raw#-24.00,53.00,-11.00
+- Acc -#T-acc#1667#Am-Raw#-21.00,51.00,259.00
+- Mag -#T-mag#1675#Mm-Raw#224.00,358.00,659.00
+Beginning of the loop: pitch:0.08,roll:0.19,yaw:-0.78
+
+compensate_s_err start
+BEFORE
+acc[0,1,2]: -21.00,51.00,259.00
+magnetom[0,1,2]: 224.00,358.00,659.00
+gyro[0,1,2]: -24.00,53.00,-11.00
+(NOTcompensate magn error)
+AFTER
+acc[0,1,2]: -21.50,52.22,265.22
+magnetom[0,1,2]: 37.33,59.67,109.83
+gyro[0,1,2]: -24.00,53.00,-11.00
+
+Matrix_update 
+gyro[0,1,2]:-24.00,53.00,-11.00
+Gyro_vector[0,1,2]:-0.03,0.06,-0.01
+Before Omega_I[0,1,2]:0.00,0.00,-0.00
+Before Omega_P[0,1,2]:-0.04,0.02,0.10
+After Omega_I[0,1,2]:0.00,0.00,-0.00
+After Omega_P[0,1,2]:-0.04,0.02,0.10
+(Drift correction used)
+G_Dt:0.22Omega_Vector[0]:-0.07,Omega_Vector[1]:0.09,Omega_Vector[2]:0.08
+[x],[y]:0,0TM:0.01DM:0.71
+[x],[y]:0,1TM:-0.01DM:0.70
+[x],[y]:0,2TM:0.02DM:-0.08
+[x],[y]:1,0TM:0.02DM:-0.70
+[x],[y]:1,1TM:0.02DM:0.68
+[x],[y]:1,2TM:-0.00DM:-0.19
+[x],[y]:2,0TM:-0.02DM:-0.08
+[x],[y]:2,1TM:-0.01DM:0.19
+[x],[y]:2,2TM:0.00DM:0.98
+
+# Euler_angles  # #Euler_ang timestamp:1845DM[0][0]:0.72,DM[1][0]:-0.69,DM[2][0]:-0.09,DM[2][1]:0.18,DM[2][2]:0.98pitch:0.09,roll:0.18,yaw:-0.76
+
+
+Timing info: old_ts = 1646, new_ts = 1863, G_Dt = 0.22
+- Gyr -#T-gyr#1875#Gm-Raw#-9.00,73.00,21.00
+- Acc -#T-acc#1884#Am-Raw#-22.00,52.00,258.00
+- Mag -#T-mag#1892#Mm-Raw#223.00,354.00,662.00
+Beginning of the loop: pitch:0.09,roll:0.18,yaw:-0.76
+
+compensate_s_err start
+BEFORE
+acc[0,1,2]: -22.00,52.00,258.00
+magnetom[0,1,2]: 223.00,354.00,662.00
+gyro[0,1,2]: -9.00,73.00,21.00
+(NOTcompensate magn error)
+AFTER
+acc[0,1,2]: -22.53,53.25,264.19
+magnetom[0,1,2]: 37.17,59.00,110.33
+gyro[0,1,2]: -9.00,73.00,21.00
+
+Matrix_update 
+gyro[0,1,2]:-9.00,73.00,21.00
+Gyro_vector[0,1,2]:-0.01,0.09,0.03
+Before Omega_I[0,1,2]:0.00,0.00,-0.00
+Before Omega_P[0,1,2]:0.07,-0.05,0.12
+After Omega_I[0,1,2]:0.00,0.00,-0.00
+After Omega_P[0,1,2]:0.07,-0.05,0.12
+(Drift correction used)
+G_Dt:0.22Omega_Vector[0]:0.06,Omega_Vector[1]:0.04,Omega_Vector[2]:0.14
+[x],[y]:0,0TM:0.02DM:0.72
+[x],[y]:0,1TM:-0.02DM:0.69
+[x],[y]:0,2TM:-0.00DM:-0.06
+[x],[y]:1,0TM:0.02DM:-0.69
+[x],[y]:1,1TM:0.02DM:0.70
+[x],[y]:1,2TM:-0.01DM:-0.19
+[x],[y]:2,0TM:-0.00DM:-0.09
+[x],[y]:2,1TM:0.01DM:0.18
+[x],[y]:2,2TM:-0.00DM:0.98
+
+# Euler_angles  # #Euler_ang timestamp:2062DM[0][0]:0.74,DM[1][0]:-0.66,DM[2][0]:-0.10,DM[2][1]:0.19,DM[2][2]:0.98pitch:0.10,roll:0.19,yaw:-0.73
+
+
+Timing info: old_ts = 1863, new_ts = 2080, G_Dt = 0.22
+- Gyr -#T-gyr#2093#Gm-Raw#-167.00,60.00,-117.00
+- Acc -#T-acc#2101#Am-Raw#-27.00,29.00,262.00
+- Mag -#T-mag#2109#Mm-Raw#213.00,328.00,675.00
+Beginning of the loop: pitch:0.10,roll:0.19,yaw:-0.73
+
+compensate_s_err start
+BEFORE
+acc[0,1,2]: -27.00,29.00,262.00
+magnetom[0,1,2]: 213.00,328.00,675.00
+gyro[0,1,2]: -167.00,60.00,-117.00
+(NOTcompensate magn error)
+AFTER
+acc[0,1,2]: -27.65,29.70,268.29
+magnetom[0,1,2]: 35.50,54.67,112.50
+gyro[0,1,2]: -167.00,60.00,-117.00
+
+Matrix_update 
+gyro[0,1,2]:-167.00,60.00,-117.00
+Gyro_vector[0,1,2]:-0.20,0.07,-0.14
+Before Omega_I[0,1,2]:0.00,-0.00,-0.00
+Before Omega_P[0,1,2]:0.02,-0.05,0.08
+After Omega_I[0,1,2]:0.00,-0.00,-0.00
+After Omega_P[0,1,2]:0.02,-0.05,0.08
+(Drift correction used)
+G_Dt:0.22Omega_Vector[0]:-0.18,Omega_Vector[1]:0.03,Omega_Vector[2]:-0.06
+[x],[y]:0,0TM:-0.01DM:0.74
+[x],[y]:0,1TM:0.01DM:0.67
+[x],[y]:0,2TM:0.03DM:-0.06
+[x],[y]:1,0TM:-0.01DM:-0.66
+[x],[y]:1,1TM:-0.00DM:0.72
+[x],[y]:1,2TM:0.02DM:-0.21
+[x],[y]:2,0TM:-0.01DM:-0.10
+[x],[y]:2,1TM:-0.04DM:0.19
+[x],[y]:2,2TM:0.01DM:0.98
+
+# Euler_angles  # #Euler_ang timestamp:2279DM[0][0]:0.73,DM[1][0]:-0.67,DM[2][0]:-0.10,DM[2][1]:0.15,DM[2][2]:0.98pitch:0.10,roll:0.15,yaw:-0.74
+
+
+Timing info: old_ts = 2080, new_ts = 2297, G_Dt = 0.22
+- Gyr -#T-gyr#2312#Gm-Raw#-208.00,30.00,-30.00
+- Acc -#T-acc#2320#Am-Raw#-26.00,29.00,260.00
+- Mag -#T-mag#2326#Mm-Raw#212.00,311.00,681.00
+Beginning of the loop: pitch:0.10,roll:0.15,yaw:-0.74
+
+compensate_s_err start
+BEFORE
+acc[0,1,2]: -26.00,29.00,260.00
+magnetom[0,1,2]: 212.00,311.00,681.00
+gyro[0,1,2]: -208.00,30.00,-30.00
+(NOTcompensate magn error)
+AFTER
+acc[0,1,2]: -26.62,29.70,266.24
+magnetom[0,1,2]: 35.33,51.83,113.50
+gyro[0,1,2]: -208.00,30.00,-30.00
+
+Matrix_update 
+gyro[0,1,2]:-208.00,30.00,-30.00
+Gyro_vector[0,1,2]:-0.25,0.04,-0.04
+Before Omega_I[0,1,2]:-0.00,-0.00,-0.00
+Before Omega_P[0,1,2]:-0.22,0.01,0.15
+After Omega_I[0,1,2]:-0.00,-0.00,-0.00
+After Omega_P[0,1,2]:-0.22,0.01,0.15
+(Drift correction used)
+G_Dt:0.22Omega_Vector[0]:-0.47,Omega_Vector[1]:0.05,Omega_Vector[2]:0.11
+[x],[y]:0,0TM:0.02DM:0.73
+[x],[y]:0,1TM:-0.02DM:0.68
+[x],[y]:0,2TM:0.08DM:-0.03
+[x],[y]:1,0TM:0.02DM:-0.67
+[x],[y]:1,1TM:0.04DM:0.72
+[x],[y]:1,2TM:0.07DM:-0.18
+[x],[y]:2,0TM:-0.01DM:-0.10
+[x],[y]:2,1TM:-0.10DM:0.15
+[x],[y]:2,2TM:0.01DM:0.98
+
+# Euler_angles  # #Euler_ang timestamp:2498DM[0][0]:0.75,DM[1][0]:-0.65,DM[2][0]:-0.11,DM[2][1]:0.05,DM[2][2]:0.99pitch:0.11,roll:0.05,yaw:-0.72
+
+
+Timing info: old_ts = 2297, new_ts = 2516, G_Dt = 0.22
+- Gyr -#T-gyr#2529#Gm-Raw#3.00,25.00,-35.00
+- Acc -#T-acc#2537#Am-Raw#-24.00,23.00,262.00
+- Mag -#T-mag#2545#Mm-Raw#218.00,295.00,690.00
+Beginning of the loop: pitch:0.11,roll:0.05,yaw:-0.72
+
+compensate_s_err start
+BEFORE
+acc[0,1,2]: -24.00,23.00,262.00
+magnetom[0,1,2]: 218.00,295.00,690.00
+gyro[0,1,2]: 3.00,25.00,-35.00
+(NOTcompensate magn error)
+AFTER
+acc[0,1,2]: -24.58,23.55,268.29
+magnetom[0,1,2]: 36.33,49.17,115.00
+gyro[0,1,2]: 3.00,25.00,-35.00
+
+Matrix_update 
+gyro[0,1,2]:3.00,25.00,-35.00
+Gyro_vector[0,1,2]:0.00,0.03,-0.04
+Before Omega_I[0,1,2]:0.00,-0.00,0.00
+Before Omega_P[0,1,2]:0.26,-0.06,0.15
+After Omega_I[0,1,2]:0.00,-0.00,0.00
+After Omega_P[0,1,2]:0.26,-0.06,0.15
+(Drift correction used)
+G_Dt:0.22Omega_Vector[0]:0.26,Omega_Vector[1]:-0.03,Omega_Vector[2]:0.11
+[x],[y]:0,0TM:0.02DM:0.75
+[x],[y]:0,1TM:-0.01DM:0.66
+[x],[y]:0,2TM:-0.04DM:0.05
+[x],[y]:1,0TM:0.02DM:-0.65
+[x],[y]:1,1TM:0.01DM:0.75
+[x],[y]:1,2TM:-0.04DM:-0.12
+[x],[y]:2,0TM:0.01DM:-0.11
+[x],[y]:2,1TM:0.06DM:0.05
+[x],[y]:2,2TM:-0.00DM:0.99
+
+# Euler_angles  # #Euler_ang timestamp:2713DM[0][0]:0.76,DM[1][0]:-0.64,DM[2][0]:-0.10,DM[2][1]:0.11,DM[2][2]:0.99pitch:0.10,roll:0.11,yaw:-0.69
+
+
+Timing info: old_ts = 2516, new_ts = 2732, G_Dt = 0.22
+- Gyr -#T-gyr#2744#Gm-Raw#-7.00,-32.00,-70.00
+- Acc -#T-acc#2752#Am-Raw#-18.00,22.00,261.00
+- Mag -#T-mag#2760#Mm-Raw#221.00,291.00,691.00
+Beginning of the loop: pitch:0.10,roll:0.11,yaw:-0.69
+
+compensate_s_err start
+BEFORE
+acc[0,1,2]: -18.00,22.00,261.00
+magnetom[0,1,2]: 221.00,291.00,691.00
+gyro[0,1,2]: -7.00,-32.00,-70.00
+(NOTcompensate magn error)
+AFTER
+acc[0,1,2]: -18.43,22.53,267.26
+magnetom[0,1,2]: 36.83,48.50,115.17
+gyro[0,1,2]: -7.00,-32.00,-70.00
+
+Matrix_update 
+gyro[0,1,2]:-7.00,-32.00,-70.00
+Gyro_vector[0,1,2]:-0.01,-0.04,-0.08
+Before Omega_I[0,1,2]:0.00,-0.00,-0.00
+Before Omega_P[0,1,2]:-0.12,-0.07,-0.03
+After Omega_I[0,1,2]:0.00,-0.00,-0.00
+After Omega_P[0,1,2]:-0.12,-0.07,-0.03
+(Drift correction used)
+G_Dt:0.22Omega_Vector[0]:-0.13,Omega_Vector[1]:-0.11,Omega_Vector[2]:-0.11
+[x],[y]:0,0TM:-0.02DM:0.76
+[x],[y]:0,1TM:0.02DM:0.64
+[x],[y]:0,2TM:0.00DM:0.01
+[x],[y]:1,0TM:-0.02DM:-0.64
+[x],[y]:1,1TM:-0.01DM:0.76
+[x],[y]:1,2TM:0.04DM:-0.15
+[x],[y]:2,0TM:0.02DM:-0.10
+[x],[y]:2,1TM:-0.03DM:0.11
+[x],[y]:2,2TM:0.01DM:0.99
+
+# Euler_angles  # #Euler_ang timestamp:2932DM[0][0]:0.75,DM[1][0]:-0.66,DM[2][0]:-0.08,DM[2][1]:0.08,DM[2][2]:0.99pitch:0.08,roll:0.08,yaw:-0.72
+
+
+Timing info: old_ts = 2732, new_ts = 2951, G_Dt = 0.22
+- Gyr -#T-gyr#2963#Gm-Raw#48.00,75.00,19.00
+- Acc -#T-acc#2969#Am-Raw#-20.00,15.00,264.00
+- Mag -#T-mag#2977#Mm-Raw#222.00,287.00,695.00
+Beginning of the loop: pitch:0.08,roll:0.08,yaw:-0.72
+
+compensate_s_err start
+BEFORE
+acc[0,1,2]: -20.00,15.00,264.00
+magnetom[0,1,2]: 222.00,287.00,695.00
+gyro[0,1,2]: 48.00,75.00,19.00
+(NOTcompensate magn error)
+AFTER
+acc[0,1,2]: -20.48,15.36,270.34
+magnetom[0,1,2]: 37.00,47.83,115.83
+gyro[0,1,2]: 48.00,75.00,19.00
+
+Matrix_update 
+gyro[0,1,2]:48.00,75.00,19.00
+Gyro_vector[0,1,2]:0.06,0.09,0.02
+Before Omega_I[0,1,2]:0.00,-0.00,0.00
+Before Omega_P[0,1,2]:-0.01,-0.06,0.13
+After Omega_I[0,1,2]:0.00,-0.00,0.00
+After Omega_P[0,1,2]:-0.01,-0.06,0.13
+(Drift correction used)
+G_Dt:0.22Omega_Vector[0]:0.05,Omega_Vector[1]:0.03,Omega_Vector[2]:0.15
+[x],[y]:0,0TM:0.02DM:0.75
+[x],[y]:0,1TM:-0.02DM:0.66
+[x],[y]:0,2TM:-0.00DM:0.01
+[x],[y]:1,0TM:0.03DM:-0.66
+[x],[y]:1,1TM:0.02DM:0.74
+[x],[y]:1,2TM:-0.01DM:-0.12
+[x],[y]:2,0TM:-0.00DM:-0.08
+[x],[y]:2,1TM:0.01DM:0.08
+[x],[y]:2,2TM:-0.00DM:0.99
+
+# Euler_angles  # #Euler_ang timestamp:3147DM[0][0]:0.77,DM[1][0]:-0.63,DM[2][0]:-0.09,DM[2][1]:0.10,DM[2][2]:0.99pitch:0.09,roll:0.10,yaw:-0.69
+
+
+Timing info: old_ts = 2951, new_ts = 3166, G_Dt = 0.22
+- Gyr -#T-gyr#3178#Gm-Raw#-37.00,43.00,-2.00
+- Acc -#T-acc#3186#Am-Raw#-23.00,27.00,263.00
+- Mag -#T-mag#3194#Mm-Raw#219.00,290.00,692.00
+Beginning of the loop: pitch:0.09,roll:0.10,yaw:-0.69
+
+compensate_s_err start
+BEFORE
+acc[0,1,2]: -23.00,27.00,263.00
+magnetom[0,1,2]: 219.00,290.00,692.00
+gyro[0,1,2]: -37.00,43.00,-2.00
+(NOTcompensate magn error)
+AFTER
+acc[0,1,2]: -23.55,27.65,269.31
+magnetom[0,1,2]: 36.50,48.33,115.33
+gyro[0,1,2]: -37.00,43.00,-2.00
+
+Matrix_update 
+gyro[0,1,2]:-37.00,43.00,-2.00
+Gyro_vector[0,1,2]:-0.04,0.05,-0.00
+Before Omega_I[0,1,2]:-0.00,-0.00,-0.00
+Before Omega_P[0,1,2]:-0.19,-0.05,-0.00
+After Omega_I[0,1,2]:-0.00,-0.00,-0.00
+After Omega_P[0,1,2]:-0.19,-0.05,-0.00
+(Drift correction used)
+G_Dt:0.22Omega_Vector[0]:-0.24,Omega_Vector[1]:-0.00,Omega_Vector[2]:-0.01
+[x],[y]:0,0TM:-0.00DM:0.77
+[x],[y]:0,1TM:0.00DM:0.64
+[x],[y]:0,2TM:0.03DM:0.00
+[x],[y]:1,0TM:-0.00DM:-0.63
+[x],[y]:1,1TM:0.01DM:0.76
+[x],[y]:1,2TM:0.04DM:-0.13
+[x],[y]:2,0TM:0.00DM:-0.09
+[x],[y]:2,1TM:-0.05DM:0.10
+[x],[y]:2,2TM:0.01DM:0.99
+
+# Euler_angles  # #Euler_ang timestamp:3364DM[0][0]:0.77,DM[1][0]:-0.63,DM[2][0]:-0.09,DM[2][1]:0.05,DM[2][2]:1.00pitch:0.09,roll:0.05,yaw:-0.69
+
+
+Timing info: old_ts = 3166, new_ts = 3383, G_Dt = 0.22
+- Gyr -#T-gyr#3395#Gm-Raw#-337.00,-366.00,-214.00
+- Acc -#T-acc#3403#Am-Raw#-12.00,15.00,257.00
+- Mag -#T-mag#3411#Mm-Raw#254.00,242.00,719.00
+Beginning of the loop: pitch:0.09,roll:0.05,yaw:-0.69
+
+compensate_s_err start
+BEFORE
+acc[0,1,2]: -12.00,15.00,257.00
+magnetom[0,1,2]: 254.00,242.00,719.00
+gyro[0,1,2]: -337.00,-366.00,-214.00
+(NOTcompensate magn error)
+AFTER
+acc[0,1,2]: -12.29,15.36,263.17
+magnetom[0,1,2]: 42.33,40.33,119.83
+gyro[0,1,2]: -337.00,-366.00,-214.00
+
+Matrix_update 
+gyro[0,1,2]:-337.00,-366.00,-214.00
+Gyro_vector[0,1,2]:-0.41,-0.44,-0.26
+Before Omega_I[0,1,2]:0.00,-0.00,0.00
+Before Omega_P[0,1,2]:0.26,0.00,0.05
+After Omega_I[0,1,2]:0.00,-0.00,0.00
+After Omega_P[0,1,2]:0.26,0.00,0.05
+(Drift correction used)
+G_Dt:0.22Omega_Vector[0]:-0.15,Omega_Vector[1]:-0.44,Omega_Vector[2]:-0.21
+[x],[y]:0,0TM:-0.03DM:0.77
+[x],[y]:0,1TM:0.03DM:0.64
+[x],[y]:0,2TM:-0.05DM:0.04
+[x],[y]:1,0TM:-0.04DM:-0.63
+[x],[y]:1,1TM:-0.03DM:0.77
+[x],[y]:1,2TM:0.08DM:-0.09
+[x],[y]:2,0TM:0.09DM:-0.09
+[x],[y]:2,1TM:-0.04DM:0.05
+[x],[y]:2,2TM:0.01DM:1.00
+
+# Euler_angles  # #Euler_ang timestamp:3584DM[0][0]:0.74,DM[1][0]:-0.67,DM[2][0]:0.01,DM[2][1]:0.01,DM[2][2]:1.00pitch:-0.01,roll:0.01,yaw:-0.74
+
+
+Timing info: old_ts = 3383, new_ts = 3602, G_Dt = 0.22
+- Gyr -#T-gyr#3614#Gm-Raw#-2162.00,-2269.00,-42.00
+- Acc -#T-acc#3624#Am-Raw#4.00,-5.00,156.00
+- Mag -#T-mag#3633#Mm-Raw#575.00,29.00,778.00
+Beginning of the loop: pitch:-0.01,roll:0.01,yaw:-0.74
+
+compensate_s_err start
+BEFORE
+acc[0,1,2]: 4.00,-5.00,156.00
+magnetom[0,1,2]: 575.00,29.00,778.00
+gyro[0,1,2]: -2162.00,-2269.00,-42.00
+(NOTcompensate magn error)
+AFTER
+acc[0,1,2]: 4.10,-5.12,159.74
+magnetom[0,1,2]: 95.83,4.83,129.67
+gyro[0,1,2]: -2162.00,-2269.00,-42.00
+
+Matrix_update 
+gyro[0,1,2]:-2162.00,-2269.00,-42.00
+Gyro_vector[0,1,2]:-2.63,-2.76,-0.05
+Before Omega_I[0,1,2]:0.00,-0.00,0.00
+Before Omega_P[0,1,2]:0.22,0.27,0.18
+After Omega_I[0,1,2]:0.00,-0.00,0.00
+After Omega_P[0,1,2]:0.22,0.27,0.18
+(Drift correction used)
+G_Dt:0.22Omega_Vector[0]:-2.41,Omega_Vector[1]:-2.48,Omega_Vector[2]:0.13
+[x],[y]:0,0TM:0.01DM:0.74
+[x],[y]:0,1TM:-0.01DM:0.67
+[x],[y]:0,2TM:-0.05DM:-0.02
+[x],[y]:1,0TM:0.02DM:-0.67
+[x],[y]:1,1TM:0.02DM:0.74
+[x],[y]:1,2TM:0.76DM:-0.01
+[x],[y]:2,0TM:0.54DM:0.01
+[x],[y]:2,1TM:-0.53DM:0.01
+[x],[y]:2,2TM:0.00DM:1.00
+
+# Euler_angles  # #Euler_ang timestamp:3803DM[0][0]:0.74,DM[1][0]:-0.46,DM[2][0]:0.39,DM[2][1]:-0.37,DM[2][2]:0.72pitch:-0.40,roll:-0.48,yaw:-0.56
+
+
+Timing info: old_ts = 3602, new_ts = 3821, G_Dt = 0.22
+- Gyr -#T-gyr#3833#Gm-Raw#-2896.00,239.00,1556.00
+- Acc -#T-acc#3844#Am-Raw#142.00,-47.00,147.00
+- Mag -#T-mag#3852#Mm-Raw#845.00,-336.00,752.00
+Beginning of the loop: pitch:-0.40,roll:-0.48,yaw:-0.56
+
+compensate_s_err start
+BEFORE
+acc[0,1,2]: 142.00,-47.00,147.00
+magnetom[0,1,2]: 845.00,-336.00,752.00
+gyro[0,1,2]: -2896.00,239.00,1556.00
+(NOTcompensate magn error)
+AFTER
+acc[0,1,2]: 145.41,-48.13,150.53
+magnetom[0,1,2]: 140.83,-56.00,125.33
+gyro[0,1,2]: -2896.00,239.00,1556.00
+
+Matrix_update 
+gyro[0,1,2]:-2896.00,239.00,1556.00
+Gyro_vector[0,1,2]:-3.52,0.29,1.89
+Before Omega_I[0,1,2]:0.00,0.00,0.00
+Before Omega_P[0,1,2]:0.48,0.10,0.38
+After Omega_I[0,1,2]:0.00,0.00,0.00
+After Omega_P[0,1,2]:0.48,0.10,0.38
+(Drift correction used)
+G_Dt:0.22Omega_Vector[0]:-3.04,Omega_Vector[1]:0.39,Omega_Vector[2]:2.27
+[x],[y]:0,0TM:0.34DM:0.74
+[x],[y]:0,1TM:-0.33DM:0.67
+[x],[y]:0,2TM:0.51DM:-0.05
+[x],[y]:1,0TM:0.23DM:-0.46
+[x],[y]:1,1TM:-0.13DM:0.55
+[x],[y]:1,2TM:0.33DM:0.54
+[x],[y]:2,0TM:-0.25DM:0.39
+[x],[y]:2,1TM:-0.67DM:-0.37
+[x],[y]:2,2TM:-0.21DM:0.72
+
+# Euler_angles  # #Euler_ang timestamp:4024DM[0][0]:0.88,DM[1][0]:-0.40,DM[2][0]:0.08,DM[2][1]:-0.86,DM[2][2]:0.44pitch:-0.08,roll:-1.09,yaw:-0.43
+
+
+Timing info: old_ts = 3821, new_ts = 4042, G_Dt = 0.22
+- Gyr -#T-gyr#4055#Gm-Raw#128.00,60.00,-859.00
+- Acc -#T-acc#4063#Am-Raw#12.00,-261.00,71.00
+- Mag -#T-mag#4071#Mm-Raw#813.00,-804.00,601.00
+Beginning of the loop: pitch:-0.08,roll:-1.09,yaw:-0.43
+
+compensate_s_err start
+BEFORE
+acc[0,1,2]: 12.00,-261.00,71.00
+magnetom[0,1,2]: 813.00,-804.00,601.00
+gyro[0,1,2]: 128.00,60.00,-859.00
+(NOTcompensate magn error)
+AFTER
+acc[0,1,2]: 12.29,-267.26,72.70
+magnetom[0,1,2]: 135.50,-134.00,100.17
+gyro[0,1,2]: 128.00,60.00,-859.00
+
+Matrix_update 
+gyro[0,1,2]:128.00,60.00,-859.00
+Gyro_vector[0,1,2]:0.16,0.07,-1.04
+Before Omega_I[0,1,2]:0.00,-0.00,-0.00
+Before Omega_P[0,1,2]:1.49,-1.02,-1.47
+After Omega_I[0,1,2]:0.00,-0.00,-0.00
+After Omega_P[0,1,2]:1.49,-1.02,-1.47
+(Drift correction used)
+G_Dt:0.22Omega_Vector[0]:1.65,Omega_Vector[1]:-0.95,Omega_Vector[2]:-2.52
+[x],[y]:0,0TM:-0.07DM:0.88
+[x],[y]:0,1TM:0.58DM:0.22
+[x],[y]:0,2TM:-0.26DM:0.26
+[x],[y]:1,0TM:-0.04DM:-0.40
+[x],[y]:1,1TM:0.08DM:0.39
+[x],[y]:1,2TM:-0.06DM:0.83
+[x],[y]:2,0TM:0.57DM:0.08
+[x],[y]:2,1TM:0.21DM:-0.86
+[x],[y]:2,2TM:0.29DM:0.44
+
+# Euler_angles  # #Euler_ang timestamp:4243DM[0][0]:0.69,DM[1][0]:-0.45,DM[2][0]:0.52,DM[2][1]:-0.53,DM[2][2]:0.62pitch:-0.55,roll:-0.70,yaw:-0.58
+
+
+Timing info: old_ts = 4042, new_ts = 4261, G_Dt = 0.22
+- Gyr -#T-gyr#4274#Gm-Raw#24.00,48.00,-21.00
+- Acc -#T-acc#4282#Am-Raw#57.00,-253.00,73.00
+- Mag -#T-mag#4290#Mm-Raw#812.00,-810.00,601.00
+Beginning of the loop: pitch:-0.55,roll:-0.70,yaw:-0.58
+
+compensate_s_err start
+BEFORE
+acc[0,1,2]: 57.00,-253.00,73.00
+magnetom[0,1,2]: 812.00,-810.00,601.00
+gyro[0,1,2]: 24.00,48.00,-21.00
+(NOTcompensate magn error)
+AFTER
+acc[0,1,2]: 58.37,-259.07,74.75
+magnetom[0,1,2]: 135.33,-135.00,100.17
+gyro[0,1,2]: 24.00,48.00,-21.00
+
+Matrix_update 
+gyro[0,1,2]:24.00,48.00,-21.00
+Gyro_vector[0,1,2]:0.03,0.06,-0.03
+Before Omega_I[0,1,2]:0.00,0.00,0.00
+Before Omega_P[0,1,2]:-1.95,0.33,2.43
+After Omega_I[0,1,2]:0.00,0.00,0.00
+After Omega_P[0,1,2]:-1.95,0.33,2.43
+(Drift correction used)
+G_Dt:0.22Omega_Vector[0]:-1.92,Omega_Vector[1]:0.38,Omega_Vector[2]:2.41
+[x],[y]:0,0TM:0.36DM:0.69
+[x],[y]:0,1TM:-0.36DM:0.68
+[x],[y]:0,2TM:0.34DM:-0.00
+[x],[y]:1,0TM:0.18DM:-0.45
+[x],[y]:1,1TM:-0.09DM:0.46
+[x],[y]:1,2TM:0.16DM:0.77
+[x],[y]:2,0TM:-0.33DM:0.52
+[x],[y]:2,1TM:-0.54DM:-0.53
+[x],[y]:2,2TM:-0.18DM:0.62
+
+# Euler_angles  # #Euler_ang timestamp:4460DM[0][0]:0.91,DM[1][0]:-0.34,DM[2][0]:0.13,DM[2][1]:-0.86,DM[2][2]:0.39pitch:-0.14,roll:-1.15,yaw:-0.36
+
+
+Timing info: old_ts = 4261, new_ts = 4478, G_Dt = 0.22
+- Gyr -#T-gyr#4491#Gm-Raw#27.00,39.00,-1.00
+- Acc -#T-acc#4499#Am-Raw#56.00,-252.00,74.00
+- Mag -#T-mag#4507#Mm-Raw#812.00,-810.00,599.00
+Beginning of the loop: pitch:-0.14,roll:-1.15,yaw:-0.36
+
+compensate_s_err start
+BEFORE
+acc[0,1,2]: 56.00,-252.00,74.00
+magnetom[0,1,2]: 812.00,-810.00,599.00
+gyro[0,1,2]: 27.00,39.00,-1.00
+(NOTcompensate magn error)
+AFTER
+acc[0,1,2]: 57.34,-258.05,75.78
+magnetom[0,1,2]: 135.33,-135.00,99.83
+gyro[0,1,2]: 27.00,39.00,-1.00
+
+Matrix_update 
+gyro[0,1,2]:27.00,39.00,-1.00
+Gyro_vector[0,1,2]:0.03,0.05,-0.00
+Before Omega_I[0,1,2]:-0.00,-0.00,0.00
+Before Omega_P[0,1,2]:-0.46,-1.17,0.17
+After Omega_I[0,1,2]:-0.00,-0.00,0.00
+After Omega_P[0,1,2]:-0.46,-1.17,0.17
+(Drift correction used)
+G_Dt:0.22Omega_Vector[0]:-0.43,Omega_Vector[1]:-1.12,Omega_Vector[2]:0.17
+[x],[y]:0,0TM:0.07DM:0.91
+[x],[y]:0,1TM:-0.06DM:0.25
+[x],[y]:0,2TM:-0.20DM:0.23
+[x],[y]:1,0TM:0.23DM:-0.34
+[x],[y]:1,1TM:-0.07DM:0.34
+[x],[y]:1,2TM:0.11DM:0.88
+[x],[y]:2,0TM:0.06DM:0.13
+[x],[y]:2,1TM:-0.04DM:-0.86
+[x],[y]:2,2TM:-0.11DM:0.39
+
+# Euler_angles  # #Euler_ang timestamp:4677DM[0][0]:0.98,DM[1][0]:-0.10,DM[2][0]:0.18,DM[2][1]:-0.94,DM[2][2]:0.28pitch:-0.18,roll:-1.28,yaw:-0.10
+
+
+Timing info: old_ts = 4478, new_ts = 4696, G_Dt = 0.22
+- Gyr -#T-gyr#4710#Gm-Raw#27.00,40.00,-4.00
+- Acc -#T-acc#4716#Am-Raw#54.00,-251.00,72.00
+- Mag -#T-mag#4724#Mm-Raw#815.00,-812.00,599.00
+Beginning of the loop: pitch:-0.18,roll:-1.28,yaw:-0.10
+
+compensate_s_err start
+BEFORE
+acc[0,1,2]: 54.00,-251.00,72.00
+magnetom[0,1,2]: 815.00,-812.00,599.00
+gyro[0,1,2]: 27.00,40.00,-4.00
+(NOTcompensate magn error)
+AFTER
+acc[0,1,2]: 55.30,-257.02,73.73
+magnetom[0,1,2]: 135.83,-135.33,99.83
+gyro[0,1,2]: 27.00,40.00,-4.00
+
+Matrix_update 
+gyro[0,1,2]:27.00,40.00,-4.00
+Gyro_vector[0,1,2]:0.03,0.05,-0.00
+Before Omega_I[0,1,2]:-0.00,-0.00,0.00
+Before Omega_P[0,1,2]:-0.05,0.18,-0.22
+After Omega_I[0,1,2]:-0.00,-0.00,0.00
+After Omega_P[0,1,2]:-0.05,0.18,-0.22
+(Drift correction used)
+G_Dt:0.22Omega_Vector[0]:-0.02,Omega_Vector[1]:0.23,Omega_Vector[2]:-0.22
+[x],[y]:0,0TM:-0.01DM:0.98
+[x],[y]:0,1TM:0.05DM:0.20
+[x],[y]:0,2TM:0.05DM:0.05
+[x],[y]:1,0TM:-0.06DM
