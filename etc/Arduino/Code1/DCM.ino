@@ -99,27 +99,27 @@ void Matrix_update(void)
   Accel_Vector[2]=accel[2];
   
   Serial.print("Before Omega_I[0,1,2]:");  
-  Serial.print(Omega_I[0]); Serial.print(",");
-  Serial.print(Omega_I[1]); Serial.print(",");
-  Serial.print(Omega_I[2]); Serial.println();
+  Serial.print(Omega_I[0],6); Serial.print(",");
+  Serial.print(Omega_I[1],6); Serial.print(",");
+  Serial.print(Omega_I[2],6); Serial.println();
   
   Serial.print("Before Omega_P[0,1,2]:");  
-  Serial.print(Omega_P[0]); Serial.print(",");
-  Serial.print(Omega_P[1]); Serial.print(",");
-  Serial.print(Omega_P[2]); Serial.println();
+  Serial.print(Omega_P[0],6); Serial.print(",");
+  Serial.print(Omega_P[1],6); Serial.print(",");
+  Serial.print(Omega_P[2],6); Serial.println();
     
   Vector_Add(&Omega[0], &Gyro_Vector[0], &Omega_I[0]);  //adding proportional term
   Vector_Add(&Omega_Vector[0], &Omega[0], &Omega_P[0]); //adding Integrator term
   
   Serial.print("After Omega_I[0,1,2]:");  
-  Serial.print(Omega_I[0]); Serial.print(",");
-  Serial.print(Omega_I[1]); Serial.print(",");
-  Serial.print(Omega_I[2]); Serial.println();
+  Serial.print(Omega_I[0],6); Serial.print(",");
+  Serial.print(Omega_I[1],6); Serial.print(",");
+  Serial.print(Omega_I[2],6); Serial.println();
   
   Serial.print("After Omega_P[0,1,2]:");  
-  Serial.print(Omega_P[0]); Serial.print(",");
-  Serial.print(Omega_P[1]); Serial.print(",");
-  Serial.print(Omega_P[2]); Serial.println();
+  Serial.print(Omega_P[0],6); Serial.print(",");
+  Serial.print(Omega_P[1],6); Serial.print(",");
+  Serial.print(Omega_P[2],6); Serial.println();
   
 #if DEBUG__NO_DRIFT_CORRECTION == true // Do not use drift correction
   Serial.print("(Drift correction NOT used)");
@@ -134,9 +134,9 @@ void Matrix_update(void)
   Update_Matrix[2][1]=G_Dt*Gyro_Vector[0];
   Update_Matrix[2][2]=0;
   Serial.print("G_Dt:");  Serial.print(G_Dt);
-  Serial.print("Gyro_Vector[0]:");  Serial.print(Gyro_Vector[0]);
-  Serial.print(",Gyro_Vector[1]:");  Serial.print(Gyro_Vector[1]);
-  Serial.print(",Gyro_Vector[2]:");  Serial.print(Gyro_Vector[2]);
+  Serial.print("Gyro_Vector[0]:");  Serial.print(Gyro_Vector[0],6);
+  Serial.print(",Gyro_Vector[1]:");  Serial.print(Gyro_Vector[1],6);
+  Serial.print(",Gyro_Vector[2]:");  Serial.print(Gyro_Vector[2],6);
 #else // Use drift correction
   Serial.print("(Drift correction used)");
   Serial.println();
@@ -150,9 +150,9 @@ void Matrix_update(void)
   Update_Matrix[2][1]=G_Dt*Omega_Vector[0];//x
   Update_Matrix[2][2]=0;
   Serial.print("G_Dt:");  Serial.print(G_Dt);  
-  Serial.print("Omega_Vector[0]:");  Serial.print(Omega_Vector[0]);
-  Serial.print(",Omega_Vector[1]:");  Serial.print(Omega_Vector[1]);
-  Serial.print(",Omega_Vector[2]:");  Serial.print(Omega_Vector[2]);
+  Serial.print("Omega_Vector[0]:");  Serial.print(Omega_Vector[0],6);
+  Serial.print(",Omega_Vector[1]:");  Serial.print(Omega_Vector[1],6);
+  Serial.print(",Omega_Vector[2]:");  Serial.print(Omega_Vector[2],6);
 #endif
 
   for(int x=0; x<3; x++) 
@@ -201,9 +201,9 @@ void Euler_angles(void)
   roll = atan2(DCM_Matrix[2][1],DCM_Matrix[2][2]);
   yaw = atan2(DCM_Matrix[1][0],DCM_Matrix[0][0]);
   
-  Serial.print("pitch:");  Serial.print(pitch);
-  Serial.print(",roll:");  Serial.print(roll);
-  Serial.print(",yaw:");  Serial.print(yaw);
+  Serial.print("pitch:");  Serial.print(pitch,6);
+  Serial.print(",roll:");  Serial.print(roll,6);
+  Serial.print(",yaw:");  Serial.print(yaw,6);
   
   Serial.println();
 }
