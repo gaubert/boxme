@@ -161,8 +161,8 @@ void Matrix_update(void)
     {
       Serial.println();
       Serial.print("[x],[y]:");  Serial.print(x);Serial.print(",");Serial.print(y);
-      Serial.print("    UM:");  Serial.println(Update_Matrix[x][y],6);
-      Serial.print("    DM:");  Serial.println(DCM_Matrix[x][y],6);
+      Serial.print("    UM:");  Serial.print(Update_Matrix[x][y],6);
+      Serial.print("    DM:");  Serial.print(DCM_Matrix[x][y],6);
     } 
   }
 
@@ -174,8 +174,8 @@ void Matrix_update(void)
     {
       Serial.println();
       Serial.print("[x],[y]:");  Serial.print(x);Serial.print(",");Serial.print(y);
-      Serial.print("TM:");  Serial.print(Temporary_Matrix[x][y]);
-      Serial.print("DM:");  Serial.print(DCM_Matrix[x][y]);
+      Serial.print("TM:");  Serial.print(Temporary_Matrix[x][y],6);
+      Serial.print("DM:");  Serial.print(DCM_Matrix[x][y],6);
       
       DCM_Matrix[x][y]+=Temporary_Matrix[x][y];
     } 
@@ -191,11 +191,11 @@ void Euler_angles(void)
   
 //  tsYPR = millis();
   Serial.print("#Euler_ang timestamp:"); Serial.print(millis());
-  Serial.print("DM[0][0]:");  Serial.print(DCM_Matrix[0][0]);
-  Serial.print(",DM[1][0]:");  Serial.print(DCM_Matrix[1][0]);
-  Serial.print(",DM[2][0]:");  Serial.print(DCM_Matrix[2][0]);
-  Serial.print(",DM[2][1]:");  Serial.print(DCM_Matrix[2][1]);
-  Serial.print(",DM[2][2]:");  Serial.print(DCM_Matrix[2][2]);
+  Serial.print("DM[0][0]:");  Serial.print(DCM_Matrix[0][0],6);
+  Serial.print(",DM[1][0]:");  Serial.print(DCM_Matrix[1][0],6);
+  Serial.print(",DM[2][0]:");  Serial.print(DCM_Matrix[2][0],6);
+  Serial.print(",DM[2][1]:");  Serial.print(DCM_Matrix[2][1],6);
+  Serial.print(",DM[2][2]:");  Serial.print(DCM_Matrix[2][2],6);
   
   pitch = -asin(DCM_Matrix[2][0]);
   roll = atan2(DCM_Matrix[2][1],DCM_Matrix[2][2]);
