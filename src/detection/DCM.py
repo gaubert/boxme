@@ -59,6 +59,8 @@ MAGN_X_SCALE  = 100.0 / (MAGN_X_MAX - MAGN_X_OFFSET)
 MAGN_Y_SCALE  = 100.0 / (MAGN_Y_MAX - MAGN_Y_OFFSET)
 MAGN_Z_SCALE  = 100.0 / (MAGN_Z_MAX - MAGN_Z_OFFSET)
 
+GYRO_GAIN = 0.06957 # same gain on all axes
+
 class DCMizer(object):
 
 
@@ -479,7 +481,7 @@ class DCMizer(object):
         
         return (ret_omega_p, ret_omega_i)
     
-    def _matrix_update(self, omega, gyro_vector, omega_vector, gyro_Dt, accel_vector, use_omega):
+    def _matrix_update(self, gyro_vector, gyro_Dt, accel_vector, use_omega):
         """
            matrix update
            void Matrix_update(void)
@@ -530,14 +532,8 @@ class DCMizer(object):
               }
             }
         """
-        #Matrix_update start - - 
-        #Drift correction used - - G_Dt: 0.04- Omega_Vector[0]: 0.03- Omega_Vector[1]: 0.05- Omega_Vector[2]: 0.00
-   
-                
-        #TODO need to change that
-        #add omega integrator and proportional
-        omega[0]        = gyro_vector[0] + self._omega_i[0]
-        omega_vector[0] = omega[0] + self._omega_p[0]
+         # Add omega integrator and proportional
+        omega_vector = gyro_vector + self._omega_i + self._omega_p
         
         print("omega_vector[0] = %s, omega_vector[1] = %s, omega_vector[2] = %s\n" % (omega_vector[0], omega_vector[1], omega_vector[2]))
         
@@ -561,17 +557,14 @@ class DCMizer(object):
         print("End of _update_matrix \n")
         
                     
-    def compute_dcm(self, mag_heading, magnetom, omega, gyro_Dt, gyro_vector, accel_vector):
+    def compute_dcm(self, mag_heading, magnetom, gyro_Dt, gyro_vector, accel_vector):
         """
            tentative implementation of DCM
         """     
         use_omega = True # OUTPUTMODE=1 use omega or gyro
         
-        # Add omega integrator and proportional
-        omega_vector = gyro_vector + self._omega_i + self._omega_p
-        
         # update dcm matrix 
-        self._matrix_update(omega, gyro_vector, omega_vector, gyro_Dt, accel_vector, use_omega)
+        self._matrix_update(gyro_vector, gyro_Dt, accel_vector, use_omega)
         
         #NORMALIZE the matrix
         self._dcm_matrix = DCMizer.normalize_matrix(self._dcm_matrix)
@@ -599,7 +592,7 @@ def rad_to_deg(a_in):
     """
     return a_in * 57.2957795131
 
-GYRO_GAIN = 0.06957 # same gain on all axes
+
 
 def gyro_scaled_rad(a_gyro_val):
     """ 
@@ -607,7 +600,7 @@ def gyro_scaled_rad(a_gyro_val):
        Calculate the scaled gyro readings in radians per second
     """
     # Gain for gyroscope (ITG-3200)
-    return a_gyro_val * deg_to_rad(GYRO_GAIM)
+    return a_gyro_val * deg_to_rad(GYRO_GAIN)
 
 def run_dcm():
     """
@@ -644,20 +637,17 @@ def run_dcm():
 
     #init values
     mag_heading = DCMizer.compass_heading(mag_vec, roll, pitch)
-    
-    #Compass_Heading start - - magnetom[0]: -72.00- magnetom[1]: -33.00- magnetom[2]: -51.83- cos_roll: -0.92- sin_roll: -0.39- cos_pitch: 0.77- sin_pitch: 0.64- mag_x: -16.63- mag_y: 10.04- MAG_Heading: -2.60- Compass_Heading end - 
-    #mag_heading = -2.6
-    
+     
     print("mag_heading = %s\n" % (mag_heading))
     
     dcmizer = DCMizer()
     
     # Corrected Gyro Vector
-    gyro_vec[0]    = gyro_scaled_rad(gyro[0]); //gyro x roll
-    gyro_Vector[1] = gyro_scaled_rad(gyro[1]); //gyro y pitch
-    gyro_Vector[2] = gyro_scaled_rad(gyro[2]); //gyro z yaw
+    gyro_vec[0] = gyro_scaled_rad(gyro_vec[0]); #gyro x roll
+    gyro_vec[1] = gyro_scaled_rad(gyro_vec[1]); #gyro y pitch
+    gyro_vec[2] = gyro_scaled_rad(gyro_vec[2]); #gyro z yaw
     
-    dcmizer.compute_dcm(mag_heading, mag_vec, omega, gyro_Dt, gyro_vec, accel_vec)
+    dcmizer.compute_dcm(mag_heading, mag_vec, gyro_Dt, gyro_vec, accel_vec)
 
 
 if __name__ == '__main__':
