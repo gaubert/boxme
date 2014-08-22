@@ -21,20 +21,20 @@ void Compass_Heading()
   // Magnetic Heading
   MAG_Heading = atan2(-mag_y, mag_x);
   
-  Serial.println();
-  Serial.print("- Compass_Headi - ");
-  Serial.print("- magnetom[0]: ");  Serial.print(magnetom[0]);
-  Serial.print("- magnetom[1]: ");  Serial.print(magnetom[1]);
-  Serial.print("- magnetom[2]: ");  Serial.print(magnetom[2]);
-
-  Serial.print("- cos_roll: ");  Serial.print(cos_roll);
-  Serial.print("- sin_roll: ");  Serial.print(sin_roll);
-  Serial.print("- cos_pitch: ");  Serial.print(cos_pitch);
-  Serial.print("- sin_pitch: ");  Serial.print(sin_pitch);
-  
-  Serial.print("- mag_x: ");  Serial.print(mag_x);
-  Serial.print("- mag_y: ");  Serial.print(mag_y);
-  Serial.print("- MAG_Heading: ");  Serial.print(MAG_Heading);
-
-  Serial.println();
+//  Serial.println();
+//  Serial.print("- Compass_Headi - ");
+//  Serial.print("- magnetom[0]: ");  Serial.print(magnetom[0]);
+//  Serial.print("- magnetom[1]: ");  Serial.print(magnetom[1]);
+//  Serial.print("- magnetom[2]: ");  Serial.print(magnetom[2]);
+//
+//  Serial.print("- cos_roll: ");  Serial.print(cos_roll);
+//  Serial.print("- sin_roll: ");  Serial.print(sin_roll);
+//  Serial.print("- cos_pitch: ");  Serial.print(cos_pitch);
+//  Serial.print("- sin_pitch: ");  Serial.print(sin_pitch);
+//  
+//  Serial.print("- mag_x: ");  Serial.print(mag_x);
+//  Serial.print("- mag_y: ");  Serial.print(mag_y);
+//  Serial.print("- MAG_Heading: ");  Serial.print(MAG_Heading);
+//
+//  Serial.println();
 }
