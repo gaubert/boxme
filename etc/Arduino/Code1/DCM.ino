@@ -79,7 +79,16 @@ void Drift_correction(void)
 void Matrix_update(void)
 {
   Serial.println();
-  Serial.print("- Matrix_update - ");
+  Serial.print("- Matrix_update - ");  Serial.println();
+  Serial.print("- gyro[0,1,2]:  - ");  
+  Serial.print(gyro[0]); Serial.print(",");
+  Serial.print(gyro[1]); Serial.print(",");
+  Serial.print(gyro[2]);         Serial.println();
+  Serial.print("- Gyro_vector[0,1,2]:  - ");  
+  Serial.print(Gyro_Vector[0]); Serial.print(",");
+  Serial.print(Gyro_Vector[1]); Serial.print(",");
+  Serial.print(Gyro_Vector[2]);         Serial.println();
+  
   Gyro_Vector[0]=GYRO_SCALED_RAD(gyro[0]); //gyro x roll
   Gyro_Vector[1]=GYRO_SCALED_RAD(gyro[1]); //gyro y pitch
   Gyro_Vector[2]=GYRO_SCALED_RAD(gyro[2]); //gyro z yaw
@@ -109,6 +118,7 @@ void Matrix_update(void)
   Serial.print("- Gyro_Vector[2]: ");  Serial.print(Gyro_Vector[2]);
 #else // Use drift correction
   Serial.print("(Drift correction used)");
+  Serial.println();
   Update_Matrix[0][0]=0;
   Update_Matrix[0][1]=-G_Dt*Omega_Vector[2];//-z
   Update_Matrix[0][2]=G_Dt*Omega_Vector[1];//y
@@ -131,10 +141,9 @@ void Matrix_update(void)
     for(int y=0; y<3; y++)
     {
       Serial.println();
-      Serial.print("- [x]: ");  Serial.print(x);
-      Serial.print("- [y]: ");  Serial.print(y);
-      Serial.print("- Temporary_Matrix[x][y]: ");  Serial.print(Temporary_Matrix[x][y]);
-      Serial.print("- DCM_Matrix[x][y]: ");  Serial.print(DCM_Matrix[x][y]);
+      Serial.print("- [x],[y]: ");  Serial.print(x);Serial.print(",");Serial.print(y);
+      Serial.print("- TM: ");  Serial.print(Temporary_Matrix[x][y]);
+      Serial.print("- DM: ");  Serial.print(DCM_Matrix[x][y]);
       
       DCM_Matrix[x][y]+=Temporary_Matrix[x][y];
     } 
@@ -150,11 +159,11 @@ void Euler_angles(void)
   
 //  tsYPR = millis();
   Serial.print("#Euler_ang timestamp:"); Serial.print(millis());
-  Serial.print("- DCM_Matrix[0][0]: ");  Serial.print(DCM_Matrix[0][0]);
-  Serial.print("- DCM_Matrix[1][0]: ");  Serial.print(DCM_Matrix[1][0]);
-  Serial.print("- DCM_Matrix[2][0]: ");  Serial.print(DCM_Matrix[2][0]);
-  Serial.print("- DCM_Matrix[2][1]: ");  Serial.print(DCM_Matrix[2][1]);
-  Serial.print("- DCM_Matrix[2][2]: ");  Serial.print(DCM_Matrix[2][2]);
+  Serial.print("- DM[0][0]: ");  Serial.print(DCM_Matrix[0][0]);
+  Serial.print("- DM[1][0]: ");  Serial.print(DCM_Matrix[1][0]);
+  Serial.print("- DM[2][0]: ");  Serial.print(DCM_Matrix[2][0]);
+  Serial.print("- DM[2][1]: ");  Serial.print(DCM_Matrix[2][1]);
+  Serial.print("- DM[2][2]: ");  Serial.print(DCM_Matrix[2][2]);
   
   pitch = -asin(DCM_Matrix[2][0]);
   roll = atan2(DCM_Matrix[2][1],DCM_Matrix[2][2]);
