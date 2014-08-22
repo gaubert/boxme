@@ -310,31 +310,33 @@ class DCMizer(object):
     }
     
         """
-        
-        result = a_mat.copy()
-        
-        tempo = np.matrix([[0,0,0],[0,0,0],[0,0,0]])
-        
         error = - np.vdot(a_mat[0,0], a_mat[1,0]) * .5 #eq.19
         
-        tempo[0,0] =  a_mat[1,0] * error #eq.19
+        lign1 = a_mat[1][0] * error #eq.19
         
-        tempo[1,0] = a_mat[0,0] * error #eq.19
+        lign2 = a_mat[0][0] * error #eq.19
         
-        tempo[0,0] += a_mat[0,0] #eq.19
-        tempo[1,0] += a_mat[1,0] #eq.19
         
-        tempo[2][0] = np.cross(tempo[0][0],tempo[1][0]) #eq.20
+        lign1 += a_mat[0][0] #eq.19
+        lign2 += a_mat[1][0] #eq.19
         
-        renorm = .5 * (3 - np.vdot(tempo[0,0],tempo[0,0])) #eq.21
-        result[0][0] = tempo[0][0] * renorm
+        lign3 = np.cross(lign1, lign2) #eq.20
+       
         
-        renorm = .5 * (3 - np.vdot(tempo[1,0],tempo[1,0])) #eq.21
-        result[1][0] = tempo[1][0] * renorm
+        renorm = .5 * (3 - np.vdot(lign1,lign1)) #eq.21
+        lign1  = lign1 * renorm
         
-        renorm = .5 * (3 - np.vdot(tempo[2,0],tempo[2,0])) #eq.21
-        result[2][0] = tempo[2][0] * renorm
+        renorm = .5 * (3 - np.vdot(lign2, lign2)) #eq.21
+        lign2  = lign2 * renorm
         
+        renorm = .5 * (3 - np.vdot(lign3,lign3)) #eq.21
+        lign3 = lign3 * renorm
+        
+        lign1 = np.squeeze(np.array(lign1))
+        lign2 = np.squeeze(np.array(lign2))
+        lign3 = np.squeeze(np.array(lign3))
+        
+        result = np.matrix([lign1, lign2, lign3])
         return result
     
     @classmethod
@@ -586,7 +588,7 @@ class DCMizer(object):
         self._matrix_update(gyro_vector, gyro_Dt, accel_vector, use_omega)
         
         #NORMALIZE the matrix
-        #self._dcm_matrix = DCMizer.normalize_matrix(self._dcm_matrix)
+        self._dcm_matrix = DCMizer.normalize_matrix(self._dcm_matrix)
         
         #DRIFT_CORRECTION                              
         #(self._omega_p, self._omega_i) = self.drift_correction(accel_vector, self._omega_p, self._omega_i, mag_heading)
