@@ -155,16 +155,29 @@ void Matrix_update(void)
   Serial.print(",Omega_Vector[2]:");  Serial.print(Omega_Vector[2]);
 #endif
 
+  for(int x=0; x<3; x++) 
+  {
+    for(int y=0; y<3; y++)
+    {
+      Serial.println();
+      Serial.print("[x],[y]:");  Serial.print(x);Serial.print(",");Serial.print(y);
+      Serial.print("    UM:");  Serial.print(Update_Matrix[x][y]);
+      Serial.print("    DM:");  Serial.print(DCM_Matrix[x][y]);
+      
+      DCM_Matrix[x][y]+=Temporary_Matrix[x][y];
+    } 
+  }
+
   Matrix_Multiply(DCM_Matrix,Update_Matrix,Temporary_Matrix); //a*b=c
 
   for(int x=0; x<3; x++) //Matrix Addition (update)
   {
     for(int y=0; y<3; y++)
     {
-      Serial.println();
-      Serial.print("[x],[y]:");  Serial.print(x);Serial.print(",");Serial.print(y);
-      Serial.print("TM:");  Serial.print(Temporary_Matrix[x][y]);
-      Serial.print("DM:");  Serial.print(DCM_Matrix[x][y]);
+//      Serial.println();
+//      Serial.print("[x],[y]:");  Serial.print(x);Serial.print(",");Serial.print(y);
+//      Serial.print("TM:");  Serial.print(Temporary_Matrix[x][y]);
+//      Serial.print("DM:");  Serial.print(DCM_Matrix[x][y]);
       
       DCM_Matrix[x][y]+=Temporary_Matrix[x][y];
     } 
