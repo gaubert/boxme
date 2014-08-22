@@ -84,21 +84,42 @@ void Matrix_update(void)
   Serial.print(gyro[0]); Serial.print(",");
   Serial.print(gyro[1]); Serial.print(",");
   Serial.print(gyro[2]);         Serial.println();
-  Serial.print("- Gyro_vector[0,1,2]:  - ");  
-  Serial.print(Gyro_Vector[0]); Serial.print(",");
-  Serial.print(Gyro_Vector[1]); Serial.print(",");
-  Serial.print(Gyro_Vector[2]);         Serial.println();
   
   Gyro_Vector[0]=GYRO_SCALED_RAD(gyro[0]); //gyro x roll
   Gyro_Vector[1]=GYRO_SCALED_RAD(gyro[1]); //gyro y pitch
   Gyro_Vector[2]=GYRO_SCALED_RAD(gyro[2]); //gyro z yaw
   
+  Serial.print("- Gyro_vector[0,1,2]:  - ");  
+  Serial.print(Gyro_Vector[0]); Serial.print(",");
+  Serial.print(Gyro_Vector[1]); Serial.print(",");
+  Serial.print(Gyro_Vector[2]);         Serial.println();
+  
   Accel_Vector[0]=accel[0];
   Accel_Vector[1]=accel[1];
   Accel_Vector[2]=accel[2];
+  
+  Serial.print("- Before Omega_I[0,1,2]:  - ");  
+  Serial.print(Omega_I[0]); Serial.print(",");
+  Serial.print(Omega_I[1]); Serial.print(",");
+  Serial.print(Omega_I[2]); Serial.println();
+  
+  Serial.print("- After Omega_P[0,1,2]:  - ");  
+  Serial.print(Omega_P[0]); Serial.print(",");
+  Serial.print(Omega_P[1]); Serial.print(",");
+  Serial.print(Omega_P[2]); Serial.println();
     
   Vector_Add(&Omega[0], &Gyro_Vector[0], &Omega_I[0]);  //adding proportional term
   Vector_Add(&Omega_Vector[0], &Omega[0], &Omega_P[0]); //adding Integrator term
+  
+  Serial.print("- After Omega_I[0,1,2]:  - ");  
+  Serial.print(Omega_I[0]); Serial.print(",");
+  Serial.print(Omega_I[1]); Serial.print(",");
+  Serial.print(Omega_I[2]); Serial.println();
+  
+  Serial.print("- After Omega_P[0,1,2]:  - ");  
+  Serial.print(Omega_P[0]); Serial.print(",");
+  Serial.print(Omega_P[1]); Serial.print(",");
+  Serial.print(Omega_P[2]); Serial.println();
   
 #if DEBUG__NO_DRIFT_CORRECTION == true // Do not use drift correction
   Serial.print("(Drift correction NOT used)");

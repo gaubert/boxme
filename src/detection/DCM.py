@@ -532,7 +532,8 @@ class DCMizer(object):
               }
             }
         """
-         # Add omega integrator and proportional
+        
+        # Add omega integrator and proportional
         omega_vector = gyro_vector + self._omega_i + self._omega_p
         
         print("omega_vector[0] = %s, omega_vector[1] = %s, omega_vector[2] = %s\n" % (omega_vector[0], omega_vector[1], omega_vector[2]))
