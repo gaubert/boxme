@@ -14,7 +14,7 @@ KP_ROLLPITCH = 0.02
 KI_ROLLPITCH = 0.00002
 KP_YAW       = 1.2
 KI_YAW       = 0.00002
-GRAVITY      = 248  # this equivalent to 1G in the raw data coming from the accelerometer
+GRAVITY      = 256.00  # this equivalent to 1G in the raw data coming from the accelerometer
 
 # SENSOR CALIBRATION
 #*****************************************************************/
@@ -58,6 +58,29 @@ MAGN_Z_OFFSET = (MAGN_Z_MIN + MAGN_Z_MAX) / 2.0
 MAGN_X_SCALE  = 100.0 / (MAGN_X_MAX - MAGN_X_OFFSET)
 MAGN_Y_SCALE  = 100.0 / (MAGN_Y_MAX - MAGN_Y_OFFSET)
 MAGN_Z_SCALE  = 100.0 / (MAGN_Z_MAX - MAGN_Z_OFFSET)
+
+GYRO_GAIN = 0.06957 # same gain on all axes
+
+#utility functions
+def deg_to_rad(a_in):
+    """
+       Transform degrees val to radians
+    """
+    return a_in * 0.01745329252 # pi/180
+
+def rad_to_deg(a_in):
+    """
+       rad to deg (180/pi)
+    """
+    return a_in * 57.2957795131
+
+def gyro_scaled_rad(a_gyro_val):
+    """ 
+       Gain for gyroscope 
+       Calculate the scaled gyro readings in radians per second
+    """
+    # Gain for gyroscope (ITG-3200)
+    return a_gyro_val * deg_to_rad(GYRO_GAIN)
 
 class DCMizer(object):
 
@@ -242,23 +265,22 @@ class DCMizer(object):
         #roll  = math.atan2(  (np.array(a_dcm_matrix[2][1]))[0], (np.array(a_dcm_matrix[2][2])[0]) )
         #yaw   = math.atan2(  (np.array(a_dcm_matrix[1][0]))[0], (np.array(a_dcm_matrix[0][0]))[0] );
     
-        val   = np.array(a_dcm_matrix[2][0])[0]
+        val   = np.squeeze(np.asarray(a_dcm_matrix[2][0]))
         pitch = np.array([-math.asin(val[0]), -math.asin(val[1]), -math.asin(val[2])])
         
-        val1  = np.array(a_dcm_matrix[2][1])[0]
-        val2  = np.array(a_dcm_matrix[2][2])[0]
+        val1  = np.squeeze(np.array(a_dcm_matrix[2][1]))
+        val2  = np.squeeze(np.array(a_dcm_matrix[2][2]))
         roll  = np.array( [ math.atan2(val1[0], val2[0]), 
                             math.atan2(val1[1], val2[1]), 
                             math.atan2(val1[1], val[2])] )
         
         
-        val1 = np.array(a_dcm_matrix[1][0])[0]
-        val2 = np.array(a_dcm_matrix[0][0])[0]
+        val1 = np.squeeze(np.array(a_dcm_matrix[1][0]))
+        val2 = np.squeeze(np.array(a_dcm_matrix[0][0]))
         yaw = np.array( [ math.atan2(val1[0], val2[0]), 
                           math.atan2(val1[1], val2[1]), 
                           math.atan2(val1[2], val2[2])] )
-    
-    
+
         return (pitch, roll, yaw)
 
 
@@ -438,8 +460,8 @@ class DCMizer(object):
         print("dcm_matrix = %s" % (self._dcm_matrix[2][0]))
         
         #need to resize that part using numpy features when I will have the doc
-        calc_val = np.cross(accel_vector, self._dcm_matrix[2][0])
-        self._err_roll_pitch = calc_val[0]
+        calc_val = np.cross(accel_vector, np.squeeze(np.asarray(self._dcm_matrix[2][0])))
+        self._err_roll_pitch = calc_val
         
         v = self._err_roll_pitch[0] * (KP_ROLLPITCH * accel_weigth)
         ret_omega_p[0] = v
@@ -458,8 +480,7 @@ class DCMizer(object):
         #calculate yaw error
         #TODO. It is a matrix [[]] when it should be an array
         #change dimension
-        error_course = (self._dcm_matrix[2][0] * mag_heading_y) - (self._dcm_matrix[1][0] * mag_heading_x)
-        error_course = np.array(error_course)[0]
+        error_course = (np.squeeze(np.asarray(self._dcm_matrix[2][0])) * mag_heading_y) - (np.squeeze(np.asarray(self._dcm_matrix[1][0])) * mag_heading_x)
         
         #Applys the yaw correction to the XYZ rotation of the aircraft, depeding the position.
         #TODO Need to resize dcm_matrix[2][0] as an array to have the rigth dim
@@ -479,7 +500,7 @@ class DCMizer(object):
         
         return (ret_omega_p, ret_omega_i)
     
-    def _matrix_update(self, omega, gyro_vector, omega_vector, gyro_Dt, accel_vector, use_omega):
+    def _matrix_update(self, gyro_vec, gyro_Dt, accel_vector, use_omega):
         """
            matrix update
            void Matrix_update(void)
@@ -530,14 +551,15 @@ class DCMizer(object):
               }
             }
         """
-        #Matrix_update start - - 
-        #Drift correction used - - G_Dt: 0.04- Omega_Vector[0]: 0.03- Omega_Vector[1]: 0.05- Omega_Vector[2]: 0.00
-   
-                
-        #TODO need to change that
-        #add omega integrator and proportional
-        omega[0]        = gyro_vector[0] + self._omega_i[0]
-        omega_vector[0] = omega[0] + self._omega_p[0]
+        
+        #get scaled gyro values
+        # Corrected Gyro Vector
+        gyro_vec[0] = gyro_scaled_rad(gyro_vec[0]); #gyro x roll
+        gyro_vec[1] = gyro_scaled_rad(gyro_vec[1]); #gyro y pitch
+        gyro_vec[2] = gyro_scaled_rad(gyro_vec[2]); #gyro z yaw
+        
+        # Add omega integrator and proportional
+        omega_vector = gyro_vec + self._omega_i + self._omega_p
         
         print("omega_vector[0] = %s, omega_vector[1] = %s, omega_vector[2] = %s\n" % (omega_vector[0], omega_vector[1], omega_vector[2]))
         
@@ -545,7 +567,7 @@ class DCMizer(object):
         if use_omega:
             vec = omega_vector
         else:
-            vec = gyro_vector
+            vec = gyro_vec
             
         #Matrix Update
         update_matrix = np.matrix([[ 0 , - gyro_Dt * vec[2], gyro_Dt * vec[1]] ,
@@ -561,23 +583,20 @@ class DCMizer(object):
         print("End of _update_matrix \n")
         
                     
-    def compute_dcm(self, mag_heading, magnetom, omega, gyro_Dt, gyro_vector, accel_vector):
+    def compute_dcm(self, mag_heading, magnetom, gyro_Dt, gyro_vector, accel_vector):
         """
            tentative implementation of DCM
         """     
         use_omega = True # OUTPUTMODE=1 use omega or gyro
         
-        # Add omega integrator and proportional
-        omega_vector = gyro_vector + self._omega_i + self._omega_p
-        
         # update dcm matrix 
-        self._matrix_update(omega, gyro_vector, omega_vector, gyro_Dt, accel_vector, use_omega)
+        self._matrix_update(gyro_vector, gyro_Dt, accel_vector, use_omega)
         
         #NORMALIZE the matrix
         self._dcm_matrix = DCMizer.normalize_matrix(self._dcm_matrix)
         
         #DRIFT_CORRECTION                              
-        (self._omega_p, self._omega_i) = self.drift_correction(accel_vector, self._omega_p, self._omega_i)
+        (self._omega_p, self._omega_i) = self.drift_correction(accel_vector, self._omega_p, self._omega_i, mag_heading)
         
         #Euler angles
         (pitch, roll, yaw) = DCMizer.euler_angles(self._dcm_matrix)
@@ -587,77 +606,46 @@ class DCMizer(object):
         
         return (pitch, roll, yaw)  
     
-def deg_to_rad(a_in):
-    """
-       Transform degrees val to radians
-    """
-    return a_in * 0.01745329252 # pi/180
-
-def rad_to_deg(a_in):
-    """
-       rad to deg (180/pi)
-    """
-    return a_in * 57.2957795131
-
-GYRO_GAIN = 0.06957 # same gain on all axes
-
-def gyro_scaled_rad(a_gyro_val):
-    """ 
-       Gain for gyroscope 
-       Calculate the scaled gyro readings in radians per second
-    """
-    # Gain for gyroscope (ITG-3200)
-    return a_gyro_val * deg_to_rad(GYRO_GAIM)
-
 def run_dcm():
     """
        test DCM
     """
-    ### Input values
     
+    #Init setup (add arguments accel and magnetom
+    #reset_sensor_fusion()
+   
     #init values
-    gyro_Dt     = 0.24  #integration time (Delta time between each measure
-    gyro_vec    = np.array([-1547.00, 1689.00, 224.00])
-    accel_vec   = np.array([-55.00, 10.00, 288.00])
-    mag_vec     = np.array([-83.00, 131.00, 658.00])
+    gyro_Dt     = 0.02  #integration time (Delta time between each measure
+    gyro_vec    = np.array([230.00, 467.00, 201.00])
+    accel_vec   = np.array([12.00,66.00,259.00])
+    mag_vec     = np.array([249.00,366.00,628.00])
     
-    """  - Gyr -#T-gyr#36845#Gm-Raw#-1547.00,1689.00,224.00
-- Acc -#T-acc#36853#Am-Raw#-55.00,10.00,288.00
-- Mag -#T-mag#36861#Mm-Raw#-83.00,131.00,658.00
-
+    """  
    Note: roll and pitch, yaw are not set as in the software. Check how they are set
    """ 
    
     #starting values (they are used for every steps)
     #need to get the init values following the method
     
-    roll     = 0.37 #got it with acos(0.93)
-    pitch    = - 0.20 #got it with acos(0.98)
-    yaw      = 0.0
-    
-    err_yaw = np.array([0,0,0])
-    err_roll_pitch = np.array([0,0,0])
-    
-    omega = np.array([0,0,0])
+    roll     = 0.13  #got it with acos(0.93)
+    pitch    = -0.15 #got it with acos(0.98)
+    yaw      = -1.05
     
     accel_vec, mag_vec, gyro_vec = DCMizer.compensate_sensor_error(accel_vec, mag_vec, gyro_vec)
+    
+    print("After compensate sensor error\n")
+    print("accel_vec= %s" % (accel_vec))
+    print("mag_vec= %s" % (mag_vec))
+    print("gyro_vec= %s" %(gyro_vec))
 
     #init values
     mag_heading = DCMizer.compass_heading(mag_vec, roll, pitch)
-    
-    #Compass_Heading start - - magnetom[0]: -72.00- magnetom[1]: -33.00- magnetom[2]: -51.83- cos_roll: -0.92- sin_roll: -0.39- cos_pitch: 0.77- sin_pitch: 0.64- mag_x: -16.63- mag_y: 10.04- MAG_Heading: -2.60- Compass_Heading end - 
-    #mag_heading = -2.6
-    
+     
     print("mag_heading = %s\n" % (mag_heading))
     
     dcmizer = DCMizer()
-    
-    # Corrected Gyro Vector
-    gyro_vec[0]    = gyro_scaled_rad(gyro[0]); //gyro x roll
-    gyro_Vector[1] = gyro_scaled_rad(gyro[1]); //gyro y pitch
-    gyro_Vector[2] = gyro_scaled_rad(gyro[2]); //gyro z yaw
-    
-    dcmizer.compute_dcm(mag_heading, mag_vec, omega, gyro_Dt, gyro_vec, accel_vec)
+          
+    dcmizer.compute_dcm(mag_heading, mag_vec, gyro_Dt, gyro_vec, accel_vec)
 
 
 if __name__ == '__main__':

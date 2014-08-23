@@ -422,10 +422,34 @@ void reset_sensor_fusion() {
   
   // Init rotation matrix
   init_rotation_matrix(DCM_Matrix, yaw, pitch, roll);
+  Serial.println();
+  Serial.print("First YPR ever: pitch:");  Serial.print(pitch);
+  Serial.print(",roll:");  Serial.print(roll);
+  Serial.print(",yaw:");  Serial.print(yaw);
+  Serial.println();
+      
 }
 
 // Apply calibration to raw sensor readings
 void compensate_sensor_errors() {
+    Serial.println();
+    Serial.print("compensate_s_err start");        Serial.println();
+    Serial.print("BEFORE");        Serial.println();
+    Serial.print("acc[0,1,2]: ");
+    Serial.print(accel[0]); Serial.print(",");
+    Serial.print(accel[1]); Serial.print(",");
+    Serial.print(accel[2]);         Serial.println();
+
+    Serial.print("magnetom[0,1,2]: ");
+    Serial.print(magnetom[0]); Serial.print(",");
+    Serial.print(magnetom[1]); Serial.print(",");
+    Serial.print(magnetom[2]);         Serial.println();
+    
+    Serial.print("gyro[0,1,2]: ");
+    Serial.print(gyro[0]); Serial.print(",");
+    Serial.print(gyro[1]); Serial.print(",");
+    Serial.print(gyro[2]);         Serial.println();
+    
     // Compensate accelerometer error
     accel[0] = (accel[0] - ACCEL_X_OFFSET) * ACCEL_X_SCALE;
     accel[1] = (accel[1] - ACCEL_Y_OFFSET) * ACCEL_Y_SCALE;
@@ -433,19 +457,37 @@ void compensate_sensor_errors() {
 
     // Compensate magnetometer error
 #if CALIBRATION__MAGN_USE_EXTENDED == true
+    Serial.print("(compensate magn error)");Serial.println();
     for (int i = 0; i < 3; i++)
       magnetom_tmp[i] = magnetom[i] - magn_ellipsoid_center[i];
     Matrix_Vector_Multiply(magn_ellipsoid_transform, magnetom_tmp, magnetom);
 #else
+    Serial.print("(NOTcompensate magn error)");Serial.println();
     magnetom[0] = (magnetom[0] - MAGN_X_OFFSET) * MAGN_X_SCALE;
     magnetom[1] = (magnetom[1] - MAGN_Y_OFFSET) * MAGN_Y_SCALE;
-    magnetom[2] = (magnetom[2] - MAGN_Z_OFFSET) * MAGN_Z_SCALE;
+    magnetom[2] = (magnetom[2] - MAGN_Z_OFFSET) * MAGN_Z_SCALE; 
 #endif
 
     // Compensate gyroscope error
     gyro[0] -= GYRO_AVERAGE_OFFSET_X;
     gyro[1] -= GYRO_AVERAGE_OFFSET_Y;
     gyro[2] -= GYRO_AVERAGE_OFFSET_Z;
+    
+    Serial.print("AFTER");        Serial.println();
+    Serial.print("acc[0,1,2]: ");
+    Serial.print(accel[0]); Serial.print(",");
+    Serial.print(accel[1]); Serial.print(",");
+    Serial.print(accel[2]);         Serial.println();
+
+    Serial.print("magnetom[0,1,2]: ");
+    Serial.print(magnetom[0]); Serial.print(",");
+    Serial.print(magnetom[1]); Serial.print(",");
+    Serial.print(magnetom[2]);         Serial.println();
+    
+    Serial.print("gyro[0,1,2]: ");
+    Serial.print(gyro[0]); Serial.print(",");
+    Serial.print(gyro[1]); Serial.print(",");
+    Serial.print(gyro[2]);         Serial.println();
 }
 
 // Reset calibration session if reset_calibration_session_flag is set
@@ -505,7 +547,7 @@ void setup()
   Gyro_Init();
   
   // Read sensors, init DCM algorithm
-  delay(20);  // Give sensors enough time to collect data
+  delay(10000);  // Give sensors enough time to collect data
   reset_sensor_fusion();
 
   // Init output
@@ -626,25 +668,31 @@ void loop()
 
     // Update sensor readings
     Serial.println();
-    Serial.print("- Tim - old_ts = ");
+    Serial.print("Timing info: old_ts = ");
     Serial.print(timestamp_old);
-    Serial.print("- new_ts = ");
+    Serial.print(", new_ts = ");
     Serial.print(timestamp);
-    Serial.print("- G_Dt = ");
+    Serial.print(", G_Dt = ");
     Serial.print(G_Dt);
     
     read_sensors();
 
     if (output_mode == OUTPUT__MODE_CALIBRATE_SENSORS)  // We're in calibration mode
     {
+      Serial.print(" check_reset_calibration_session() was performed ");      
       check_reset_calibration_session();  // Check if this session needs a reset
       if (output_stream_on || output_single_on) output_calibration(curr_calibration_sensor);
     }
     else if (output_mode == OUTPUT__MODE_ANGLES)  // Output angles
     {
+      Serial.println();
+      Serial.print("Beginning of the loop: pitch:");  Serial.print(pitch);
+      Serial.print(",roll:");  Serial.print(roll);
+      Serial.print(",yaw:");  Serial.print(yaw);
+      Serial.println();
+      
       // Apply sensor calibration
       compensate_sensor_errors();
-    
       // Run DCM algorithm
       Compass_Heading(); // Calculate magnetic heading
       Matrix_update();
