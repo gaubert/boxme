@@ -9,26 +9,56 @@ void Normalize(void)
   float error=0;
   float temporary[3][3];
   float renorm=0;
+
+  Serial.print("DM[0][0]&[1][0]:");
+  Serial.print(DCM_Matrix[0][0],6); Serial.print(",");
+  Serial.print(DCM_Matrix[1][0],6); Serial.println();
   
   error= -Vector_Dot_Product(&DCM_Matrix[0][0],&DCM_Matrix[1][0])*.5; //eq.19
+
+  Serial.print("error:"); Serial.print(error,6); Serial.println();
 
   Vector_Scale(&temporary[0][0], &DCM_Matrix[1][0], error); //eq.19
   Vector_Scale(&temporary[1][0], &DCM_Matrix[0][0], error); //eq.19
   
+  Serial.print("TM[0][0]&[1][0]:");
+  Serial.print(temporary[0][0],6); Serial.print(",");
+  Serial.print(temporary[1][0],6); Serial.println();
+  
   Vector_Add(&temporary[0][0], &temporary[0][0], &DCM_Matrix[0][0]);//eq.19
   Vector_Add(&temporary[1][0], &temporary[1][0], &DCM_Matrix[1][0]);//eq.19
   
+  Serial.print("TM[0][0]&[1][0]:");
+  Serial.print(temporary[0][0],6); Serial.print(",");
+  Serial.print(temporary[1][0],6); Serial.println();
+  
   Vector_Cross_Product(&temporary[2][0],&temporary[0][0],&temporary[1][0]); // c= a x b //eq.20
   
+  Serial.print("TM[2][0]:");
+  Serial.print(temporary[2][0],6); Serial.println();
+  
   renorm= .5 *(3 - Vector_Dot_Product(&temporary[0][0],&temporary[0][0])); //eq.21
+  Serial.print("renorm:"); Serial.print(renorm,6); Serial.println();
+  
   Vector_Scale(&DCM_Matrix[0][0], &temporary[0][0], renorm);
   
+  Serial.print("DM[0][0]:");
+  Serial.print(DCM_Matrix[0][0],6); Serial.println();
+  
   renorm= .5 *(3 - Vector_Dot_Product(&temporary[1][0],&temporary[1][0])); //eq.21
+  Serial.print("renorm:"); Serial.print(renorm,6); Serial.println();
   Vector_Scale(&DCM_Matrix[1][0], &temporary[1][0], renorm);
   
+  Serial.print("DM[1][0]:");
+  Serial.print(DCM_Matrix[1][0],6); Serial.println();
+  
   renorm= .5 *(3 - Vector_Dot_Product(&temporary[2][0],&temporary[2][0])); //eq.21
+  Serial.print("renorm:"); Serial.print(renorm,6); Serial.println();
   Vector_Scale(&DCM_Matrix[2][0], &temporary[2][0], renorm);
 
+  Serial.print("DM[2][0]:");
+  Serial.print(DCM_Matrix[2][0],6); Serial.println();
+  
 }
 
 /**************************************************/
