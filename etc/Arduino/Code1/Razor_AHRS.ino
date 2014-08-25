@@ -422,6 +422,12 @@ void reset_sensor_fusion() {
   
   // Init rotation matrix
   init_rotation_matrix(DCM_Matrix, yaw, pitch, roll);
+  Serial.println();
+  Serial.print("First YPR ever: pitch:");  Serial.print(pitch);
+  Serial.print(",roll:");  Serial.print(roll);
+  Serial.print(",yaw:");  Serial.print(yaw);
+  Serial.println();
+      
 }
 
 // Apply calibration to raw sensor readings
@@ -541,7 +547,7 @@ void setup()
   Gyro_Init();
   
   // Read sensors, init DCM algorithm
-  delay(20);  // Give sensors enough time to collect data
+  delay(10000);  // Give sensors enough time to collect data
   reset_sensor_fusion();
 
   // Init output
