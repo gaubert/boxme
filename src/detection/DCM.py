@@ -455,17 +455,14 @@ class DCMizer(object):
             accel_weigth = 1
     
         #adjust ground reference
-        print("dcm_matrix = %s" % (self._dcm_matrix[2,0]))
+        print("dcm_matrix = %s" % (self._dcm_matrix[2][0]))
         
         #need to resize that part using numpy features when I will have the doc
-        calc_val = np.cross(accel_vector, self._dcm_matrix[2,0])
-        self._err_roll_pitch = calc_val
+        self._err_roll_pitch = np.cross(accel_vector, np.squeeze(np.array(self._dcm_matrix[2][0])))
         
-        v = self._err_roll_pitch[0] * (KP_ROLLPITCH * accel_weigth)
-        ret_omega_p[0] = v
-        
-        v1 = self._err_roll_pitch[0] * (KI_ROLLPITCH * accel_weigth) 
-        scaled_omega_i[0] = v1
+        ret_omega_p = self._err_roll_pitch * (KP_ROLLPITCH * accel_weigth)
+       
+        scaled_omega_i = self._err_roll_pitch * (KI_ROLLPITCH * accel_weigth) 
         
         ret_omega_i += scaled_omega_i
         
@@ -476,22 +473,19 @@ class DCMizer(object):
         mag_heading_y = math.sin(mag_heading)
         
         #calculate yaw error
-        #TODO. It is a matrix [[]] when it should be an array
-        #change dimension
-        error_course = (self._dcm_matrix[2,0] * mag_heading_y) - (self._dcm_matrix[1,0] * mag_heading_x)
-        
+        error_course = (self._dcm_matrix[0,0] * mag_heading_y) - (self._dcm_matrix[1,0] * mag_heading_x)
+       
         #Applys the yaw correction to the XYZ rotation of the aircraft, depeding the position.
-        #TODO Need to resize dcm_matrix[2][0] as an array to have the rigth dim
-              
-        self._err_yaw = self._dcm_matrix[2,0] * error_course
+        #TODO Need to resize dcm_matrix[2][0] as an array to have the rigth dim   
+        self._err_yaw = self._dcm_matrix[2][0] * error_course
         
         #.01proportional of YAW.
-        scaled_omega_p[0] = self._err_yaw[0] * KP_YAW
+        scaled_omega_p = self._err_yaw * KP_YAW
         #Adding Proportional 
         ret_omega_p += scaled_omega_p
-        #.00001Integrator
-        scaled_omega_i[0] = self._err_yaw[0] * KI_YAW
         
+        #.00001Integrator
+        scaled_omega_i = self._err_yaw * KI_YAW
         #Adding integrator to the Omega_I
         ret_omega_i += scaled_omega_i
         
@@ -593,7 +587,7 @@ class DCMizer(object):
         self._dcm_matrix = DCMizer.normalize_matrix(self._dcm_matrix)
         
         #DRIFT_CORRECTION                              
-        #(self._omega_p, self._omega_i) = self.drift_correction(accel_vector, self._omega_p, self._omega_i, mag_heading)
+        (self._omega_p, self._omega_i) = self.drift_correction(accel_vector, self._omega_p, self._omega_i, mag_heading)
         
         #Euler angles
         (pitch, roll, yaw) = DCMizer.euler_angles(self._dcm_matrix)
