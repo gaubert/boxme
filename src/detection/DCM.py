@@ -85,12 +85,15 @@ def gyro_scaled_rad(a_gyro_val):
 class DCMizer(object):
 
 
-    def __init__(self, omega_p, omega_i, input_dm = None):
+    def __init__(self, omega_p, omega_i, input_dcm = None):
         """
+          @omega_p   : initial omega proportional correction
+          @omega_i   : initial omega integrator 
+          @input_dcm : initial DCM matrix
         """
         #init dcm matrix
         if input_dm is not None:
-            self._dcm_matrix = input_dm 
+            self._dcm_matrix = input_dcm 
         else: 
             np.matrix('1 0 0 ; 0 1 0 ; 0 0 1')
         
@@ -434,11 +437,7 @@ class DCMizer(object):
               Vector_Add(Omega_I,Omega_I,Scaled_Omega_I);//adding integrator to the Omega_I
             }
         """
-        ret_omega_p = a_omega_p
         ret_omega_i = a_omega_i
-        
-        scaled_omega_p = np.array([0,0,0])
-        scaled_omega_i = np.array([0,0,0])
          
         #ROLL and PITCH
         #calculate the magnitude of the accelerometer vector
@@ -448,7 +447,7 @@ class DCMizer(object):
         
         # Dynamic weighting of accelerometer info (reliability filter)
         # Weight for accelerometer info (<0.5G = 0.0, 1G = 1.0 , >1.5G = 0.0)
-        accel_weigth = (1 - 2 * abs(1 - Accel_magnitude))
+        accel_weigth = (1 - 2 * abs(1 - accel_magnitude))
         if accel_weigth < 0:
             accel_weigth = 0
         elif accel_weigth > 1:
@@ -469,6 +468,20 @@ class DCMizer(object):
         #YAW   
         #We make the gyro YAW drift correction based on compass magnetic heading
         
+        """
+              mag_heading_x = cos(MAG_Heading);
+              mag_heading_y = sin(MAG_Heading);
+              errorCourse=(DCM_Matrix[0][0]*mag_heading_y) - (DCM_Matrix[1][0]*mag_heading_x);  //Calculating YAW error
+              Vector_Scale(errorYaw,&DCM_Matrix[2][0],errorCourse); //Applys the yaw correction to the XYZ rotation of the aircraft, depeding the position.
+              
+              Vector_Scale(&Scaled_Omega_P[0],&errorYaw[0],Kp_YAW);//.01proportional of YAW.
+              Vector_Add(Omega_P,Omega_P,Scaled_Omega_P);//Adding  Proportional.
+              
+              Vector_Scale(&Scaled_Omega_I[0],&errorYaw[0],Ki_YAW);//.00001Integrator
+              Vector_Add(Omega_I,Omega_I,Scaled_Omega_I);//adding integrator to the Omega_I
+            }
+        """
+        
         mag_heading_x = math.cos(mag_heading)
         mag_heading_y = math.sin(mag_heading)
         
@@ -480,14 +493,12 @@ class DCMizer(object):
         self._err_yaw = self._dcm_matrix[2][0] * error_course
         
         #.01proportional of YAW.
-        scaled_omega_p = self._err_yaw * KP_YAW
-        #Adding Proportional 
-        ret_omega_p += scaled_omega_p
+        # can be simplified in 
+        ret_omega_p += self._err_yaw * KP_YAW
         
         #.00001Integrator
-        scaled_omega_i = self._err_yaw * KI_YAW
         #Adding integrator to the Omega_I
-        ret_omega_i += scaled_omega_i
+        ret_omega_i += self._err_yaw * KI_YAW
         
         return (ret_omega_p, ret_omega_i)
     
@@ -574,7 +585,7 @@ class DCMizer(object):
         print("End of _update_matrix \n")
         
                     
-    def compute_dcm(self, mag_heading, magnetom, gyro_Dt, gyro_vector, accel_vector):
+    def _compute_dcm(self, mag_heading, magnetom, gyro_Dt, gyro_vector, accel_vector):
         """
            tentative implementation of DCM
         """     
@@ -595,9 +606,9 @@ class DCMizer(object):
         
         print("pitch = %s, roll = %s, yaw = %s" %(pitch, roll, yaw))
         
-        return (pitch, roll, yaw)  
-    
-def run_dcm():
+        return (pitch, roll, yaw)
+          
+def test_dcm():
     """
        test DCM
     """
@@ -640,7 +651,8 @@ def run_dcm():
     
     dcmizer = DCMizer(omega_p, omega_i, input_dm)
           
-    dcmizer.compute_dcm(mag_heading, mag_vec, gyro_Dt, gyro_vec, accel_vec)
+    dcmizer._compute_dcm(mag_heading, mag_vec, gyro_Dt, gyro_vec, accel_vec)
+
 
 
 if __name__ == '__main__':
@@ -667,5 +679,5 @@ if __name__ == '__main__':
 
     """
     np.set_printoptions(precision=7)
-    run_dcm()
+    test_dcm()
     
