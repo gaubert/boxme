@@ -448,7 +448,7 @@ class DCMizer(object):
         
         # Dynamic weighting of accelerometer info (reliability filter)
         # Weight for accelerometer info (<0.5G = 0.0, 1G = 1.0 , >1.5G = 0.0)
-        accel_weigth = (1 - 2 * math.abs(1 - Accel_magnitude))
+        accel_weigth = (1 - 2 * abs(1 - Accel_magnitude))
         if accel_weigth < 0:
             accel_weigth = 0
         elif accel_weigth > 1:
@@ -606,15 +606,15 @@ def run_dcm():
     #reset_sensor_fusion()
     
     #init values
-    gyro_Dt     = 0.02  #integration time (Delta time between each measure
-    gyro_vec    = np.array([-131.00,42.00,-7.00])
-    accel_vec   = np.array([-38.00,51.00,255.00])
-    mag_vec     = np.array([95.00,270.00,734.00])
+    gyro_Dt     = 0.34  #integration time (Delta time between each measure
+    gyro_vec    = np.array([47.00,62.00,0.00])
+    accel_vec   = np.array([-22.00,13.00,265.00])
+    mag_vec     = np.array([47.00,242.00,724.00])
     
-    omega_p = np.array([0, 0, 0])
-    omega_i = np.array([0, 0, 0])
+    omega_p = np.array([0.018096,-0.034260,-0.000514])
+    omega_i = np.array([0.000018,-0.000034,0.000004])
      
-    input_dm = np.matrix("0.881448 0.469839 0.047972;-0.443181 0.857962 -0.259792; -0.163218 0.207733 0.964472")
+    input_dm = np.matrix("0.538803 0.842359 0.011088; -0.835298 0.535904 -0.122815; -0.109396 0.056911 0.992368")
      
     """  
      Note: roll and pitch, yaw are not set as in the software. Check how they are set
@@ -622,9 +622,9 @@ def run_dcm():
    
     #starting values (they are used for every steps)
     #need to get the init values following the method
-    pitch    = 0.16 #got it with acos(0.98)
-    roll     = 0.21  #got it with acos(0.93)
-    yaw      = -0.47
+    pitch    = 0.11 #got it with acos(0.98)
+    roll     = 0.06  #got it with acos(0.93)
+    yaw      = -1.00
     
     accel_vec, mag_vec, gyro_vec = DCMizer.compensate_sensor_error(accel_vec, mag_vec, gyro_vec)
     
