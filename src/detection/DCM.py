@@ -85,14 +85,20 @@ def gyro_scaled_rad(a_gyro_val):
 class DCMizer(object):
 
 
-    def __init__(self, omega_p, omega_i, input_dcm = None):
+    def __init__(self, omega_p, omega_i, pitch, roll, yaw, input_dcm = None):
         """
           @omega_p   : initial omega proportional correction
           @omega_i   : initial omega integrator 
           @input_dcm : initial DCM matrix
         """
+        self.reset(omega_p, omega_i, pitch, roll, yaw, input_dcm) # init is a standard reset
+    
+    def reset(self, omega_p, omega_i, pitch, roll, yaw, input_dcm = None):
+        """
+           reset internal values passing the following arguments
+        """
         #init dcm matrix
-        if input_dm is not None:
+        if input_dcm is not None:
             self._dcm_matrix = input_dcm 
         else: 
             np.matrix('1 0 0 ; 0 1 0 ; 0 0 1')
@@ -102,6 +108,11 @@ class DCMizer(object):
         
         self._omega_p        = omega_p # Omega Proportional correction
         self._omega_i        = omega_i # Omega Integrator
+        
+        self._pitch          = pitch
+        self._roll           = roll
+        self._yaw            = yaw
+        
     
     @classmethod
     def init_rotation_matrix(cls, roll, pitch, yaw):
@@ -255,7 +266,7 @@ class DCMizer(object):
         return math.atan2(-mag_y, mag_x);
     
     @classmethod
-    def euler_angles(cls, a_dcm_matrix):
+    def dcm_to_euler_angles(cls, a_dcm_matrix):
         """
            Get euler angles
            void Euler_angles(void)
@@ -265,12 +276,7 @@ class DCMizer(object):
               yaw = atan2(DCM_Matrix[1][0],DCM_Matrix[0][0]);
             }
         """
-        #TODO Need also to resize properly the matrix as a 1D array
-        # Use the vector trigonometric operators 
-        #pitch = - math.asin( a_dcm_matrix[2][0] )
-        #roll  = math.atan2(  (np.array(a_dcm_matrix[2][1]))[0], (np.array(a_dcm_matrix[2][2])[0]) )
-        #yaw   = math.atan2(  (np.array(a_dcm_matrix[1][0]))[0], (np.array(a_dcm_matrix[0][0]))[0] );
-    
+      
         pitch = - math.asin(a_dcm_matrix[2,0])
         
         roll  = math.atan2(a_dcm_matrix[2,1],a_dcm_matrix[2,2])
@@ -394,7 +400,7 @@ class DCMizer(object):
         return (res_accel, res_magnetom, res_gyro)
         
     
-    def drift_correction(self, accel_vector, a_omega_p, a_omega_i, mag_heading):
+    def _drift_correction(self, accel_vector, a_omega_p, a_omega_i, mag_heading):
         """
         /**************************************************/
             void Drift_correction(void)
@@ -490,9 +496,8 @@ class DCMizer(object):
         #calculate yaw error
         error_course = (self._dcm_matrix[0,0] * mag_heading_y) - (self._dcm_matrix[1,0] * mag_heading_x)
        
-        #Applys the yaw correction to the XYZ rotation of the aircraft, depeding the position.
-        #TODO Need to resize dcm_matrix[2][0] as an array to have the rigth dim   
-        self._err_yaw = self._dcm_matrix[2][0] * error_course
+        #Applys the yaw correction to the XYZ rotation of the aircraft, depeding the position.   
+        self._err_yaw = np.squeeze(np.array(self._dcm_matrix[2][0])) * error_course
         
         #.01proportional of YAW.
         # can be simplified in 
@@ -600,16 +605,44 @@ class DCMizer(object):
         self._dcm_matrix = DCMizer.normalize_matrix(self._dcm_matrix)
         
         #DRIFT_CORRECTION                              
-        (self._omega_p, self._omega_i) = self.drift_correction(accel_vector, self._omega_p, self._omega_i, mag_heading)
+        (self._omega_p, self._omega_i) = self._drift_correction(accel_vector, self._omega_p, self._omega_i, mag_heading)
         
-        #Euler angles
-        (pitch, roll, yaw) = DCMizer.euler_angles(self._dcm_matrix)
+    def compute_euler_angles(self, gyro_dt, gyro_vec, accel_vec, mag_vec):
+        """
+           @gyro_dt   : gyroscope delta time (time diff between 2 samples)
+           @gyro_vec  : gyro vec components (x,y,z) given in rad/s-1
+           @accel_vec : accelerometer vec components (x,y,z) given in m/s-2
+           @mag_vec   : magnetometer vec compoenents (x,y,z) 
+           
+           Pass the different measurement for one pass and compute the euler angles based on the previous
+           conditions (dcm, pitch, roll, yaw, ...)
+        """
         
+        #compensate the error coming from the sensors
+        accel_vec, mag_vec, gyro_vec = DCMizer.compensate_sensor_error(accel_vec, mag_vec, gyro_vec)
         
-        print("pitch = %s, roll = %s, yaw = %s" %(pitch, roll, yaw))
+        #compute the mag heading 
+        mag_heading = DCMizer.compass_heading(mag_vec, self._roll, self._pitch)
         
-        return (pitch, roll, yaw)
-          
+        #calculate the new dcm
+        self._compute_dcm(mag_heading, mag_vec, gyro_dt, gyro_vec, accel_vec)
+        
+        #convert dcm to Euler angles
+        (self._pitch, self._roll, self._yaw) = DCMizer.dcm_to_euler_angles(self._dcm_matrix)
+        
+        print("pitch = %s, roll = %s, yaw = %s" %(self._pitch, self._roll, self._yaw))
+        
+        return (self._pitch, self._roll, self._yaw)
+    
+    def get_current_euler_angles(self):
+        """
+           return self._pitch, self._roll, self._yaw
+        """
+        return (self._pitch, self._roll, self._yaw)
+    
+        
+
+#TO BE REMOVED           
 def test_dcm():
     """
        test DCM
@@ -652,7 +685,7 @@ def test_dcm():
      
     print("mag_heading = %s\n" % (mag_heading))
     
-    dcmizer = DCMizer(omega_p, omega_i, input_dm)
+    dcmizer = DCMizer(omega_p, omega_i, pitch, roll, yaw, input_dm)
           
     dcmizer._compute_dcm(mag_heading, mag_vec, gyro_Dt, gyro_vec, accel_vec)
 
