@@ -634,7 +634,7 @@ class DCMizer(object):
     
     def get_current_euler_angles(self):
         """
-           return self._pitch, self._roll, self._yaw
+           return self._pitch, self._roll, self._yaw in radians
         """
         return (self._pitch, self._roll, self._yaw)
     
