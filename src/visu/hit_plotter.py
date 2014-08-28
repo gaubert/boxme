@@ -4,78 +4,159 @@ Created on Aug 28, 2014
 @author: gaubert
 '''
 import numpy as np
-import time
+from collections import deque
 from matplotlib import pyplot as plt
+
+class AnalogData:
+
+    def __init__(self, maxLen):
+        self.ax = deque([0.0]*maxLen)
+        self.ay = deque([0.0]*maxLen)
+        self.az = deque([0.0]*maxLen)
+        self.maxLen = maxLen
+ 
+    def addToBuf(self, buf, val):
+        if len(buf) < self.maxLen:
+            buf.append(val)
+        else:
+            buf.pop()
+            buf.appendleft(val)
+            
+    def add(self, data):
+        assert(len(data) == 3)
+        self.addToBuf(self.ax, data[0])
+        self.addToBuf(self.ay, data[1])
+        self.addToBuf(self.az, data[2])
+        
+    def add_x(self,val):
+        """
+        """
+        self.addToBuf(self.ax, val)
+    
+    def add_y(self,val):
+        """
+        """
+        self.addToBuf(self.ay, val)
+    
+    def add_z(self,val):
+        """
+        """
+        self.addToBuf(self.az, val)
+
+class Plotter:
+    
+    def __init__(self, analogData, min_s = None, max_s = None):
+        """
+           constructor
+        """
+        #set number of points limits
+        if min_s == None:
+            min_s = 0
+        
+        if max_s == None:
+            max_s = len(analogData.ax)
+        
+        self._xdata = None
+        self._ydata = None
+        self._zdata = None
+        
+        self._sub_plot_x = None
+        self._sub_plot_y = None
+        self._sub_plot_z = None
+        
+        self._axline = None
+        self._ayline = None
+        self._azline = None
+        
+        self._create_plot()
+            
+    
+    def _create_plot(self):
+        """
+           create the plot
+        """
+        
+        self._ydata = [0] * 100
+        self._xdata = [0] * 100
+        self._zdata = [0] * 100
+        
+        plt.ion()
+        fig = plt.figure(figsize=(20, 15))
+            
+        self._sub_plot_x = fig.add_subplot(311)
+        self._sub_plot_x.set_autoscaley_on(False)
+        self._sub_plot_x.set_ylim([-4096, 4096])
+        self._sub_plot_x.set_title('x axis acceleration')
+        self._axline, = plt.plot(self._xdata, color = "blue")
+        
+        self._sub_plot_y = fig.add_subplot(312)
+        self._sub_plot_y.set_autoscaley_on(False)
+        self._sub_plot_y.set_ylim([-4096, 4096])
+        self._sub_plot_y.set_title('y axis acceleration')
+        self._ayline, = plt.plot(self._ydata, color = "red")
+        
+        self._sub_plot_z = fig.add_subplot(313)
+        self._sub_plot_z.set_autoscaley_on(False)
+        self._sub_plot_z.set_ylim([-4096, 4096])
+        self._sub_plot_z.set_title('z axis acceleration')
+        self._azline, = plt.plot(self._ydata, color = "green")
+        
+        plt.ylim([10,40])
+        
+    def clean(self):
+        """
+           clean matplotlib resources
+        """
+        plt.close()
+        
+    def update(self, analogData):
+        """
+           Update the plot
+        """
+        
+        x_ymin = float(min(self._xdata))-10
+        x_ymax = float(max(self._xdata))+10
+        self._sub_plot_x.set_ylim([x_ymin,x_ymax])
+        self._xdata.append(analogData.ax.pop(0))
+        del self._xdata[0]
+        self._axline.set_xdata(np.arange(len(self._xdata)))
+        self._axline.set_ydata(self._xdata)  # update the data
+    
+        
+        y_ymin = float(min(self._ydata))-50
+        y_ymax = float(max(self._ydata))+50
+        self._sub_plot_y.set_ylim([y_ymin,y_ymax])
+        self._ydata.append(analogData.ay.pop(0))
+        del self._ydata[0]
+        self._ayline.set_xdata(np.arange(len(self._ydata)))
+        self._ayline.set_ydata(self._ydata)  # update the data
+        
+        z_ymin = float(min(self._zdata))-50
+        z_ymax = float(max(self._zdata))+50
+        self._sub_plot_z.set_ylim([z_ymin,z_ymax])
+        self._zdata.append(analogData.az.pop(0))
+        del self._zdata[0]
+        self._azline.set_xdata(np.arange(len(self._zdata)))
+        self._azline.set_ydata(self._zdata)  # update the data
+    
+        plt.draw() # update the plot
+
 
 if __name__ == '__main__':
     
-    ydata = [0] * 50
-    xdata = [0] * 50
-    zdata = [0] * 50
-    
-    plt.ion()
-    
-    fig = plt.figure(figsize=(20, 15))
-        
-    sub_plot_x = fig.add_subplot(311)
-    sub_plot_x.set_autoscaley_on(False)
-    sub_plot_x.set_ylim([-4096, 4096])
-    axline, = plt.plot(xdata, color = "blue")
-    sub_plot_x.set_title('x axis acceleration')
-    
-    sub_plot_y = fig.add_subplot(312)
-    sub_plot_y.set_autoscaley_on(False)
-    sub_plot_y.set_ylim([-4096, 4096])
-    sub_plot_y.set_title('y axis acceleration')
-    ayline, = plt.plot(ydata, color = "red")
-    sub_plot_z = fig.add_subplot(313)
-    sub_plot_z.set_autoscaley_on(False)
-    sub_plot_z.set_ylim([-4096, 4096])
-    sub_plot_z.set_title('z axis acceleration')
-    azline, = plt.plot(ydata, color = "green")
-    
-    plt.ylim([10,40])
- 
     # start data collection
-    all_data_x = ["0.0","1.1","2.2","3.3","4.4","5.5","6.6","7.7","8.8","9.9","10.10","0.0","1.1","2.2","3.3","4.4","5.5","6.6","7.7","8.8","9.9","10.10","0.0","1.1","2.2","3.3","4.4","5.5","6.6","7.7","8.8","9.9","10.10"]
-
-    all_data_y = ["100.100", "110.110", "120.120", "130.130", "140.140", "150.150", "160.160", "170.170", "180.180", "190.190", "200.200","100.100", "110.110", "120.120", "130.130", "140.140", "150.150", "160.160", "170.170", "180.180", "190.190", "200.200"]
-
-    all_data_z = ["100.100", "110.110", "120.120", "130.130", "140.140", "150.150", "160.160", "170.170", "180.180", "190.190", "200.200","100.100", "110.110", "120.120", "130.130", "140.140", "150.150", "160.160", "170.170", "180.180", "190.190", "200.200"]
-
-    while len(all_data_x) > 0 or len(all_data_y) > 0 or len(all_data_z) > 0:  
-        # port and strip line endings
-        #data = all_data_x.pop(0)
-        
-        if len(all_data_x) > 0:
-            x_ymin = float(min(xdata))-10
-            x_ymax = float(max(xdata))+10
-            sub_plot_x.set_ylim([x_ymin,x_ymax])
-            xdata.append(all_data_x.pop(0))
-            del xdata[0]
-            axline.set_xdata(np.arange(len(xdata)))
-            axline.set_ydata(xdata)  # update the data
-        
-        if len(all_data_y) > 0:
-            y_ymin = float(min(ydata))-50
-            y_ymax = float(max(ydata))+50
-            sub_plot_y.set_ylim([y_ymin,y_ymax])
-            ydata.append(all_data_y.pop(0))
-            del ydata[0]
-            ayline.set_xdata(np.arange(len(ydata)))
-            ayline.set_ydata(ydata)  # update the data
-        
-        if len(all_data_z) > 0:
-            z_ymin = float(min(zdata))-50
-            z_ymax = float(max(zdata))+50
-            sub_plot_z.set_ylim([z_ymin,z_ymax])
-            zdata.append(all_data_z.pop(0))
-            del zdata[0]
-            azline.set_xdata(np.arange(len(ydata)))
-            azline.set_ydata(ydata)  # update the data
-        
-        plt.draw() # update the plot
+    data_x = xrange(0,500)
+    data_y = xrange(500,1000)
+    data_z = xrange(1000,1500)
     
-        print("sleep for 5s")
-        time.sleep(0.01)
+    analogData = AnalogData(5000)
+    
+    plotter = Plotter(analogData, 0, 2000)
+
+    for i in xrange(0,500):
+        analogData.add((data_x[i], data_y[i], data_z[i]))
+    
+    while len(analogData.ax) > 0:
+        plotter.update(analogData)
+     
     
