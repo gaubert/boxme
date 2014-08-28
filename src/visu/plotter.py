@@ -36,41 +36,6 @@ class AnalogData:
         self.addToBuf(self.ay, data[1])
         self.addToBuf(self.az, data[2])
 
-class AnalogDynamicPlotter:
-    
-    def __init__(self, analogData):
-        # set plot to animated
-        plt.ion() 
-        self.axline, = plt.plot(analogData.ax)
-        self.ayline, = plt.plot(analogData.ay)
-        self.azline, = plt.plot(analogData.az)
-        
-        #set default plt dim
-        plt.ylim([-4096, 4096])
- 
-    def update(self, analogData):
-        self.axline.set_ydata(analogData.ax)
-        self.ayline.set_ydata(analogData.ay)
-        self.azline.set_ydata(analogData.az)
-        plt.draw()
-        
-    def set_plt_dim(self, min_y, max_y):
-        """
-           set the min/max y dim for sizing the plot
-        """
-        plt.ylim([min_y, max_y])
-    
-    def draw(self):
-        """
-          draw a plot with the existing data
-        """
-        plt.draw()
-        
-    def show(self):
-        """
-        """
-        plt.show()
-
 class AnalogStaticPlotter:
     
     def __init__(self, analogData, min_s = None, max_s = None):
@@ -83,9 +48,11 @@ class AnalogStaticPlotter:
         
         if max_s == None:
             max_s = len(analogData.ax)
-        
+                    
         # set plot to animated
+        plt.ion()
         fig = plt.figure(figsize=(20, 15))
+        
         sub_plot = fig.add_subplot(311)
         sub_plot.set_autoscaley_on(False)
         sub_plot.set_ylim([-4096, 4096])
@@ -113,7 +80,7 @@ class AnalogStaticPlotter:
         """
            clean matplotlib resources
         """
-        matplotlib.pyplot.close()
+        plt.close()
         
     def update(self, analogData, min_s = None, max_s = None):
         """
@@ -385,7 +352,7 @@ def test_new_sample():
     except KeyboardInterrupt:
         print 'existing'
 
-def plot_new_file(filename, min_s= None, max_s = None):
+def plot_in_file(filename, min_s= None, max_s = None):
     """
        draw a plot once from a sample file
        draw from sampling value index min_sampling and value index max_sampling
@@ -407,45 +374,44 @@ def plot_new_file(filename, min_s= None, max_s = None):
     analogPlot.set_plt_dim(min_max["min"] - 100, min_max["max"] + 100)
     
     try:
-        analogPlot.save_fig("/tmp/%s.png" % (filename))
-        #analogPlot.show()
-        #time.sleep(20)
+        #analogPlot.save_fig("/tmp/%s.png" % (filename))
+        analogPlot.show()
+        time.sleep(20)
     except KeyboardInterrupt:
         print 'existing'
 
 
-def plot_file(filename, min_s= None, max_s = None):
+def plot_interactive(filename, min_s= 0, max_s = 2000):
     """
-       draw a plot once from a sample file
-       draw from sampling value index min_sampling and value index max_sampling
+       Interactive plot scenario
     """    
     the_dir = "."
-    file_path = "../../etc/samples/2014-04-09/%s" % (filename)
-    #file_path = "%s/etc/%s" % (the_dir, filename)
+    file_path = "%s/etc/%s" % (the_dir, filename)
     
     analogData = AnalogData(5000)
-    data_elems, min_max = read_sample_data(file_path)
+    data_elems, min_max = read_new_sample_data(file_path)
     
     print("nb points: %d\n" % len(data_elems))
     
     for data in data_elems:
         analogData.add((data['ax'], data['ay'], data['az']))
-    
-    analogPlot = AnalogStaticPlotter(analogData, min_s, max_s)
+        
+    analogPlot = AnalogDynamicPlotter(analogData, min_s, max_s)
     analogPlot.set_plt_dim(min_max["min"] - 100, min_max["max"] + 100)
     
     try:
-        analogPlot.save_fig("../../plots/%s.png" % (filename))
-        #time.sleep(20)
+        #analogPlot.save_fig("/tmp/%s.png" % (filename))
+        analogPlot.show()
+        time.sleep(10)
     except KeyboardInterrupt:
         print 'existing'
-        
 
 
 if __name__ == '__main__':
     #test_sample1()
-    plot_new_file("new_acc_data_scenario1_without_impact", 0, 2000)
-    plot_new_file("new_acc_data_scenario2_with_impact", 0, 1000)
+    #plot_interactive("new_acc_data_scenario1_without_impact", 0, 2000)
+    plot_in_file("new_acc_data_scenario1_without_impact", 0, 2000)
+    #plot_in_file("new_acc_data_scenario2_with_impact", 0, 1000)
     #plot_file("crochet_sample", 0, 600)
     #plot_file("direct_sample", 0, 600)
     #plot_file("uppercuts_sample", 0, 600)
