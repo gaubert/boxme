@@ -636,9 +636,16 @@ class DCMizer(object):
     
     def get_current_euler_angles(self):
         """
-           return self._pitch, self._roll, self._yaw
+           return self._pitch, self._roll, self._yaw in radians
         """
         return (self._pitch, self._roll, self._yaw)
+    
+    def project_to_inertial_frame(self, vec):
+        """
+           Inertial frame axes are the Earth fixed axis
+           USe the dcm to do the conversion
+        """
+        return self._dcm_matrix.dot(vec)
     
         
 
