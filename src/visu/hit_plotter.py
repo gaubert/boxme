@@ -215,7 +215,7 @@ def test_with_file(filename):
     """
        Test with a file
     """
-    the_dir = "."
+    the_dir = "../.."
     file_path = "%s/etc/%s" % (the_dir, filename)
     
     min_max = { "min" : 4096.00, "max": -4096.00, }
