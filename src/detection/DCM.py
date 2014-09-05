@@ -6,7 +6,7 @@ Created on Aug 11, 2014
 https://github.com/jmesmon/imu_9drazor/blob/master/src/SF9DOF_AHRS/SF9DOF_AHRS.pde
 
 '''
-
+import Parser
 import numpy as np
 import math
 
@@ -85,15 +85,15 @@ def gyro_scaled_rad(a_gyro_val):
 class DCMizer(object):
 
 
-    def __init__(self, omega_p, omega_i, pitch, roll, yaw, input_dcm = None):
+    def __init__(self, omega_p, omega_i, yaw, roll, pitch, input_dcm = None):
         """
           @omega_p   : initial omega proportional correction
           @omega_i   : initial omega integrator 
           @input_dcm : initial DCM matrix
         """
-        self.reset(omega_p, omega_i, pitch, roll, yaw, input_dcm) # init is a standard reset
+        self.reset(omega_p, omega_i, yaw, roll, pitch, input_dcm) # init is a standard reset
     
-    def reset(self, omega_p, omega_i, pitch, roll, yaw, input_dcm = None):
+    def reset(self, omega_p, omega_i, yaw, roll, pitch, input_dcm = None):
         """
            reset internal values passing the following arguments
         """
@@ -115,7 +115,7 @@ class DCMizer(object):
         
     
     @classmethod
-    def init_rotation_matrix(cls, roll, pitch, yaw):
+    def init_rotation_matrix(cls, yaw, roll, pitch):
         """
         
            // Init rotation matrix using euler angles
@@ -222,7 +222,7 @@ class DCMizer(object):
         
     
     @classmethod
-    def compass_heading(cls, magnetom, roll, pitch):
+    def compass_heading(cls, magnetom, pitch, roll):
         """ update compas values
         
           float mag_x;
@@ -622,23 +622,23 @@ class DCMizer(object):
         accel_vec, mag_vec, gyro_vec = DCMizer.compensate_sensor_error(accel_vec, mag_vec, gyro_vec)
         
         #compute the mag heading 
-        mag_heading = DCMizer.compass_heading(mag_vec, self._roll, self._pitch)
+        mag_heading = DCMizer.compass_heading(mag_vec, self._pitch, self._roll)
         
         #calculate the new dcm
         self._compute_dcm(mag_heading, mag_vec, gyro_dt, gyro_vec, accel_vec)
         
         #convert dcm to Euler angles
-        (self._pitch, self._roll, self._yaw) = DCMizer.dcm_to_euler_angles(self._dcm_matrix)
+        ((self._yaw, self._roll, self._pitch)) = DCMizer.dcm_to_euler_angles(self._dcm_matrix)
         
-        print("pitch = %s, roll = %s, yaw = %s" %(self._pitch, self._roll, self._yaw))
+        print("pitch = %s, roll = %s, yaw = %s" %(self._yaw, self._roll, self._pitch))
         
-        return (self._pitch, self._roll, self._yaw)
+        return (self._yaw, self._roll, self._pitch)
     
     def get_current_euler_angles(self):
         """
            return self._pitch, self._roll, self._yaw in radians
         """
-        return (self._pitch, self._roll, self._yaw)
+        return (self._yaw, self._roll, self._pitch)
     
     def project_to_inertial_frame(self, vec):
         """
@@ -695,6 +695,45 @@ def test_dcm():
     dcmizer = DCMizer(omega_p, omega_i, pitch, roll, yaw, input_dm)
           
     dcmizer._compute_dcm(mag_heading, mag_vec, gyro_Dt, gyro_vec, accel_vec)
+
+def test_dcm_data(filename):
+    """
+       test DCM data by reading a file containing end product data and comparing with the data generated with this code
+    """
+
+    the_dir = "."
+    file_path = "%s/etc/%s" % (the_dir, filename)
+    
+    parser = Parser.CardOutParser()
+    
+    first_run = True
+    
+    for line in open(file_path):
+        type, vals = parser.parse_line(line)
+        
+        if first_run :
+            first_run = False
+            # Initialisation 
+            init_accel_vec   = [vals['ax'], vals['ay'], vals['az']]
+            init_mag_vec     = [vals['mx'], vals['my'], vals['mz']]
+            idcm_matrix, iyaw, ipitch, iroll = DCMizer.reset_sensor_fusion(init_accel_vec, init_mag_vec)
+            dcmizer = DCMizer(0, 0, iyaw, ipitch, iroll, idcm_matrix)
+        else: 
+            # Extract values
+            dt     = vals['Dt'] #integration time (Delta time between each measure
+            gyro_vec    = vals['gyro_vec']
+            accel_vec   = vals['accel_vec']
+            mag_vec     = vals['mag_vec']
+            omega_i = vals['omega_i']
+            omega_p = vals['omega_p']
+            
+            # compensate_sensor_error()
+            accel_vec, mag_vec, gyro_vec = DCMizer.compensate_sensor_error(accel_vec, mag_vec, gyro_vec)
+            # compass_heading()
+            mag_heading = DCMizer.compass_heading(mag_vec, iroll, ipitch)
+            # Computer_dcm() (Matrix_update();   Normalize();   Drift_correction();   Euler_angles();
+            dcmizer._compute_dcm(mag_heading, mag_vec, dt, gyro_vec, accel_vec)
+    
 
 
 
