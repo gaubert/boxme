@@ -13,6 +13,9 @@ import time
 import numpy
 from collections import deque
 from matplotlib import pyplot as plt
+import os
+
+from scipy import integrate
 
 # class that holds analog data for N latest samples
 class AnalogData:
@@ -36,7 +39,7 @@ class AnalogData:
         self.addToBuf(self.ay, data[1])
         self.addToBuf(self.az, data[2])
 
-class AnalogStaticPlotter:
+class AnalogDynamicPlotter:
     
     def __init__(self, analogData, min_s = None, max_s = None):
         """
@@ -139,7 +142,7 @@ line_re = re.compile(line_expr)
 
 #         #acc de la plateform    #        #magneto metre             #        # gyro scope
 #T-acc:118#Am-Raw=6.00,9.00,266.00T-mag:122#Mm-Raw=-3.00,686.00,977.00T-gyr:129#Gm-Raw=30.00,46.00,-464.00
-newline_expr = "T-acc:(?P<timestamp_tacc>.*)#Am-Raw=(?P<r_ax>.*),(?P<r_ay>.*),(?P<r_az>.*)T-mag:(?P<timestamp_tmag>.*)#Mm-Raw=(?P<m_ax>.*),(?P<m_ay>.*),(?P<m_az>.*)T-gyr:(?P<timestamp_tgyr>.*)#Gm-Raw=(?P<g_ax>.*),(?P<g_ay>.*),(?P<g_az>.*)"
+newline_expr = "#T-acc#(?P<timestamp_tacc>.*)#Am-Raw#(?P<r_ax>.*),(?P<r_ay>.*),(?P<r_az>.*)#T-mag#(?P<timestamp_tmag>.*)#Mm-Raw#(?P<m_ax>.*),(?P<m_ay>.*),(?P<m_az>.*)#T-gyr#(?P<timestamp_tgyr>.*)#Gm-Raw#(?P<g_ax>.*),(?P<g_ay>.*),(?P<g_az>.*)"
 new_line_re  = re.compile(newline_expr)
 
 def update_min_max(elem, new_val):
@@ -264,7 +267,7 @@ def test_1():
   
 
     analogData = AnalogData(100)
-    analogPlot = AnalogPlotter(analogData)
+    analogPlot = AnalogDynamicPlotter(analogData)
  
     print 'plotting data...'
   
@@ -290,7 +293,7 @@ def test_2():
     file_path = "%s/etc/data_sample1" % (the_dir)
     
     analogData = AnalogData(5000)
-    analogPlot = AnalogStaticPlotter(analogData)
+    analogPlot = AnalogDynamicPlotter(analogData)
     
     data_elems, min_max = read_sample_data(file_path)
     
@@ -318,7 +321,7 @@ def test_sample1():
     for data in data_elems:
         analogData.add((data['ax'], data['ay'], data['az']))
     
-    analogPlot = AnalogStaticPlotter(analogData)
+    analogPlot = AnalogDynamicPlotter(analogData)
     analogPlot.set_plt_dim(min_max["min"] - 100, min_max["max"] + 100)
     
     try:
@@ -342,7 +345,7 @@ def test_new_sample():
     for data in data_elems:
         analogData.add((data['ax'], data['ay'], data['az']))
     
-    analogPlot = AnalogStaticPlotter(analogData)
+    analogPlot = AnalogDynamicPlotter(analogData)
     analogPlot.set_plt_dim(min_max["min"] - 100, min_max["max"] + 100)
     
     try:
@@ -357,8 +360,9 @@ def plot_in_file(filename, min_s= None, max_s = None):
        draw a plot once from a sample file
        draw from sampling value index min_sampling and value index max_sampling
     """    
+    cwd= os.getcwd()
     the_dir = "."
-    file_path = "%s/etc/%s" % (the_dir, filename)
+    file_path = "%s/etc/samples/2014-09-01/%s" % (the_dir, filename)
     
     analogData = AnalogData(5000)
     data_elems, min_max = read_new_sample_data(file_path)
@@ -370,13 +374,13 @@ def plot_in_file(filename, min_s= None, max_s = None):
     
     
     
-    analogPlot = AnalogStaticPlotter(analogData, min_s, max_s)
+    analogPlot = AnalogDynamicPlotter(analogData, min_s, max_s)
     analogPlot.set_plt_dim(min_max["min"] - 100, min_max["max"] + 100)
     
     try:
-        #analogPlot.save_fig("/tmp/%s.png" % (filename))
-        analogPlot.show()
-        time.sleep(20)
+        analogPlot.save_fig("./plots/%s.png" % (filename))
+#         analogPlot.show()
+        time.sleep(1)
     except KeyboardInterrupt:
         print 'existing'
 
@@ -386,7 +390,7 @@ def plot_interactive(filename, min_s= 0, max_s = 2000):
        Interactive plot scenario
     """    
     the_dir = "."
-    file_path = "%s/etc/%s" % (the_dir, filename)
+    file_path = "%s/etc/samples/2014-09-01/%s" % (the_dir, filename)
     
     analogData = AnalogData(5000)
     data_elems, min_max = read_new_sample_data(file_path)
@@ -410,7 +414,21 @@ def plot_interactive(filename, min_s= 0, max_s = 2000):
 if __name__ == '__main__':
     #test_sample1()
     #plot_interactive("new_acc_data_scenario1_without_impact", 0, 2000)
-    plot_in_file("new_acc_data_scenario1_without_impact", 0, 2000)
+    plot_in_file("Sample1_nomove_10sec", 0, 2000)
+    plot_in_file("alamain_x", 0, 2000)
+    plot_in_file("alamain_y", 0, 2000)
+    plot_in_file("alamain_z", 0, 2000)
+    plot_in_file("vstable_x", 0, 2000)
+    plot_in_file("vstable_y", 0, 2000)
+    plot_in_file("vstable_z", 0, 2000)
+    plot_in_file("direct_du_droit_sans_bouger", 0, 2000)
+    plot_in_file("real_sample_direct_droit", 0, 2000)
+    plot_in_file("crochet_droit_sans_bouger", 0, 2000)
+    plot_in_file("crochet_droit_sans_bouger_retour", 0, 2000)
+    plot_in_file("real_sample_crochet_droit", 0, 2000)
+    plot_in_file("uppercut_droit_sans_bouger", 0, 2000)
+    plot_in_file("uppercut_droit_sans_bouger_retour", 0, 2000)
+    plot_in_file("real_sample_uppercut_droit", 0, 2000)
     #plot_in_file("new_acc_data_scenario2_with_impact", 0, 1000)
     #plot_file("crochet_sample", 0, 600)
     #plot_file("direct_sample", 0, 600)
