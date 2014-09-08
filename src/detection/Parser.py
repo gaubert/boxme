@@ -2,29 +2,41 @@ import re
 
 class CardOutParser(object):
     
-    LINEEXPR    = "##T-step: old_ts#(?P<tstep_old>.*), new_ts#(?P<tstep_new>.*), gyro_Dt#(?P<dt>.*)"
-    lre_timing  = re.compile(LINEEXPR)
+    SETUP_READSEN   = "##S#read_sens()#T-acc:(?P<itacc>.*)#Am-Raw:(?P<iamx>.*),(?P<iamy>.*),(?P<iamz>.*)#T-gyr:(?P<itgyr>.*)#Gm-Raw:(?P<igx>.*),(?P<igy>.*),(?P<igz>.*)#T-mag:(?P<itmag>.*)#Mm-Raw:(?P<imx>.*),(?P<imy>.*),(?P<imz>.*)"
+    lre_sreadsen    = re.compile(SETUP_READSEN)
     
-    LINEEXPR    = "#T-acc#(?P<timestamp_tacc>.*)#Am-Raw#(?P<r_ax>.*),(?P<r_ay>.*),(?P<r_az>.*)#T-gyr#(?P<timestamp_tgyr>.*)#Gm-Raw#(?P<g_ax>.*),(?P<g_ay>.*),(?P<g_az>.*)#T-mag#(?P<timestamp_tmag>.*)#Mm-Raw#(?P<m_ax>.*),(?P<m_ay>.*),(?P<m_az>.*)"
-    lre_data  = re.compile(LINEEXPR)
+    SETUP_COMPHEAD  = "##S#comp_head()#mag_x:(?P<imag_x>.*)#mag_y:(?P<imag_y>.*)#MAG_Heading:(?P<imag_head>.*)"
+    lre_scomphead   = re.compile(SETUP_COMPHEAD)
     
-    LINEEXPR    = "#Am-comp#(?P<r_acx>.*),(?P<r_acy>.*),(?P<r_acz>.*)#Gm-comp#(?P<g_acx>.*),(?P<g_acy>.*),(?P<g_acz>.*)#Mm-comp#(?P<m_acx>.*),(?P<m_acy>.*),(?P<m_acz>.*)"
-    lre_compensate  = re.compile(LINEEXPR)
+    SETUP_IYPR      = "##S#iYPR()#pitch:(?P<ipitch>.*)#roll:(?P<iroll>.*)#yaw:(?P<iyaw>.*)"
+    lre_siypr       = re.compile(SETUP_IYPR)
     
-    LINEEXPR    = "#mag_x#(?P<max_x>.*)#mag_y#(?P<mag_y>.*)#mag_head#(?P<mag_head>.*)"
-    lre_compass  = re.compile(LINEEXPR)
+    SETUP_IDM       = "##S#init_rot_mat:(?P<iDM00>.*),(?P<iDM01>.*),(?P<iDM02>.*),;(?P<iDM10>.*),(?P<iDM11>.*),(?P<iDM12>.*),;(?P<iDM20>.*),(?P<iDM21>.*),(?P<iDM22>.*),;"
+    lre_sidm        = re.compile(SETUP_IDM)
     
-    LINEEXPR    = "#T-acc:(?P<timestamp_tacc>.*)#Am-Raw#(?P<r_ax>.*),(?P<r_ay>.*),(?P<r_az>.*)#T-gyr#(?P<timestamp_tgyr>.*)#Gm-Raw#(?P<g_ax>.*),(?P<g_ay>.*),(?P<g_az>.*)#T-mag#(?P<timestamp_tmag>.*)#Mm-Raw#(?P<m_ax>.*),(?P<m_ay>.*),(?P<m_az>.*)"
-    lre_matrix  = re.compile(LINEEXPR)
+    LOOP_TIM        = "##L#old_ts:(?P<tstep_old>.*)#new_ts:(?P<tstep_new>.*)#gyro_Dt:(?P<dt>.*)"
+    lre_ltiming     = re.compile(LOOP_TIM)
     
-    LINEEXPR    = "#T-acc:(?P<timestamp_tacc>.*)#Am-Raw#(?P<r_ax>.*),(?P<r_ay>.*),(?P<r_az>.*)#T-gyr#(?P<timestamp_tgyr>.*)#Gm-Raw#(?P<g_ax>.*),(?P<g_ay>.*),(?P<g_az>.*)#T-mag#(?P<timestamp_tmag>.*)#Mm-Raw#(?P<m_ax>.*),(?P<m_ay>.*),(?P<m_az>.*)"
-    lre_norm  = re.compile(LINEEXPR)
+    LOOP_READSEN    = "##L#read_sens()#T-acc:(?P<tacc>.*)#Am-Raw:(?P<amx>.*),(?P<amy>.*),(?P<amz>.*)#T-gyr:(?P<tgyr>.*)#Gm-Raw:(?P<gx>.*),(?P<gy>.*),(?P<gz>.*)#T-mag:(?P<tmag>.*)#Mm-Raw:(?P<mx>.*),(?P<my>.*),(?P<mz>.*)"
+    lre_ldata       = re.compile(LOOP_READSEN)
     
-    LINEEXPR    = "#T-acc:(?P<timestamp_tacc>.*)#Am-Raw#(?P<r_ax>.*),(?P<r_ay>.*),(?P<r_az>.*)#T-gyr#(?P<timestamp_tgyr>.*)#Gm-Raw#(?P<g_ax>.*),(?P<g_ay>.*),(?P<g_az>.*)#T-mag#(?P<timestamp_tmag>.*)#Mm-Raw#(?P<m_ax>.*),(?P<m_ay>.*),(?P<m_az>.*)"
-    lre_drift  = re.compile(LINEEXPR)
+    LOOP_COMP       = "##L#Comp_error()#(NOTcompensate magn error)##AFTER##acc[0,1,2]:(?P<acc_vec0>.*),(?P<acc_vec1>.*),(?P<acc_vec2>.*)#magnetom[0,1,2]:(?P<mag_vec0>.*),(?P<mag_vec1>.*),(?P<mag_vec2>.*)#gyro[0,1,2]:(?P<gyr_vec0>.*),(?P<gyr_vec1>.*),(?P<gyr_vec2>.*)"
+    lre_lcompensate = re.compile(LOOP_COMP)
     
-    LINEEXPR    = "#T-acc:(?P<timestamp_tacc>.*)#Am-Raw#(?P<r_ax>.*),(?P<r_ay>.*),(?P<r_az>.*)#T-gyr#(?P<timestamp_tgyr>.*)#Gm-Raw#(?P<g_ax>.*),(?P<g_ay>.*),(?P<g_az>.*)#T-mag#(?P<timestamp_tmag>.*)#Mm-Raw#(?P<m_ax>.*),(?P<m_ay>.*),(?P<m_az>.*)"
-    lre_euler = re.compile(LINEEXPR)
+    LOOP_COMPHEAD   = "##L#comp_head()#mag_x:(?P<mag_x>.*)#mag_y:(?P<mag_y>.*)#MAG_Heading:(?P<mag_head>.*)"
+    lre_lcomphead   = re.compile(LOOP_COMPHEAD)
+    
+    LOOP_UPDMAT     = "##L#Matr_updt()#omega_i[0],[1],[2]:(?P<omega_i0>.*),(?P<omega_i1>.*),(?P<omega_i2>.*)#omega_p[0],[1],[2]:(?P<omega_p0>.*),(?P<omega_p1>.*),(?P<omega_p2>.*)#(Drift correction used)##G_Dt:(?P<dt>.*)#Omega_Vector[0]:(?P<omega_vec0>.*)#Omega_Vector[1]:(?P<omega_vec1>.*)#Omega_Vector[2]:(?P<omega_vec2>.*)#DM_after_matrix_mult():(?P<tDM00>.*),(?P<tDM01>.*),(?P<tDM02>.*),;(?P<tDM10>.*),(?P<tDM11>.*),(?P<tDM12>.*),;(?P<tDM20>.*),(?P<tDM21>.*),(?P<tDM22>.*),;"
+    lre_lmatrix     = re.compile(LOOP_UPDMAT)
+    
+    LOOP_NORM       = "##L#Norm()#DCM_Matrix[0][0], [1][0], [2][0]:(?P<DM00>.*),(?P<DM01>.*),(?P<DM02>.*),;(?P<DM10>.*),(?P<DM11>.*),(?P<DM12>.*),;(?P<DM20>.*),(?P<DM21>.*),(?P<DM22>.*),;"
+    lre_Lnorm       = re.compile(LOOP_NORM)
+    
+    LOOP_DRIFT      = "##L#Drift_corr()#errorCourse:(?P<err_course>.*)#errorYaw[0],[1],[2]:(?P<errorYaw0>.*),(?P<errorYaw1>.*),(?P<errorYaw2>.*)#Scaled_Omega_P[0],[1],[2]:(?P<Scaled_Omega_P0>.*),(?P<Scaled_Omega_P1>.*),(?P<Scaled_Omega_P2>.*)#Omega_P[0],[1],[2]:(?P<Omega_P0>.*),(?P<Omega_P1>.*),(?P<Omega_P2>.*)#Scaled_Omega_I[0],[1],[2]:(?P<Scaled_Omega_I0>.*),(?P<Scaled_Omega_I1>.*),(?P<Scaled_Omega_I2>.*)#Omega_I[0],[1],[2]:(?P<Omega_I0>.*),(?P<Omega_I1>.*),(?P<Omega_I2>.*)"
+    lre_ldrift       = re.compile(LOOP_DRIFT)
+    
+    LOOP_EULER      = "##L#Eul_ang()#pitch:(?P<pitch>.*)#roll:(?P<roll>.*)#yaw:(?P<yaw>.*)#final_DM:(?P<fDM00>.*),(?P<fDM01>.*),(?P<fDM02>.*),;(?P<fDM10>.*),(?P<fDM11>.*),(?P<fDM12>.*),;(?P<fDM20>.*),(?P<fDM21>.*),(?P<fDM22>.*)"
+    lre_leuler       = re.compile(LOOP_EULER)
     
     def __init__(self):
         """
