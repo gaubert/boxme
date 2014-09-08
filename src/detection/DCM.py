@@ -706,19 +706,26 @@ def test_dcm_data(filename):
     
     parser = Parser.CardOutParser()
     
-    first_run = True
+    i = 0
     
     for line in open(file_path):
-        type, vals = parser.parse_line(line)
-        
-        if first_run :
-            first_run = False
+        if i<4 & i>=0 :
+            # Loop through init debug lines (4 lines)
+            vals = parser.parse_line(line,i)
+            i+=1
             # Initialisation 
             init_accel_vec   = [vals['ax'], vals['ay'], vals['az']]
             init_mag_vec     = [vals['mx'], vals['my'], vals['mz']]
             idcm_matrix, iyaw, ipitch, iroll = DCMizer.reset_sensor_fusion(init_accel_vec, init_mag_vec)
             dcmizer = DCMizer(0, 0, iyaw, ipitch, iroll, idcm_matrix)
         else: 
+            # Loop through normal steps
+            vals = parser.parse_line(line,i)
+            # Check if i needs reinitializing
+            if i > 10:
+                i = 4
+            else:
+                i+=1
             # Extract values
             dt     = vals['Dt'] #integration time (Delta time between each measure
             gyro_vec    = vals['gyro_vec']
