@@ -1,9 +1,46 @@
 import re
 
-class CardOutParser(object):
+
+class Parser(object):
+    
+    def __init__(self):
+        """
+           Do nothing for the moment
+        """
+        self._nb_line = 0
+    
+    def parse_line(self, line, loop_iter):
+        """
+           to be implemented in 
+        """
+        raise NotImplementedError("Please implement parse_line in child")
+    
+
+
+class CardSingleLineParser(Parser):
+    """
+       Class allowing to parse always the same line for the card in operational mode
+    """
+    def __init__(self):
+        """
+           constructor
+        """
+        super(CardSingleLineParser, self).__init__() 
+        
+    
+
+
+class DebugParser(Parser):
+    """
+       Class allowing to parse a card in debug mode with lots of information provided
+    """
     
     SETUP_READSEN   = "##S#read_sens()#T-acc:(?P<itacc>.*)#Am-Raw:(?P<iamx>.*),(?P<iamy>.*),(?P<iamz>.*)#T-gyr:(?P<itgyr>.*)#Gm-Raw:(?P<igx>.*),(?P<igy>.*),(?P<igz>.*)#T-mag:(?P<itmag>.*)#Mm-Raw:(?P<imx>.*),(?P<imy>.*),(?P<imz>.*)"
+    SETUP_READSEN_RE = re.compile(SETUP_READSEN)
+    
     SETUP_COMPHEAD  = "##S#comp_head()#mag_x:(?P<imag_x>.*)#mag_y:(?P<imag_y>.*)#MAG_Heading:(?P<imag_head>.*)"
+    SETUP_COMPHEAD_RE = re.compile(SETUP_COMPHEAD)
+    
     SETUP_IYPR      = "##S#iYPR()#pitch:(?P<ipitch>.*)#roll:(?P<iroll>.*)#yaw:(?P<iyaw>.*)"
     SETUP_IDM       = "##S#init_rot_mat:(?P<iDM00>.*),(?P<iDM01>.*),(?P<iDM02>.*),;(?P<iDM10>.*),(?P<iDM11>.*),(?P<iDM12>.*),;(?P<iDM20>.*),(?P<iDM21>.*),(?P<iDM22>.*),;"
   
@@ -16,21 +53,36 @@ class CardOutParser(object):
     LOOP_DRIFT      = "##L#Drift_corr()#errorCourse:(?P<err_course>.*)#errorYaw[0],[1],[2]:(?P<errorYaw0>.*),(?P<errorYaw1>.*),(?P<errorYaw2>.*)#Scaled_Omega_P[0],[1],[2]:(?P<Scaled_Omega_P0>.*),(?P<Scaled_Omega_P1>.*),(?P<Scaled_Omega_P2>.*)#Omega_P[0],[1],[2]:(?P<Omega_P0>.*),(?P<Omega_P1>.*),(?P<Omega_P2>.*)#Scaled_Omega_I[0],[1],[2]:(?P<Scaled_Omega_I0>.*),(?P<Scaled_Omega_I1>.*),(?P<Scaled_Omega_I2>.*)#Omega_I[0],[1],[2]:(?P<Omega_I0>.*),(?P<Omega_I1>.*),(?P<Omega_I2>.*)"
     LOOP_EULER      = "##L#Eul_ang()#pitch:(?P<pitch>.*)#roll:(?P<roll>.*)#yaw:(?P<yaw>.*)#final_DM:(?P<fDM00>.*),(?P<fDM01>.*),(?P<fDM02>.*),;(?P<fDM10>.*),(?P<fDM11>.*),(?P<fDM12>.*),;(?P<fDM20>.*),(?P<fDM21>.*),(?P<fDM22>.*)"
     
-    dispatch = {
-                0: match_line_0,
-                1: match_line_1,
-                2: match_line_2
-    }
+    
+    LINE_SEQ = [ 'SETUP_READSEN', 'SETUP_COMPHEAD', 'SETUP_IYPR', 'SETUP_IDM', 'LOOP_TIM', 
+                 'LOOP_READSEN', 'LOOP_COMP', 'LOOP_COMPHEAD', 'LOOP_UPDMAT',  'LOOP_NORM', 
+                 'LOOP_DRIFT', 'LOOP_EULER']
+    
     
     def __init__(self):
         """
            
         """
-        self._nb_line = 0
+        self._cursor = 0
         
-    def match_line_0(self, reg_exp, line):
+        self._dispatcher = {
+                          'SETUP_READSEN'  : getattr(self, 'match_line_0'),
+                          'SETUP_COMPHEAD' : getattr(self, 'match_line_1'),
+                        }
         
-        expre_matched = CardOutParser.reg_exp.match(line)
+    def test(self):
+        
+        self.parse_line("my line")
+    
+    def reset_cursor(self):
+        """
+           reinitialise the cursor
+        """
+    
+    @classmethod
+    def match_line_0(cls, line):
+        
+        expre_matched = DebugParser.SETUP_READSEN_RE.match(line)
        
         if expre_matched:
             ax        = float(expre_matched.group('r_ax'))
@@ -47,7 +99,7 @@ class CardOutParser(object):
 
     def match_line_1(self, arg, line):
         
-        expre_matched = CardOutParser.reg_exp.match(line)
+        expre_matched = DebugParser.SETUP_COMPHEAD_RE.match(line)
        
         if expre_matched:
             ax        = float(expre_matched.group('r_ax'))
@@ -63,7 +115,7 @@ class CardOutParser(object):
         return data_elems
    
     def match_line_2(self, arg, line):
-        expre_matched = CardOutParser.reg_exp.match(line)
+        expre_matched = DebugParser.reg_exp.match(line)
        
         if expre_matched:
             ax        = float(expre_matched.group('r_ax'))
@@ -79,27 +131,24 @@ class CardOutParser(object):
         return data_elems
         
         
-    def parse_line(self, line, loop_iter):
+    def parse_line(self, line):
         """
            try to parse a formatted line
         """
-        debug_types = {0: 'SETUP_READSEN', 
-                       1: 'SETUP_COMPHEAD', 
-                       2: 'SETUP_IYPR', 
-                       3: 'SETUP_IDM', 
-                       4: 'LOOP_TIM', 
-                       5: 'LOOP_READSEN',
-                       6: 'LOOP_COMP', 
-                       7: 'LOOP_COMPHEAD', 
-                       8: 'LOOP_UPDMAT', 
-                       9: 'LOOP_NORM', 
-                       10: 'LOOP_DRIFT', 
-                       11: 'LOOP_EULER'}
-        
-        reg_exp = re.compile(debug_types[loop_iter])
-        map(self.dispatch[loop_iter](reg_exp, line))
-        
-
+        try:
+            #use the dispatcher to find the right line to call
+            result = self._dispatcher[ self.LINE_SEQ[self._cursor] ](line)
+        finally:
+            # increment cursor whatever happen
+            if self._cursor < len(self.LINE_SEQ)-1:
+                self._cursor += 1
+            else:
+                #reset the cursor to parse a new line sequence
+                self._cursor = 0
+            
+            self._nb_line += 1
+                  
+        return result
    
     def nb_lines(self):
         """
@@ -112,3 +161,10 @@ class CardOutParser(object):
            Reset parser
         """
         self._nb_line = 0
+
+
+if __name__ == '__main__':
+    
+    parser = DebugParser()
+    
+    parser.test()
