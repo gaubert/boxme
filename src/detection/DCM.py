@@ -9,6 +9,7 @@ https://github.com/jmesmon/imu_9drazor/blob/master/src/SF9DOF_AHRS/SF9DOF_AHRS.p
 import Parser
 import numpy as np
 import math
+from detection.Parser import CardSingleLineParser
 
 KP_ROLLPITCH = 0.02
 KI_ROLLPITCH = 0.00002
@@ -85,37 +86,30 @@ def gyro_scaled_rad(a_gyro_val):
 class DCMizer(object):
 
 
-    def __init__(self, omega_p, omega_i, yaw, roll, pitch, input_dcm = None):
+    def __init__(self, acc_vec, mag_vec):
         """
           @omega_p   : initial omega proportional correction
           @omega_i   : initial omega integrator 
           @input_dcm : initial DCM matrix
         """
-        self.reset(omega_p, omega_i, yaw, roll, pitch, input_dcm) # init is a standard reset
+        self.reset(acc_vec, mag_vec) # init is a standard reset
     
-    def reset(self, omega_p, omega_i, yaw, roll, pitch, input_dcm = None):
+    def reset(self, acc_vec, mag_vec):
         """
            reset internal values passing the following arguments
         """
-        #init dcm matrix
-        if input_dcm is not None:
-            self._dcm_matrix = input_dcm 
-        else: 
-            np.matrix('1 0 0 ; 0 1 0 ; 0 0 1')
+        #init dcm matrix 
+        self.reset_sensor_fusion(acc_vec, mag_vec)
         
         self._err_roll_pitch = np.array([0,0,0])
         self._err_yaw        = np.array([0, 0, 0])
         
-        self._omega_p        = omega_p # Omega Proportional correction
-        self._omega_i        = omega_i # Omega Integrator
-        
-        self._pitch          = pitch
-        self._roll           = roll
-        self._yaw            = yaw
-        
+        self._omega_p        = 0 # Omega Proportional correction
+        self._omega_i        = 0 # Omega Integrator
+               
     
-    @classmethod
-    def init_rotation_matrix(cls, yaw, roll, pitch):
+    
+    def _init_rotation_matrix(self):
         """
         
            // Init rotation matrix using euler angles
@@ -146,14 +140,14 @@ class DCMizer(object):
         
         """
         
-        c1 = math.cos(roll)
-        s1 = math.sin(roll);
+        c1 = math.cos(self._roll)
+        s1 = math.sin(self._roll);
         
-        c2 = math.cos(pitch)
-        s2 = math.sin(pitch);
+        c2 = math.cos(self._pitch)
+        s2 = math.sin(self._pitch);
         
-        c3 = math.cos(yaw)
-        s3 = math.sin(yaw);
+        c3 = math.cos(self._yaw)
+        s3 = math.sin(self._yaw);
         
         # Euler angles, right-handed, intrinsic, XYZ convention
         # (which means: rotate around body axes Z, Y', X'')     
@@ -162,19 +156,19 @@ class DCMizer(object):
                             [ -s2, c2*s1, c1*c2]])
         
     
-    @classmethod
-    def reset_sensor_fusion(cls, accel, magnetom):
+    
+    def reset_sensor_fusion(self, acc_vec, mag_vec):
         """
             // Read every sensor and record a time stamp
             // Init DCM with unfiltered orientation
             // TODO re-init global vars?
-            void reset_sensor_fusion() {
+            void reset_sensor_fusion {
               float temp1[3];
               float temp2[3];
               float xAxis[] = {1.0f, 0.0f, 0.0f};
             
-              read_sensors();
-              timestamp = millis();
+              read_sensors;
+              timestamp = millis;
               
               // GET PITCH
               // Using y-z-plane-component/x-component of gravity vector
@@ -190,7 +184,7 @@ class DCMizer(object):
               roll = atan2(temp2[1], temp2[2]);
               
               // GET YAW
-              Compass_Heading();
+              Compass_Heading;
               yaw = MAG_Heading;
               
               // Init rotation matrix
@@ -201,28 +195,27 @@ class DCMizer(object):
         x_axis = np.array([1.0, 0.0, 0.0])
         # GET PITCH
         #Using y-z-plane-component/x-component of gravity vector
-        pitch = - math.atan2(accel[0], math.sqrt(accel[1] * accel[1] + accel[2] * accel[2]));
+        self._pitch = - math.atan2(acc_vec[0], math.sqrt(acc_vec[1] * acc_vec[1] + acc_vec[2] * acc_vec[2]));
                 
         # GET ROLL
         # Compensate pitch of gravity vector 
-        temp1 = np.cross(accel, x_axis);
+        temp1 = np.cross(acc_vec, x_axis);
         temp2 = np.cross(x_axis, temp1);
         
         # Normally using x-z-plane-component/y-component of compensated gravity vector
         # roll = atan2(temp2[1], sqrt(temp2[0] * temp2[0] + temp2[2] * temp2[2]));
         # Since we compensated for pitch, x-z-plane-component equals z-component:
-        roll = math.atan2(temp2[1], temp2[2]);
+        self._roll = math.atan2(temp2[1], temp2[2]);
               
         # GET YAW
-        yaw = cls.compass_heading(magnetom, roll, pitch);
+        self._yaw = self._compass_heading(mag_vec);
         
-        dcm_matrix = cls.init_rotation_matrix(roll, pitch, yaw)
+        self._dcm_matrix = self._init_rotation_matrix()
         
-        return (dcm_matrix, yaw, pitch, roll)
         
     
     
-    def _compass_heading(self, magnetom, pitch, roll):
+    def _compass_heading(self, mag_vec):
         """ update compas values
         
           float mag_x;
@@ -245,23 +238,26 @@ class DCMizer(object):
           MAG_Heading = atan2(-mag_y, mag_x);
           
         """
+        roll = self._roll
+        pitch = self._pitch
+        
         cos_roll  = math.cos(roll)
         sin_roll  = math.sin(roll)
         cos_pitch = math.cos(pitch)
         sin_pitch = math.sin(pitch)
         
         # Tilt compensated magnetic field X
-        mag_x = magnetom[0] * cos_pitch + magnetom[1] * sin_roll * sin_pitch + magnetom[2] * cos_roll * sin_pitch
+        mag_x = mag_vec[0] * cos_pitch + mag_vec[1] * sin_roll * sin_pitch + mag_vec[2] * cos_roll * sin_pitch
         
         # Tilt compensated magnetic field Y
-        mag_y = magnetom[1] * cos_roll - magnetom[2] * sin_roll;
+        mag_y = mag_vec[1] * cos_roll - mag_vec[2] * sin_roll;
         
-        print("magnetom[0]=%s, magnetom[1]=%s, magnetom[2]=%s\n" %(magnetom[0], magnetom[1], magnetom[2]))
-        
-        print("cos_roll=%s, sin_roll=%s, cos_pitch=%s, sin_pitch=%s\n" % (cos_roll, sin_roll, cos_pitch, sin_pitch))
-        
-        print("mag_x=%s, mag_y=%s, mag_heading=%s\n" % (mag_x, mag_y, math.atan2(-mag_y, mag_x)))
-  
+#         print("magnetom[0]=%s, magnetom[1]=%s, magnetom[2]=%s\n" %(mag_vec[0], mag_vec[1], mag_vec[2]))
+#         
+#         print("cos_roll=%s, sin_roll=%s, cos_pitch=%s, sin_pitch=%s\n" % (cos_roll, sin_roll, cos_pitch, sin_pitch))
+#         
+#         print("mag_x=%s, mag_y=%s, mag_heading=%s\n" % (mag_x, mag_y, math.atan2(-mag_y, mag_x)))
+#   
         # Magnetic Heading
         return math.atan2(-mag_y, mag_x);
     
@@ -355,7 +351,7 @@ class DCMizer(object):
         """
         
         // Apply calibration to raw sensor readings
-        void compensate_sensor_errors() {
+        void compensate_sensor_errors {
             // Compensate accelerometer error
             accel[0] = (accel[0] - ACCEL_X_OFFSET) * ACCEL_X_SCALE;
             accel[1] = (accel[1] - ACCEL_Y_OFFSET) * ACCEL_Y_SCALE;
@@ -462,7 +458,7 @@ class DCMizer(object):
             accel_weigth = 1
     
         #adjust ground reference
-        print("dcm_matrix = %s" % (self._dcm_matrix[2][0]))
+#         print("dcm_matrix = %s" % (self._dcm_matrix[2][0]))
         
         #need to resize that part using numpy features when I will have the doc
         self._err_roll_pitch = np.cross(accel_vector, np.squeeze(np.array(self._dcm_matrix[2][0])))
@@ -511,7 +507,7 @@ class DCMizer(object):
         self._omega_i = ret_omega_i
     
     
-    def _matrix_update(self, dcm_matrix, acc_vec, mag_vec, gyr_vec, dt, use_omega, omega_p, omega_i):
+    def _matrix_update(self, acc_vec, gyr_vec, dt, use_omega):
         """
         
            matrix update
@@ -528,7 +524,7 @@ class DCMizer(object):
               Vector_Add(&Omega[0], &Gyro_Vector[0], &Omega_I[0]);  //adding proportional term
               Vector_Add(&Omega_Vector[0], &Omega[0], &Omega_P[0]); //adding Integrator term
             
-              //Accel_adjust();    //Remove centrifugal acceleration.   We are not using this function in this version - we have no speed measurement
+              //Accel_adjust;    //Remove centrifugal acceleration.   We are not using this function in this version - we have no speed measurement
             
              #if OUTPUTMODE==1
               Update_Matrix[0][0]=0;
@@ -571,9 +567,9 @@ class DCMizer(object):
         gyr_vec[2] = gyro_scaled_rad(gyr_vec[2]); #gyro z yaw
         
         # Add omega integrator and proportional
-        omega_vector = gyr_vec + omega_i + omega_p
+        omega_vector = gyr_vec + self._omega_i + self._omega_p
         
-        print("omega_vector[0] = %s, omega_vector[1] = %s, omega_vector[2] = %s\n" % (omega_vector[0], omega_vector[1], omega_vector[2]))
+#         print("omega_vector[0] = %s, omega_vector[1] = %s, omega_vector[2] = %s\n" % (omega_vector[0], omega_vector[1], omega_vector[2]))
         
         # if output mode == 1 in original code ?
         if use_omega:
@@ -602,8 +598,8 @@ class DCMizer(object):
         """     
         use_omega = True # OUTPUTMODE=1 use omega or gyro
         
-        # update dcm matrix 
-        self._matrix_update(gyr_vec, dt, acc_vec, use_omega)
+        # update dcm matrix
+        self._matrix_update(acc_vec, gyr_vec, dt, use_omega)
         
         #NORMALIZE the matrix
         self._normalize_matrix(self._dcm_matrix)
@@ -627,53 +623,53 @@ class DCMizer(object):
         return self._dcm_matrix.dot(vec)
     
         
-
-#TO BE REMOVED           
-def test_dcm():
-    """
-       test DCM
-    """
-    
-    #Init setup (add arguments accel and magnetom
-    #reset_sensor_fusion()
-    
-    #init values
-    gyro_Dt     = 0.35 #integration time (Delta time between each measure
-    
-    gyro_vec    = np.array([26.00,45.00,1.00])
-    accel_vec   = np.array([20.00,-255.00,76.00])
-    mag_vec     = np.array([1342.00,-1055.00,779.00])
-    
-    omega_i = np.array([-0.000235,-0.000042,-0.000065])
-    omega_p = np.array([-0.000862,-0.056547,0.064988])
-    
-    input_dm = np.matrix("0.925042 0.176073 0.336595 ;-0.371136 0.230046 0.899631 ;0.080968 -0.957119 0.278149")
-     
-    """  
-     Note: roll and pitch, yaw are not set as in the software. Check how they are set
-    """ 
-   
-    #starting values (they are used for every steps)
-    #need to get the init values following the method
-    pitch    = 0.11 #got it with acos(0.98)
-    roll     = 0.06  #got it with acos(0.93)
-    yaw      = -1.00
-    
-    accel_vec, mag_vec, gyro_vec = DCMizer.compensate_sensor_error(accel_vec, mag_vec, gyro_vec)
-    
-    print("After compensate sensor error\n")
-    print("accel_vec= %s" % (accel_vec))
-    print("mag_vec= %s" % (mag_vec))
-    print("gyro_vec= %s" %(gyro_vec))
-
-    #init values
-    mag_heading = DCMizer.compass_heading(mag_vec, roll, pitch)
-     
-    print("mag_heading = %s\n" % (mag_heading))
-    
-    dcmizer = DCMizer(omega_p, omega_i, pitch, roll, yaw, input_dm)
-          
-    dcmizer._compute_dcm(mag_heading, mag_vec, gyro_Dt, gyro_vec, accel_vec)
+# 
+# #TO BE REMOVED           
+# def test_dcm:
+#     """
+#        test DCM
+#     """
+#     
+#     #Init setup (add arguments accel and magnetom
+#     #reset_sensor_fusion
+#     
+#     #init values
+#     gyro_Dt     = 0.35 #integration time (Delta time between each measure
+#     
+#     gyro_vec    = np.array([26.00,45.00,1.00])
+#     accel_vec   = np.array([20.00,-255.00,76.00])
+#     mag_vec     = np.array([1342.00,-1055.00,779.00])
+#     
+#     omega_i = np.array([-0.000235,-0.000042,-0.000065])
+#     omega_p = np.array([-0.000862,-0.056547,0.064988])
+#     
+#     input_dm = np.matrix("0.925042 0.176073 0.336595 ;-0.371136 0.230046 0.899631 ;0.080968 -0.957119 0.278149")
+#      
+#     """  
+#      Note: roll and pitch, yaw are not set as in the software. Check how they are set
+#     """ 
+#    
+#     #starting values (they are used for every steps)
+#     #need to get the init values following the method
+#     pitch    = 0.11 #got it with acos(0.98)
+#     roll     = 0.06  #got it with acos(0.93)
+#     yaw      = -1.00
+#     
+#     accel_vec, mag_vec, gyro_vec = DCMizer.compensate_sensor_error(accel_vec, mag_vec, gyro_vec)
+#     
+#     print("After compensate sensor error\n")
+#     print("accel_vec= %s" % (accel_vec))
+#     print("mag_vec= %s" % (mag_vec))
+#     print("gyro_vec= %s" %(gyro_vec))
+# 
+#     #init values
+#     mag_heading = DCMizer.compass_heading(mag_vec, roll, pitch)
+#      
+#     print("mag_heading = %s\n" % (mag_heading))
+#     
+#     dcmizer = DCMizer(omega_p, omega_i, pitch, roll, yaw, input_dm)
+#           
+#     dcmizer._compute_dcm(mag_heading, mag_vec, gyro_Dt, gyro_vec, accel_vec)
 
 
 def read_data(filename):
@@ -684,7 +680,7 @@ def read_data(filename):
     the_dir = "."
     file_path = "%s/etc/samples/%s" % (the_dir, filename)
     
-    parser = Parser.CardSingleLineParser()
+    parser = CardSingleLineParser()
 
     first_run = True
     
@@ -699,23 +695,22 @@ def read_data(filename):
             imag_vec    = [vals['mx'], vals['my'], vals['mz']]
             igyr_vec    = [vals['gx'], vals['gy'], vals['gz']]
             idt         = vals['dt'] #integration time (Delta time between each measure
-            omega_p = 0
-            omega_i = 0
             
-            idcm_matrix, iyaw, ipitch, iroll = DCMizer.reset_sensor_fusion(iacc_vec, imag_vec)
-            dcmizer = DCMizer(omega_p, omega_i, iyaw, ipitch, iroll, idcm_matrix)
+            # Create and initialize DCMizer
+            dcmizer = DCMizer(iacc_vec, imag_vec)
             
-            # compensate_sensor_error()
+            # compensate_sensor_error
             iacc_vec, imag_vec, igyr_vec = dcmizer._compensate_sensor_error(iacc_vec, imag_vec, igyr_vec)
             
-            # compass_heading()
+            # compass_heading
             imag_heading = dcmizer._compass_heading(imag_vec)
             
-            # Computer_dcm() (Matrix_update();   Normalize();   Drift_correction();   Euler_angles();
+            # Computer_dcm (Matrix_update;   Normalize;   Drift_correction;   Euler_angles;
             dcmizer._compute_dcm(imag_heading, iacc_vec, imag_vec, igyr_vec, idt)
             
             #Project accel data from mobile to fixed inertial reference frame
             ifixed_acc_vec = dcmizer._project_to_inertial_frame(iacc_vec)
+            print("accel_vec= %s\n" % (ifixed_acc_vec))
             
         else: 
             # Loop through normal steps
@@ -727,18 +722,18 @@ def read_data(filename):
             gyr_vec     = [vals['gx'], vals['gy'], vals['gz']]
             dt          = vals['dt'] #integration time (Delta time between each measure
             
-            # compensate_sensor_error()
+            # compensate_sensor_error
             acc_vec, mag_vec, gyr_vec = dcmizer._compensate_sensor_error(acc_vec, mag_vec, gyr_vec)
             
-            # compass_heading()
+            # compass_heading
             mag_heading = dcmizer._compass_heading(mag_vec)
             
-            # Computer_dcm() (Matrix_update();   Normalize();   Drift_correction();   Euler_angles();
+            # Computer_dcm (Matrix_update;   Normalize;   Drift_correction;   Euler_angles;
             dcmizer._compute_dcm(mag_heading, acc_vec, mag_vec, gyr_vec, dt)
             
             #Project accel data from mobile to fixed inertial reference frame
             fixed_acc_vec = dcmizer._project_to_inertial_frame(acc_vec)
-
+            print("accel_vec= %s\n" % (fixed_acc_vec))
 
 if __name__ == '__main__':
     
@@ -764,7 +759,7 @@ if __name__ == '__main__':
 
     """
 #     np.set_printoptions(precision=7)
-#     test_dcm()
+#     test_dcm
     read_data("test_sample")
 
 

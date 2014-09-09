@@ -43,7 +43,7 @@ class Test(unittest.TestCase):
         
         print("Calculate Euler Angles pitch: %s rad, roll: %s rad, yaw: %s rad" % (n_pitch, n_roll, n_yaw))
         
-        #self.assertEquals()
+        #self.assertEquals
 
     def test_acceleration_referential_change(self):
         """
@@ -80,4 +80,4 @@ class Test(unittest.TestCase):
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    unittest.main

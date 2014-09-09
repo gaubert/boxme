@@ -124,7 +124,7 @@ void Acce_ground(void)
   
   Matrix_Vector_Multiply(DCM_Matrix,Accel_Vector,Acce_Ground); //a*b=c
 
-  Serial.print("Tstamp:"); Serial.print(millis());
+  Serial.print("Tstamp:"); Serial.print(millis);
   Serial.print("#AG-Raw"); Serial.print('=');
   Serial.print(Acce_Ground[0]); Serial.print(",");
   Serial.print(Acce_Ground[1]); Serial.print(",");

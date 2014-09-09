@@ -20,7 +20,7 @@ class AnalogData(object):
         if len(buf) < self.maxLen:
             buf.append(val)
         else:
-            buf.pop()
+            buf.pop
             buf.appendleft(val)
             
     def add(self, data):
@@ -69,7 +69,7 @@ class Plotter(object):
         self._ayline = None
         self._azline = None
         
-        self._create_plot()
+        self._create_plot
             
     
     def _create_plot(self):
@@ -81,7 +81,7 @@ class Plotter(object):
         self._xdata = [0] * 100
         self._zdata = [0] * 100
         
-        plt.ion()
+        plt.ion
         fig = plt.figure(figsize=(20, 15))
             
         self._sub_plot_x = fig.add_subplot(311)
@@ -108,7 +108,7 @@ class Plotter(object):
         """
            clean matplotlib resources
         """
-        plt.close()
+        plt.close
         
     def update(self, analogData):
         """
@@ -118,7 +118,7 @@ class Plotter(object):
         x_ymin = float(min(self._xdata))-10
         x_ymax = float(max(self._xdata))+10
         self._sub_plot_x.set_ylim([x_ymin,x_ymax])
-        self._xdata.append(analogData.ax.pop())
+        self._xdata.append(analogData.ax.pop)
         del self._xdata[0]
         self._axline.set_xdata(np.arange(len(self._xdata)))
         self._axline.set_ydata(self._xdata)  # update the data
@@ -127,7 +127,7 @@ class Plotter(object):
         y_ymin = float(min(self._ydata))-50
         y_ymax = float(max(self._ydata))+50
         self._sub_plot_y.set_ylim([y_ymin,y_ymax])
-        self._ydata.append(analogData.ay.pop())
+        self._ydata.append(analogData.ay.pop)
         del self._ydata[0]
         self._ayline.set_xdata(np.arange(len(self._ydata)))
         self._ayline.set_ydata(self._ydata)  # update the data
@@ -135,12 +135,12 @@ class Plotter(object):
         z_ymin = float(min(self._zdata))-50
         z_ymax = float(max(self._zdata))+50
         self._sub_plot_z.set_ylim([z_ymin,z_ymax])
-        self._zdata.append(analogData.az.pop())
+        self._zdata.append(analogData.az.pop)
         del self._zdata[0]
         self._azline.set_xdata(np.arange(len(self._zdata)))
         self._azline.set_ydata(self._zdata)  # update the data
     
-        plt.draw() # update the plot
+        plt.draw # update the plot
         
 class CardOutputParser(object):
     
@@ -220,7 +220,7 @@ def test_with_file(filename):
     
     min_max = { "min" : 4096.00, "max": -4096.00, }
     
-    parser = CardOutputParser()
+    parser = CardOutputParser
     
     analogData = AnalogData(500)
     
@@ -231,7 +231,7 @@ def test_with_file(filename):
         analogData.add((vals['ax'], vals['ay'], vals['az'])) 
         plotter.update(analogData)   
          
-def old_test():
+def old_test:
     """
     """
     # start data collection

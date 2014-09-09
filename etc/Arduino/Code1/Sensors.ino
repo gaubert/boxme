@@ -10,43 +10,43 @@
 // Arduino backward compatibility macros
 #if ARDUINO >= 100
   #define WIRE_SEND(b) Wire.write((byte) b) 
-  #define WIRE_RECEIVE() Wire.read() 
+  #define WIRE_RECEIVE Wire.read 
 #else
   #define WIRE_SEND(b) Wire.send(b)
-  #define WIRE_RECEIVE() Wire.receive() 
+  #define WIRE_RECEIVE Wire.receive 
 #endif
 
 
-void I2C_Init()
+void I2C_Init
 {
-  Wire.begin();
+  Wire.begin;
 }
 
-void Accel_Init()
+void Accel_Init
 {
   Wire.beginTransmission(ACCEL_ADDRESS);
   WIRE_SEND(0x2D);  // Power register
   WIRE_SEND(0x08);  // Measurement mode
-  Wire.endTransmission();
+  Wire.endTransmission;
   delay(5);
   Wire.beginTransmission(ACCEL_ADDRESS);
   WIRE_SEND(0x31);  // Data format register
   WIRE_SEND(0x08);  // Set to full resolution
-  Wire.endTransmission();
+  Wire.endTransmission;
   delay(5);
   
   // Because our main loop runs at 50Hz we adjust the output data rate to 50Hz (25Hz bandwidth)
   Wire.beginTransmission(ACCEL_ADDRESS);
   WIRE_SEND(0x2C);  // Rate
   WIRE_SEND(0x09);  // Set to 50Hz, normal operation
-  Wire.endTransmission();
+  Wire.endTransmission;
   delay(5);
 }
 
 // Reads x, y and z accelerometer registers
-void Read_Accel()
+void Read_Accel
 {
-  Serial.println();
+  Serial.println;
   Serial.print("- Acc -");
   
   int i = 0;
@@ -54,27 +54,27 @@ void Read_Accel()
   
   Wire.beginTransmission(ACCEL_ADDRESS); 
   WIRE_SEND(0x32);  // Send address to read from
-  Wire.endTransmission();
+  Wire.endTransmission;
   
   Wire.beginTransmission(ACCEL_ADDRESS);
   Wire.requestFrom(ACCEL_ADDRESS, 6);  // Request 6 bytes
-  while(Wire.available())  // ((Wire.available())&&(i<6))
+  while(Wire.available)  // ((Wire.available)&&(i<6))
   { 
-    buff[i] = WIRE_RECEIVE();  // Read one byte
+    buff[i] = WIRE_RECEIVE;  // Read one byte
     i++;
   }
-  Wire.endTransmission();
+  Wire.endTransmission;
   
   if (i == 6)  // All bytes received?
   {
-    accel[3] = millis();  // Time of acquisition 
+    accel[3] = millis;  // Time of acquisition 
     // No multiply by -1 for coordinate system transformation here, because of double negation:
     // We want the gravity vector, which is negated acceleration vector.
     accel[0] = (((int) buff[3]) << 8) | buff[2];  // X axis (internal sensor y axis)
     accel[1] = (((int) buff[1]) << 8) | buff[0];  // Y axis (internal sensor x axis)
     accel[2] = (((int) buff[5]) << 8) | buff[4];  // Z axis (internal sensor z axis)
 
-    Serial.print("#T-acc#"); Serial.print(millis());
+    Serial.print("#T-acc#"); Serial.print(millis);
     Serial.print("#Am-Raw"); Serial.print('#');
     Serial.print(accel[0]); Serial.print(",");
     Serial.print(accel[1]); Serial.print(",");
@@ -88,24 +88,24 @@ void Read_Accel()
   }
 }
 
-void Magn_Init()
+void Magn_Init
 {
   Wire.beginTransmission(MAGN_ADDRESS);
   WIRE_SEND(0x02); 
   WIRE_SEND(0x00);  // Set continuous mode (default 10Hz)
-  Wire.endTransmission();
+  Wire.endTransmission;
   delay(5);
 
   Wire.beginTransmission(MAGN_ADDRESS);
   WIRE_SEND(0x00);
   WIRE_SEND(0b00011000);  // Set 50Hz
-  Wire.endTransmission();
+  Wire.endTransmission;
   delay(5);
 }
 
-void Read_Magn()
+void Read_Magn
 {
-  Serial.println();
+  Serial.println;
   Serial.print("- Mag -");
   
   int i = 0;
@@ -113,20 +113,20 @@ void Read_Magn()
  
   Wire.beginTransmission(MAGN_ADDRESS); 
   WIRE_SEND(0x03);  // Send address to read from
-  Wire.endTransmission();
+  Wire.endTransmission;
   
   Wire.beginTransmission(MAGN_ADDRESS); 
   Wire.requestFrom(MAGN_ADDRESS, 6);  // Request 6 bytes
-  while(Wire.available())  // ((Wire.available())&&(i<6))
+  while(Wire.available)  // ((Wire.available)&&(i<6))
   { 
-    buff[i] = WIRE_RECEIVE();  // Read one byte
+    buff[i] = WIRE_RECEIVE;  // Read one byte
     i++;
   }
-  Wire.endTransmission();
+  Wire.endTransmission;
   
   if (i == 6)  // All bytes received?
   {
-    magnetom[3] = millis();
+    magnetom[3] = millis;
 // 9DOF Razor IMU SEN-10125 using HMC5843 magnetometer
 #if HW__VERSION_CODE == 10125
     // MSB byte first, then LSB; X, Y, Z
@@ -153,7 +153,7 @@ void Read_Magn()
     magnetom[2] = -1 * ((((int) buff[2]) << 8) | buff[3]);  // Z axis (internal sensor -z axis)
 #endif
 
-      Serial.print("#T-mag#"); Serial.print(millis());
+      Serial.print("#T-mag#"); Serial.print(millis);
       Serial.print("#Mm-Raw"); Serial.print('#');
       Serial.print(magnetom[0]); Serial.print(",");
       Serial.print(magnetom[1]); Serial.print(",");
@@ -168,13 +168,13 @@ void Read_Magn()
 
 }
 
-void Gyro_Init()
+void Gyro_Init
 {
   // Power up reset defaults
   Wire.beginTransmission(GYRO_ADDRESS);
   WIRE_SEND(0x3E);
   WIRE_SEND(0x80);
-  Wire.endTransmission();
+  Wire.endTransmission;
   delay(5);
   
   // Select full-scale range of the gyro sensors
@@ -182,28 +182,28 @@ void Gyro_Init()
   Wire.beginTransmission(GYRO_ADDRESS);
   WIRE_SEND(0x16);
   WIRE_SEND(0x1B);  // DLPF_CFG = 3, FS_SEL = 3
-  Wire.endTransmission();
+  Wire.endTransmission;
   delay(5);
   
   // Set sample rato to 50Hz
   Wire.beginTransmission(GYRO_ADDRESS);
   WIRE_SEND(0x15);
   WIRE_SEND(0x0A);  //  SMPLRT_DIV = 10 (50Hz)
-  Wire.endTransmission();
+  Wire.endTransmission;
   delay(5);
 
   // Set clock to PLL with z gyro reference
   Wire.beginTransmission(GYRO_ADDRESS);
   WIRE_SEND(0x3E);
   WIRE_SEND(0x00);
-  Wire.endTransmission();
+  Wire.endTransmission;
   delay(5);
 }
 
 // Reads x, y and z gyroscope registers
-void Read_Gyro()
+void Read_Gyro
 {
-  Serial.println();
+  Serial.println;
   Serial.print("- Gyr -");
 
   int i = 0;
@@ -211,25 +211,25 @@ void Read_Gyro()
   
   Wire.beginTransmission(GYRO_ADDRESS); 
   WIRE_SEND(0x1D);  // Sends address to read from
-  Wire.endTransmission();
+  Wire.endTransmission;
   
   Wire.beginTransmission(GYRO_ADDRESS);
   Wire.requestFrom(GYRO_ADDRESS, 6);  // Request 6 bytes
-  while(Wire.available())  // ((Wire.available())&&(i<6))
+  while(Wire.available)  // ((Wire.available)&&(i<6))
   { 
-    buff[i] = WIRE_RECEIVE();  // Read one byte
+    buff[i] = WIRE_RECEIVE;  // Read one byte
     i++;
   }
-  Wire.endTransmission();
+  Wire.endTransmission;
   
   if (i == 6)  // All bytes received?
   {
-    gyro[3] = millis();
+    gyro[3] = millis;
     gyro[0] = -1 * ((((int) buff[2]) << 8) | buff[3]);    // X axis (internal sensor -y axis)
     gyro[1] = -1 * ((((int) buff[0]) << 8) | buff[1]);    // Y axis (internal sensor -x axis)
     gyro[2] = -1 * ((((int) buff[4]) << 8) | buff[5]);    // Z axis (internal sensor -z axis)
     
-    Serial.print("#T-gyr#"); Serial.print(millis());
+    Serial.print("#T-gyr#"); Serial.print(millis);
     Serial.print("#Gm-Raw"); Serial.print('#');
     Serial.print(gyro[0]); Serial.print(",");
     Serial.print(gyro[1]); Serial.print(",");

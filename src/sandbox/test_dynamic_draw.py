@@ -8,10 +8,10 @@ import numpy as np
 import time
 from matplotlib import pyplot as plt
  
-plt.ion() # set plot to animated
+plt.ion # set plot to animated
  
 ydata = [0] * 50
-ax1=plt.axes()  
+ax1=plt.axes  
  
 # make plot
 line, = plt.plot(ydata)
@@ -33,7 +33,7 @@ while len(all_data) > 0:
         del ydata[0]
         line.set_xdata(np.arange(len(ydata)))
         line.set_ydata(ydata)  # update the data
-        plt.draw() # update the plot
+        plt.draw # update the plot
     
     print("sleep for 5s")
     time.sleep(0.05)

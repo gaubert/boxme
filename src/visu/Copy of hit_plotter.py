@@ -13,7 +13,7 @@ if __name__ == '__main__':
     xdata = [0] * 50
     zdata = [0] * 50
     
-    plt.ion()
+    plt.ion
     
     fig = plt.figure(figsize=(20, 15))
         
@@ -74,7 +74,7 @@ if __name__ == '__main__':
             azline.set_xdata(np.arange(len(ydata)))
             azline.set_ydata(ydata)  # update the data
         
-        plt.draw() # update the plot
+        plt.draw # update the plot
     
         print("sleep for 5s")
         time.sleep(0.01)

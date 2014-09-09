@@ -229,23 +229,23 @@ int num_accel_errors = 0;
 int num_magn_errors = 0;
 int num_gyro_errors = 0;
 
-void read_sensors() {
+void read_sensors {
 
-  Read_Accel(); // Read accelerometer
-  Read_Magn(); // Read magnetometer
-  Read_Gyro(); // Read gyroscope
+  Read_Accel; // Read accelerometer
+  Read_Magn; // Read magnetometer
+  Read_Gyro; // Read gyroscope
 }
 
 // Read every sensor and record a time stamp
 // Init DCM with unfiltered orientation
 // TODO re-init global vars?
-void reset_sensor_fusion() {
+void reset_sensor_fusion {
   float temp1[3];
   float temp2[3];
   float xAxis[] = {1.0f, 0.0f, 0.0f};
 
-  read_sensors();
-  timestamp = millis();
+  read_sensors;
+  timestamp = millis;
   
   // GET PITCH
   // Using y-z-plane-component/x-component of gravity vector
@@ -261,7 +261,7 @@ void reset_sensor_fusion() {
   roll = atan2(temp2[1], temp2[2]);
   
   // GET YAW
-  Compass_Heading();
+  Compass_Heading;
   yaw = MAG_Heading;
   
   // Init rotation matrix
@@ -269,7 +269,7 @@ void reset_sensor_fusion() {
 }
 
 // Apply calibration to raw sensor readings
-void compensate_sensor_errors() {
+void compensate_sensor_errors {
     // Compensate accelerometer error
     accel[0] = (accel[0] - ACCEL_X_OFFSET) * ACCEL_X_SCALE;
     accel[1] = (accel[1] - ACCEL_Y_OFFSET) * ACCEL_Y_SCALE;
@@ -293,7 +293,7 @@ void compensate_sensor_errors() {
 }
 
 // Reset calibration session if reset_calibration_session_flag is set
-void check_reset_calibration_session()
+void check_reset_calibration_session
 {
   // Raw sensor values have to be read already, but no error compensation applied
 
@@ -313,26 +313,26 @@ void check_reset_calibration_session()
   reset_calibration_session_flag = false;
 }
 
-void turn_output_stream_on()
+void turn_output_stream_on
 {
   output_stream_on = true;
   digitalWrite(STATUS_LED_PIN, HIGH);
 }
 
-void turn_output_stream_off()
+void turn_output_stream_off
 {
   output_stream_on = false;
   digitalWrite(STATUS_LED_PIN, LOW);
 }
 
 // Blocks until another byte is available on serial port
-char readChar()
+char readChar
 {
-  while (Serial.available() < 1) { } // Block
-  return Serial.read();
+  while (Serial.available < 1) { } // Block
+  return Serial.read;
 }
 
-void setup()
+void setup
 {
   // Init serial output
   Serial.begin(OUTPUT__BAUD_RATE);
@@ -343,49 +343,49 @@ void setup()
 
   // Init sensors
   delay(50);  // Give sensors enough time to start
-  I2C_Init();
-  Accel_Init();
-  Magn_Init();
-  Gyro_Init();
+  I2C_Init;
+  Accel_Init;
+  Magn_Init;
+  Gyro_Init;
   
   // Read sensors, init DCM algorithm
   delay(20);  // Give sensors enough time to collect data
-  reset_sensor_fusion();
+  reset_sensor_fusion;
 
   // Init output
 #if (OUTPUT__HAS_RN_BLUETOOTH == true) || (OUTPUT__STARTUP_STREAM_ON == false)
-  turn_output_stream_off();
+  turn_output_stream_off;
 #else
-  turn_output_stream_on();
+  turn_output_stream_on;
 #endif
 }
 
 // Main loop
-void loop()
+void loop
 {
   // Read incoming control messages
-  if (Serial.available() >= 2)
+  if (Serial.available >= 2)
   {
-    if (Serial.read() == '#') // Start of new control message
+    if (Serial.read == '#') // Start of new control message
     {
-      int command = Serial.read(); // Commands
+      int command = Serial.read; // Commands
       if (command == 'f') // request one output _f_rame
         output_single_on = true;
       else if (command == 's') // _s_ynch request
       {
         // Read ID
         byte id[2];
-        id[0] = readChar();
-        id[1] = readChar();
+        id[0] = readChar;
+        id[1] = readChar;
         
         // Reply with synch message
         Serial.print("#SYNCH");
         Serial.write(id, 2);
-        Serial.println();
+        Serial.println;
       }
       else if (command == 'o') // Set _o_utput mode
       {
-        char output_param = readChar();
+        char output_param = readChar;
         if (output_param == 'n')  // Calibrate _n_ext sensor
         {
           curr_calibration_sensor = (curr_calibration_sensor + 1) % 3;
@@ -408,8 +408,8 @@ void loop()
         }
         else if (output_param == 's') // Output _s_ensor values
         {
-          char values_param = readChar();
-          char format_param = readChar();
+          char values_param = readChar;
+          char format_param = readChar;
           if (values_param == 'r')  // Output _r_aw sensor values
             output_mode = OUTPUT__MODE_SENSORS_RAW;
           else if (values_param == 'c')  // Output _c_alibrated sensor values
@@ -424,17 +424,17 @@ void loop()
         }
         else if (output_param == '0') // Disable continuous streaming output
         {
-          turn_output_stream_off();
+          turn_output_stream_off;
           reset_calibration_session_flag = true;
         }
         else if (output_param == '1') // Enable continuous streaming output
         {
           reset_calibration_session_flag = true;
-          turn_output_stream_on();
+          turn_output_stream_on;
         }
         else if (output_param == 'e') // _e_rror output settings
         {
-          char error_param = readChar();
+          char error_param = readChar;
           if (error_param == '0') output_errors = false;
           else if (error_param == '1') output_errors = true;
           else if (error_param == 'c') // get error count
@@ -450,9 +450,9 @@ void loop()
       // Read messages from bluetooth module
       // For this to work, the connect/disconnect message prefix of the module has to be set to "#".
       else if (command == 'C') // Bluetooth "#CONNECT" message (does the same as "#o1")
-        turn_output_stream_on();
+        turn_output_stream_on;
       else if (command == 'D') // Bluetooth "#DISCONNECT" message (does the same as "#o0")
-        turn_output_stream_off();
+        turn_output_stream_off;
 #endif // OUTPUT__HAS_RN_BLUETOOTH == true
     }
     else
@@ -460,19 +460,19 @@ void loop()
   }
 
   // Time to read the sensors again?
-  if((millis() - timestamp) >= 20)
+  if((millis - timestamp) >= 20)
   {
     timestamp_old = timestamp;
-    timestamp = millis();
+    timestamp = millis;
     
 
     // Update sensor readings
-    read_sensors(); //Read and print sensor values
+    read_sensors; //Read and print sensor values
     
     
 #if DEBUG__PRINT_LOOP_TIME == true
     Serial.print("loop time (ms) = ");
-    Serial.println(millis() - timestamp);
+    Serial.println(millis - timestamp);
 #endif
   }
 #if DEBUG__PRINT_LOOP_TIME == true

@@ -132,8 +132,8 @@ class PlotAcc(rtgraph.Channel):
     global last, time_delta, nexttime
 
     if (self.input == 0):
-        if (time.time() > nexttime):
-            data = sys.stdin.readline()
+        if (time.time > nexttime):
+            data = sys.stdin.readline
         
             data_list = data.split(",")
 
@@ -141,7 +141,7 @@ class PlotAcc(rtgraph.Channel):
             time_delta = eval(data_list[0]) - timestamp
             timestamp = eval(data_list[0])
 
-            nexttime = time.time() + 0.005
+            nexttime = time.time + 0.005
 
             # store Gyro values (wrong order to suit my config)
             gyro[0] = eval(data_list[3])    # roll
@@ -163,7 +163,7 @@ class PlotAcc(rtgraph.Channel):
 
             # calibrate Gyro offset rates
             if data_list[len(data_list)-1] == ' C-  \n':
-                offsets = gyro.copy()
+                offsets = gyro.copy
 
             # reset rotations on request
             if data_list[len(data_list)-1] == ' -Z  \n':
@@ -203,10 +203,10 @@ class PlotAcc(rtgraph.Channel):
                 rotation = rotation + delta
 
                 # check limits and perform wrap-around
-                while (rotation.min() <= -180):
+                while (rotation.min <= -180):
                     rotation = rotation + (360*(rotation <= -180))
 
-                while (rotation.max() > 180):
+                while (rotation.max > 180):
                     rotation = rotation - (360*(rotation > 180))
 
                 # record gyro values for next round
@@ -289,13 +289,13 @@ class PlotAcc(rtgraph.Channel):
 win = gtk.Window(gtk.WINDOW_TOPLEVEL)
 
 # main split
-vbox = gtk.VBox()
-vbox.show()
+vbox = gtk.VBox
+vbox.show
 win.add(vbox)
 
 # linear plots
-vbox2 = gtk.VBox()
-vbox2.show()
+vbox2 = gtk.VBox
+vbox2.show
 vbox.add(vbox2)
 win.set_border_width(5)
 
@@ -321,18 +321,18 @@ for name, rate, my_range, channels in [
 
     graph = rtgraph.HScrollLineGraph(scrollRate=rate, size=(600,80), range=my_range)
     graph.channels = channels
-    graph.show()
+    graph.show
 
-    frame = gtk.Frame()
+    frame = gtk.Frame
     frame.set_label(name)
     frame.add(graph)
-    frame.show()
+    frame.show
 
     vbox2.pack_end(frame)
 
 # rotary dials
-hbox = gtk.HBox()
-hbox.show()
+hbox = gtk.HBox
+hbox.show
 vbox.add(hbox)
 
 for name, channels in [
@@ -343,12 +343,12 @@ for name, channels in [
 
     graph = rtgraph.PolarVectorGraph(pollInterval=200)
     graph.channels = channels
-    graph.show()
+    graph.show
 
-    frame = gtk.Frame()
+    frame = gtk.Frame
     frame.set_label(name)
     frame.add(graph)
-    frame.show()
+    frame.show
 
     hbox.pack_end(frame)
 
@@ -356,17 +356,17 @@ for name, channels in [
 graph = rtgraph.IsometricVectorGraph(pollInterval=200, size=(150,150))
 graph.channels = [PlotAccv(0,(0,0,0))]
 
-graph.show()
+graph.show
 
-frame = gtk.Frame()
+frame = gtk.Frame
 frame.set_label("Gravity")
 frame.add(graph)
-frame.show()
+frame.show
 
 hbox.pack_end(frame)
 '''
 '''
 
-win.show()
+win.show
 win.connect("destroy", gtk.mainquit)
-gtk.main()
+gtk.main

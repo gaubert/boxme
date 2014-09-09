@@ -1,6 +1,6 @@
 /* This file is part of the Razor AHRS Firmware */
 
-void Compass_Heading()
+void Compass_Heading
 {
   float mag_x;
   float mag_y;

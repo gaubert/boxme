@@ -12,52 +12,52 @@ void Normalize(void)
 
   Serial.print("DM[0][0]&[1][0]:");
   Serial.print(DCM_Matrix[0][0],6); Serial.print(",");
-  Serial.print(DCM_Matrix[1][0],6); Serial.println();
+  Serial.print(DCM_Matrix[1][0],6); Serial.println;
   
   error= -Vector_Dot_Product(&DCM_Matrix[0][0],&DCM_Matrix[1][0])*.5; //eq.19
 
-  Serial.print("error:"); Serial.print(error,6); Serial.println();
+  Serial.print("error:"); Serial.print(error,6); Serial.println;
 
   Vector_Scale(&temporary[0][0], &DCM_Matrix[1][0], error); //eq.19
   Vector_Scale(&temporary[1][0], &DCM_Matrix[0][0], error); //eq.19
   
   Serial.print("TM[0][0]&[1][0]:");
   Serial.print(temporary[0][0],6); Serial.print(",");
-  Serial.print(temporary[1][0],6); Serial.println();
+  Serial.print(temporary[1][0],6); Serial.println;
   
   Vector_Add(&temporary[0][0], &temporary[0][0], &DCM_Matrix[0][0]);//eq.19
   Vector_Add(&temporary[1][0], &temporary[1][0], &DCM_Matrix[1][0]);//eq.19
   
   Serial.print("TM[0][0]&[1][0]:");
   Serial.print(temporary[0][0],6); Serial.print(",");
-  Serial.print(temporary[1][0],6); Serial.println();
+  Serial.print(temporary[1][0],6); Serial.println;
   
   Vector_Cross_Product(&temporary[2][0],&temporary[0][0],&temporary[1][0]); // c= a x b //eq.20
   
   Serial.print("TM[2][0]:");
-  Serial.print(temporary[2][0],6); Serial.println();
+  Serial.print(temporary[2][0],6); Serial.println;
   
   renorm= .5 *(3 - Vector_Dot_Product(&temporary[0][0],&temporary[0][0])); //eq.21
-  Serial.print("renorm:"); Serial.print(renorm,6); Serial.println();
+  Serial.print("renorm:"); Serial.print(renorm,6); Serial.println;
   
   Vector_Scale(&DCM_Matrix[0][0], &temporary[0][0], renorm);
   
   Serial.print("DM[0][0]:");
-  Serial.print(DCM_Matrix[0][0],6); Serial.println();
+  Serial.print(DCM_Matrix[0][0],6); Serial.println;
   
   renorm= .5 *(3 - Vector_Dot_Product(&temporary[1][0],&temporary[1][0])); //eq.21
-  Serial.print("renorm:"); Serial.print(renorm,6); Serial.println();
+  Serial.print("renorm:"); Serial.print(renorm,6); Serial.println;
   Vector_Scale(&DCM_Matrix[1][0], &temporary[1][0], renorm);
   
   Serial.print("DM[1][0]:");
-  Serial.print(DCM_Matrix[1][0],6); Serial.println();
+  Serial.print(DCM_Matrix[1][0],6); Serial.println;
   
   renorm= .5 *(3 - Vector_Dot_Product(&temporary[2][0],&temporary[2][0])); //eq.21
-  Serial.print("renorm:"); Serial.print(renorm,6); Serial.println();
+  Serial.print("renorm:"); Serial.print(renorm,6); Serial.println;
   Vector_Scale(&DCM_Matrix[2][0], &temporary[2][0], renorm);
 
   Serial.print("DM[2][0]:");
-  Serial.print(DCM_Matrix[2][0],6); Serial.println();
+  Serial.print(DCM_Matrix[2][0],6); Serial.println;
   
 }
 
@@ -108,12 +108,12 @@ void Drift_correction(void)
 
 void Matrix_update(void)
 {
-  Serial.println();
-  Serial.print("Matrix_update ");  Serial.println();
+  Serial.println;
+  Serial.print("Matrix_update ");  Serial.println;
   Serial.print("gyro[0,1,2]:");  
   Serial.print(gyro[0]); Serial.print(",");
   Serial.print(gyro[1]); Serial.print(",");
-  Serial.print(gyro[2]);         Serial.println();
+  Serial.print(gyro[2]);         Serial.println;
   
   Gyro_Vector[0]=GYRO_SCALED_RAD(gyro[0]); //gyro x roll
   Gyro_Vector[1]=GYRO_SCALED_RAD(gyro[1]); //gyro y pitch
@@ -122,7 +122,7 @@ void Matrix_update(void)
   Serial.print("Gyro_vector[0,1,2]:");  
   Serial.print(Gyro_Vector[0]); Serial.print(",");
   Serial.print(Gyro_Vector[1]); Serial.print(",");
-  Serial.print(Gyro_Vector[2]);         Serial.println();
+  Serial.print(Gyro_Vector[2]);         Serial.println;
   
   Accel_Vector[0]=accel[0];
   Accel_Vector[1]=accel[1];
@@ -131,12 +131,12 @@ void Matrix_update(void)
   Serial.print("Before Omega_I[0,1,2]:");  
   Serial.print(Omega_I[0],6); Serial.print(",");
   Serial.print(Omega_I[1],6); Serial.print(",");
-  Serial.print(Omega_I[2],6); Serial.println();
+  Serial.print(Omega_I[2],6); Serial.println;
   
   Serial.print("Before Omega_P[0,1,2]:");  
   Serial.print(Omega_P[0],6); Serial.print(",");
   Serial.print(Omega_P[1],6); Serial.print(",");
-  Serial.print(Omega_P[2],6); Serial.println();
+  Serial.print(Omega_P[2],6); Serial.println;
     
   Vector_Add(&Omega[0], &Gyro_Vector[0], &Omega_I[0]);  //adding proportional term
   Vector_Add(&Omega_Vector[0], &Omega[0], &Omega_P[0]); //adding Integrator term
@@ -144,16 +144,16 @@ void Matrix_update(void)
   Serial.print("After Omega_I[0,1,2]:");  
   Serial.print(Omega_I[0],6); Serial.print(",");
   Serial.print(Omega_I[1],6); Serial.print(",");
-  Serial.print(Omega_I[2],6); Serial.println();
+  Serial.print(Omega_I[2],6); Serial.println;
   
   Serial.print("After Omega_P[0,1,2]:");  
   Serial.print(Omega_P[0],6); Serial.print(",");
   Serial.print(Omega_P[1],6); Serial.print(",");
-  Serial.print(Omega_P[2],6); Serial.println();
+  Serial.print(Omega_P[2],6); Serial.println;
   
 #if DEBUG__NO_DRIFT_CORRECTION == true // Do not use drift correction
   Serial.print("(Drift correction NOT used)");
-  Serial.println();
+  Serial.println;
   Update_Matrix[0][0]=0;
   Update_Matrix[0][1]=-G_Dt*Gyro_Vector[2];//-z
   Update_Matrix[0][2]=G_Dt*Gyro_Vector[1];//y
@@ -169,7 +169,7 @@ void Matrix_update(void)
   Serial.print(",Gyro_Vector[2]:");  Serial.print(Gyro_Vector[2],6);
 #else // Use drift correction
   Serial.print("(Drift correction used)");
-  Serial.println();
+  Serial.println;
   Update_Matrix[0][0]=0;
   Update_Matrix[0][1]=-G_Dt*Omega_Vector[2];//-z
   Update_Matrix[0][2]=G_Dt*Omega_Vector[1];//y
@@ -189,7 +189,7 @@ void Matrix_update(void)
   {
     for(int y=0; y<3; y++)
     {
-      Serial.println();
+      Serial.println;
       Serial.print("[x],[y]:");  Serial.print(x);Serial.print(",");Serial.print(y);
       Serial.print("    UM:");  Serial.print(Update_Matrix[x][y],6);
       Serial.print("    DM:");  Serial.print(DCM_Matrix[x][y],6);
@@ -202,7 +202,7 @@ void Matrix_update(void)
   {
     for(int y=0; y<3; y++)
     {
-      Serial.println();
+      Serial.println;
       Serial.print("[x],[y]:");  Serial.print(x);Serial.print(",");Serial.print(y);
       Serial.print("TM:");  Serial.print(Temporary_Matrix[x][y],6);
       Serial.print("DM:");  Serial.print(DCM_Matrix[x][y],6);
@@ -211,16 +211,16 @@ void Matrix_update(void)
     } 
   }
 
-  Serial.println();
+  Serial.println;
 }
 
 void Euler_angles(void)
 {
-  Serial.println();
+  Serial.println;
   Serial.print("# Euler_angles  # ");
   
-//  tsYPR = millis();
-  Serial.print("#Euler_ang timestamp:"); Serial.print(millis());
+//  tsYPR = millis;
+  Serial.print("#Euler_ang timestamp:"); Serial.print(millis);
   Serial.print("DM[0][0]:");  Serial.print(DCM_Matrix[0][0],6);
   Serial.print(",DM[1][0]:");  Serial.print(DCM_Matrix[1][0],6);
   Serial.print(",DM[2][0]:");  Serial.print(DCM_Matrix[2][0],6);
@@ -235,5 +235,5 @@ void Euler_angles(void)
   Serial.print(",roll:");  Serial.print(roll,6);
   Serial.print(",yaw:");  Serial.print(yaw,6);
   
-  Serial.println();
+  Serial.println;
 }

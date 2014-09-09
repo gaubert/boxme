@@ -26,7 +26,7 @@ class AnalogData:
     if len(buf) < self.maxLen:
       buf.append(val)
     else:
-      buf.pop()
+      buf.pop
       buf.appendleft(val)
  
   # add data
@@ -41,7 +41,7 @@ class AnalogPlot:
   # constr
   def __init__(self, analogData):
     # set plot to animated
-    plt.ion() 
+    plt.ion 
     self.axline, = plt.plot(analogData.ax)
     self.ayline, = plt.plot(analogData.ay)
     self.azline, = plt.plot(analogData.az)
@@ -52,10 +52,10 @@ class AnalogPlot:
     self.axline.set_ydata(analogData.ax)
     self.ayline.set_ydata(analogData.ay)
     self.azline.set_ydata(analogData.az)
-    plt.draw()
+    plt.draw
  
-# main() function
-def main():
+# main function
+def main:
   # expects 1 arg - serial port string
   #if(len(sys.argv) != 2):
   #  print 'Example usage: python showdata.py "/dev/tty.usbmodem411"'
@@ -75,12 +75,12 @@ def main():
   
   while True:
      try:
-      #line = ser.readline()
+      #line = ser.readline
       for data in data_elems:
           if (len(data) == 3):
               analogData.add(data)
               analogPlot.update(analogData)
-  #    data = [float(val) for val in line.split()]
+  #    data = [float(val) for val in line.split]
       #print data
   #    if(len(data) == 2):
   #      analogData.add(data)
@@ -93,8 +93,8 @@ def main():
   #ser = serial.Serial(strPort, 9600)
   #while True:
   #  try:
-      #line = ser.readline()
-  #    data = [float(val) for val in line.split()]
+      #line = ser.readline
+  #    data = [float(val) for val in line.split]
       #print data
   #    if(len(data) == 2):
   #      analogData.add(data)
@@ -103,9 +103,9 @@ def main():
   #    print 'exiting'
   #    break
   # close serial
-  #ser.flush()
-  #ser.close()
+  #ser.flush
+  #ser.close
  
 # call main
 if __name__ == '__main__':
-  main()
+  main

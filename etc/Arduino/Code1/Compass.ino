@@ -1,6 +1,6 @@
 /* This file is part of the Razor AHRS Firmware */
 
-void Compass_Heading()
+void Compass_Heading
 {
   float mag_x;
   float mag_y;
@@ -21,7 +21,7 @@ void Compass_Heading()
   // Magnetic Heading
   MAG_Heading = atan2(-mag_y, mag_x);
   
-//  Serial.println();
+//  Serial.println;
 //  Serial.print("- Compass_Headi - ");
 //  Serial.print("- magnetom[0]: ");  Serial.print(magnetom[0]);
 //  Serial.print("- magnetom[1]: ");  Serial.print(magnetom[1]);
@@ -36,5 +36,5 @@ void Compass_Heading()
 //  Serial.print("- mag_y: ");  Serial.print(mag_y);
 //  Serial.print("- MAG_Heading: ");  Serial.print(MAG_Heading);
 //
-//  Serial.println();
+//  Serial.println;
 }

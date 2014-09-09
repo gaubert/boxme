@@ -30,7 +30,7 @@ class AnalogData:
         if len(buf) < self.maxLen:
             buf.append(val)
         else:
-            buf.pop()
+            buf.pop
             buf.appendleft(val)
             
     def add(self, data):
@@ -53,7 +53,7 @@ class AnalogDynamicPlotter:
             max_s = len(analogData.ax)
                     
         # set plot to animated
-        plt.ion()
+        plt.ion
         fig = plt.figure(figsize=(20, 15))
         
         sub_plot = fig.add_subplot(311)
@@ -83,7 +83,7 @@ class AnalogDynamicPlotter:
         """
            clean matplotlib resources
         """
-        plt.close()
+        plt.close
         
     def update(self, analogData, min_s = None, max_s = None):
         """
@@ -98,7 +98,7 @@ class AnalogDynamicPlotter:
         self.axline.set_ydata(analogData.ax)
         self.ayline.set_ydata(analogData.ay)
         #self.azline.set_ydata(analogData.az)
-        plt.draw()
+        plt.draw
         
     def set_plt_dim(self, min_y, max_y):
         """
@@ -111,7 +111,7 @@ class AnalogDynamicPlotter:
         """
           draw a plot with the existing data
         """
-        plt.draw()
+        plt.draw
         
     def save_fig(self, filepath):
         """
@@ -122,7 +122,7 @@ class AnalogDynamicPlotter:
     def show(self):
         """
         """
-        plt.show()
+        plt.show
         
 """
 plt.figure(1)
@@ -131,7 +131,7 @@ plt.plot(t1, f(t1), 'bo', t2, f(t2), 'k')
 
 plt.subplot(212)
 plt.plot(t2, np.cos(2*np.pi*t2), 'r--')
-plt.show()
+plt.show
 """
         
 
@@ -260,7 +260,7 @@ def read_new_sample_data(file_path):
     
     return data_elems, min_max_all_axes
 
-def test_1():
+def test_1:
     """
        play fix set of data
     """
@@ -276,7 +276,7 @@ def test_1():
   
     while True:
         try:
-            #line = ser.readline()
+            #line = ser.readline
             for data in data_elems:
                 if (len(data) == 3):
                     analogData.add(data)
@@ -285,7 +285,7 @@ def test_1():
             print 'exiting'
             break 
 
-def test_2():
+def test_2:
     """
        read a sample file and play it in loop
     """
@@ -299,7 +299,7 @@ def test_2():
     
     while True:
         try:
-            #line = ser.readline()
+            #line = ser.readline
             for data in data_elems:
                 analogData.add((data['ax'], data['ay'], data['az']))
                 analogPlot.update(analogData)
@@ -307,7 +307,7 @@ def test_2():
             print 'exiting'
             break 
 
-def test_sample1():
+def test_sample1:
     """
        draw a plot once from a sample file
     """    
@@ -326,12 +326,12 @@ def test_sample1():
     
     try:
         analogPlot.save_fig("/tmp/sample_plot.png")
-        analogPlot.show()
+        analogPlot.show
         #time.sleep(20)
     except KeyboardInterrupt:
         print 'existing'
 
-def test_new_sample():
+def test_new_sample:
     """
        draw a plot once from a sample file
     """    
@@ -350,7 +350,7 @@ def test_new_sample():
     
     try:
         analogPlot.save_fig("/tmp/sample_plot.png")
-        analogPlot.show()
+        analogPlot.show
         #time.sleep(20)
     except KeyboardInterrupt:
         print 'existing'
@@ -360,7 +360,7 @@ def plot_in_file(filename, min_s= None, max_s = None):
        draw a plot once from a sample file
        draw from sampling value index min_sampling and value index max_sampling
     """    
-    cwd= os.getcwd()
+    cwd= os.getcwd
     the_dir = "."
     file_path = "%s/etc/samples/2014-09-01/%s" % (the_dir, filename)
     
@@ -379,7 +379,7 @@ def plot_in_file(filename, min_s= None, max_s = None):
     
     try:
         analogPlot.save_fig("./plots/%s.png" % (filename))
-#         analogPlot.show()
+#         analogPlot.show
         time.sleep(1)
     except KeyboardInterrupt:
         print 'existing'
@@ -405,14 +405,14 @@ def plot_interactive(filename, min_s= 0, max_s = 2000):
     
     try:
         #analogPlot.save_fig("/tmp/%s.png" % (filename))
-        analogPlot.show()
+        analogPlot.show
         time.sleep(10)
     except KeyboardInterrupt:
         print 'existing'
 
 
 if __name__ == '__main__':
-    #test_sample1()
+    #test_sample1
     #plot_interactive("new_acc_data_scenario1_without_impact", 0, 2000)
     plot_in_file("Sample1_nomove_10sec", 0, 2000)
     plot_in_file("alamain_x", 0, 2000)
