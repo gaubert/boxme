@@ -20,14 +20,76 @@ class Parser(object):
 class CardSingleLineParser(Parser):
     """
        Class allowing to parse always the same line for the card in operational mode
-    """
+                      
+    """             
+    LOOP_READSEN    = "##L#read_sens()#gDt:(?P<dt>.*)#T-acc:(?P<tacc>.*)#Am-Raw:(?P<amx>.*),(?P<amy>.*),(?P<amz>.*)#T-gyr:(?P<tgyr>.*)#Gm-Raw:(?P<gx>.*),(?P<gy>.*),(?P<gz>.*)#T-mag:(?P<tmag>.*)#Mm-Raw:(?P<mx>.*),(?P<my>.*),(?P<mz>.*)"
+    LOOP_READSEN_RE = re.compile(LOOP_READSEN)
+    
     def __init__(self):
         """
            constructor
         """
         super(CardSingleLineParser, self).__init__() 
         
-    
+    def parse_line(self, line):
+        """
+           try to parse a formatted line
+        """
+        matched = CardSingleLineParser.LOOP_READSEN_RE.match(line)
+        if matched:
+            try:
+                tacc = float(matched.group('tacc'))
+            except:
+                print("Error cannot convert %s in float" % (matched.group('tacc')))
+                tacc = -1
+            
+            ax        = float(matched.group('amx'))
+            ay        = float(matched.group('amy'))
+            az        = float(matched.group('amz'))
+            
+            try:
+                tgyr = float(matched.group('tgyr'))
+            except:
+                print("Error cannot convert %s in float" % (matched.group('tgyr')))
+                tgyr = -1
+            
+            gx        = float(matched.group('gx'))
+            gy        = float(matched.group('gy'))
+            gz        = float(matched.group('gz'))
+            
+            try:
+                tmag = float(matched.group('tmag'))
+            except:
+                print("Error cannot convert %s in float" % (matched.group('tmag')))
+                tmag = -1
+            
+            mx        = float(matched.group('mx'))
+            my        = float(matched.group('my'))
+            mz        = float(matched.group('mz'))
+            
+            try:
+                dt = float(matched.group('dt'))
+            except:
+                print("Error cannot convert %s in float" % (matched.group('timestamp_tacc')))
+                dt = -1
+            
+            data_elems =      {"tacc" : tacc,
+                               "ax" : ax,
+                               "ay" : ay,
+                               "az" : az,
+                               "tgyr" : tgyr,
+                               "gx" : gx,
+                               "gy" : gy,
+                               "gz" : gz,
+                               "tmag" : tmag,
+                               "mx" : mx,
+                               "my" : my,
+                               "mz" : mz,
+                               "dt" : dt
+                               }
+            self._nb_line += 1
+        
+        return data_elems
 
 
 class DebugParser(Parser):
@@ -79,8 +141,8 @@ class DebugParser(Parser):
            reinitialise the cursor
         """
     
-    @classmethod
-    def match_line_0(cls, line):
+    
+    def match_line_0(self, line):
         
         expre_matched = DebugParser.SETUP_READSEN_RE.match(line)
        
