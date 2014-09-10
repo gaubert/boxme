@@ -6,7 +6,6 @@ Created on Aug 11, 2014
 https://github.com/jmesmon/imu_9drazor/blob/master/src/SF9DOF_AHRS/SF9DOF_AHRS.pde
 
 '''
-import Parser
 import numpy as np
 import math
 from detection.Parser import CardSingleLineParser
@@ -710,7 +709,8 @@ def read_data(filename):
             
             #Project accel data from mobile to fixed inertial reference frame
             ifixed_acc_vec = dcmizer._project_to_inertial_frame(iacc_vec)
-            print("accel_vec= %s\n" % (ifixed_acc_vec))
+            print("1st accel_vec= %s\r" % (iacc_vec))
+            print("1st fixed_accel_vec= %s\n" % (ifixed_acc_vec))
             
         else: 
             # Loop through normal steps
@@ -733,7 +733,8 @@ def read_data(filename):
             
             #Project accel data from mobile to fixed inertial reference frame
             fixed_acc_vec = dcmizer._project_to_inertial_frame(acc_vec)
-            print("accel_vec= %s\n" % (fixed_acc_vec))
+            print("accel_vec= %s\r" % (acc_vec))
+            print("fixed_accel_vec= %s\n" % (fixed_acc_vec))
 
 if __name__ == '__main__':
     

@@ -1,0 +1,3 @@
+Code 1: original Arduino code from https://github.com/ptrbrtz/razor-9dof-ahrs/wiki/Tutorial
+Code 2: modified code to output only uncalibrated sensor data
+Code 3: modified code to output all debug info with format to be easily ingested by boxme validation suite

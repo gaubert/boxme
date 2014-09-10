@@ -1,7 +1,7 @@
 /* This file is part of the Razor AHRS Firmware */
 
 // Output angles: yaw, pitch, roll
-void output_angles
+void output_angles()
 {
   if (output_format == OUTPUT__FORMAT_BINARY)
   {
@@ -13,10 +13,9 @@ void output_angles
   }
   else if (output_format == OUTPUT__FORMAT_TEXT)
   {
-    Serial.print("#YPR=");
-    Serial.print(TO_DEG(yaw)); Serial.print(",");
-    Serial.print(TO_DEG(pitch)); Serial.print(",");
-    Serial.print(TO_DEG(roll)); Serial.println;
+
+    
+    Serial.println();
   }
 }
 
@@ -33,7 +32,7 @@ void output_calibration(int calibration_sensor)
       Serial.print("/");
       Serial.print(accel_max[i]);
       if (i < 2) Serial.print("  ");
-      else Serial.println;
+      else Serial.println();
     }
   }
   else if (calibration_sensor == 1)  // Magnetometer
@@ -47,7 +46,7 @@ void output_calibration(int calibration_sensor)
       Serial.print("/");
       Serial.print(magnetom_max[i]);
       if (i < 2) Serial.print("  ");
-      else Serial.println;
+      else Serial.println();
     }
   }
   else if (calibration_sensor == 2)  // Gyroscope
@@ -64,7 +63,7 @@ void output_calibration(int calibration_sensor)
       Serial.print("/");
       Serial.print(gyro_average[i] / (float) gyro_num_samples);
       if (i < 2) Serial.print("  ");
-      else Serial.println;
+      else Serial.println();
     }
   }
 }
@@ -74,42 +73,42 @@ void output_sensors_text(char raw_or_calibrated)
   Serial.print("#A-"); Serial.print(raw_or_calibrated); Serial.print('=');
   Serial.print(accel[0]); Serial.print(",");
   Serial.print(accel[1]); Serial.print(",");
-  Serial.print(accel[2]); Serial.println;
+  Serial.print(accel[2]); Serial.println();
 
   Serial.print("#M-"); Serial.print(raw_or_calibrated); Serial.print('=');
   Serial.print(magnetom[0]); Serial.print(",");
   Serial.print(magnetom[1]); Serial.print(",");
-  Serial.print(magnetom[2]); Serial.println;
+  Serial.print(magnetom[2]); Serial.println();
 
   Serial.print("#G-"); Serial.print(raw_or_calibrated); Serial.print('=');
   Serial.print(gyro[0]); Serial.print(",");
   Serial.print(gyro[1]); Serial.print(",");
-  Serial.print(gyro[2]); Serial.println;
+  Serial.print(gyro[2]); Serial.println();
 }
 
-void output_sensors_binary
+void output_sensors_binary()
 {
   Serial.write((byte*) accel, 12);
   Serial.write((byte*) magnetom, 12);
   Serial.write((byte*) gyro, 12);
 }
 
-void output_sensors
+void output_sensors()
 {
   if (output_mode == OUTPUT__MODE_SENSORS_RAW)
   {
     if (output_format == OUTPUT__FORMAT_BINARY)
-      output_sensors_binary;
+      output_sensors_binary();
     else if (output_format == OUTPUT__FORMAT_TEXT)
       output_sensors_text('R');
   }
   else if (output_mode == OUTPUT__MODE_SENSORS_CALIB)
   {
     // Apply sensor calibration
-    compensate_sensor_errors;
+    compensate_sensor_errors();
     
     if (output_format == OUTPUT__FORMAT_BINARY)
-      output_sensors_binary;
+      output_sensors_binary();
     else if (output_format == OUTPUT__FORMAT_TEXT)
       output_sensors_text('C');
   }
@@ -117,16 +116,15 @@ void output_sensors
   {
     if (output_format == OUTPUT__FORMAT_BINARY)
     {
-      output_sensors_binary;
-      compensate_sensor_errors;
-      output_sensors_binary;
+      output_sensors_binary();
+      compensate_sensor_errors();
+      output_sensors_binary();
     }
     else if (output_format == OUTPUT__FORMAT_TEXT)
     {
       output_sensors_text('R');
-      compensate_sensor_errors;
+      compensate_sensor_errors();
       output_sensors_text('C');
     }
   }
 }
-

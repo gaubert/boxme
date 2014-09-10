@@ -7,9 +7,16 @@ float Vector_Dot_Product(const float v1[3], const float v2[3])
   
   for(int c = 0; c < 3; c++)
   {
+    
+//    Serial.print("v1[c],v2[c]:");
+//    Serial.print(v1[c],6); Serial.print(",");
+//    Serial.print(v2[c],6); Serial.println();
     result += v1[c] * v2[c];
+//    Serial.print("result:");
+//    Serial.print(result,6); Serial.println();
   }
-  
+//  Serial.print("result:");
+//  Serial.print(result,6); Serial.println();  
   return result; 
 }
 
