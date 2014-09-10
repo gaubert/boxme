@@ -8,7 +8,7 @@ https://github.com/jmesmon/imu_9drazor/blob/master/src/SF9DOF_AHRS/SF9DOF_AHRS.p
 '''
 import numpy as np
 import math
-from detection.Parser import CardSingleLineParser
+from parsing import CardSingleLineParser
 
 KP_ROLLPITCH = 0.02
 KI_ROLLPITCH = 0.00002
@@ -607,6 +607,25 @@ class DCMizer(object):
         self._drift_correction(acc_vec, self._omega_p, self._omega_i, mag_heading)
             
     
+    def get_dcm(self, iacc_vec, imag_vec, igyr_vec, idt):
+        """
+           public method to get the next DCM.
+           @param iacc_vec: Accelerator vector components.
+           @param imag_vec: Magnetometer vector components.
+           @param igyr_vec: Gyrscope vector components.
+           @param idt: Integration time (Delta time between each measure.
+        """
+        # compensate_sensor_error
+        iacc_vec, imag_vec, igyr_vec = self._compensate_sensor_error(iacc_vec, imag_vec, igyr_vec)
+        
+        # compass_heading
+        imag_heading = self._compass_heading(imag_vec)
+        
+        # Computer_dcm (Matrix_update;   Normalize;   Drift_correction;   Euler_angles;
+        self._compute_dcm(imag_heading, iacc_vec, imag_vec, igyr_vec, idt)
+        
+        return self._dcm_matrix
+        
     
     def get_current_euler_angles(self):
         """
@@ -614,7 +633,7 @@ class DCMizer(object):
         """
         return (self._yaw, self._roll, self._pitch)
     
-    def _project_to_inertial_frame(self, vec):
+    def project_to_inertial_frame(self, vec):
         """
            Inertial frame axes are the Earth fixed axis
            USe the dcm to do the conversion
