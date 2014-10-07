@@ -440,8 +440,8 @@ if __name__ == '__main__':
     parser    = DebugParser()
     
     the_dir = "../.."
-    file_path = "%s/etc/data_sample1" % (the_dir)
+    file_path = "%s/etc/test_sample_debug" % (the_dir)
     
-    
-    
-    parser.test
+    for line in open(file_path):
+        res = parser.parse_line(line)
+        print("line result = %s\n" % (res))
