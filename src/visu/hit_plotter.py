@@ -231,7 +231,7 @@ def test_with_file(filename):
         analogData.add((vals['ax'], vals['ay'], vals['az'])) 
         plotter.update(analogData)   
          
-def old_test:
+def old_test():
     """
     """
     # start data collection
