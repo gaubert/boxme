@@ -29,7 +29,7 @@ class CardSingleLineParser(Parser):
         """
            constructor
         """
-        super(CardSingleLineParser, self).__init__ 
+        super(CardSingleLineParser, self).__init__() 
         
     def parse_line(self, line):
         """
@@ -144,11 +144,13 @@ class DebugParser(Parser):
         """
            
         """
+        super(DebugParser, self).__init__() 
+        
         self._cursor = 0
         
         self._dispatcher = {
                           'SETUP_READSEN'      : getattr(self, 'match_setup_readsen'),
-                          'SETUP_COMPHEAD'     : getattr(self, 'match_setup_compphead'),
+                          'SETUP_COMPHEAD'     : getattr(self, 'match_setup_comphead'),
                           'SETUP_IYPR'         : getattr(self, 'match_setup_iypr'),
                           'SETUP_IDM'          : getattr(self, 'match_setup_idm'),
                           'LOOP_TIM'           : getattr(self, 'match_loop_tim'),
@@ -439,8 +441,8 @@ if __name__ == '__main__':
     
     parser    = DebugParser()
     
-    the_dir = "../.."
-    file_path = "%s/etc/test_sample_debug" % (the_dir)
+    the_dir = "."
+    file_path = "%s/etc/samples/test_sample_debug" % (the_dir)
     
     for line in open(file_path):
         res = parser.parse_line(line)
