@@ -96,8 +96,8 @@ class DebugParser(Parser):
     """
        Class allowing to parse a card in debug mode with lots of information provided
     """
-    
-    SETUP_READSEN   = "##S#read_sens#T-acc:(?P<itacc>.*)#Am-Raw:(?P<iamx>.*),(?P<iamy>.*),(?P<iamz>.*)#T-gyr:(?P<itgyr>.*)#Gm-Raw:(?P<igx>.*),(?P<igy>.*),(?P<igz>.*)#T-mag:(?P<itmag>.*)#Mm-Raw:(?P<imx>.*),(?P<imy>.*),(?P<imz>.*)"
+                       ##S##read_sens()##T-acc:5101#Am-Raw:130.00,-220.00,79.00#T-mag:5105#Mm-Raw:272.00,-326.00,38.00#T-gyr:5109#Gm-Raw:26.00,42.00,0.00
+    SETUP_READSEN   = "##S##read_sens\(\)##T-acc:(?P<itacc>.*)#Am-Raw:(?P<iamx>.*),(?P<iamy>.*),(?P<iamz>.*)#T-mag:(?P<itmag>.*)#Mm-Raw:(?P<imx>.*),(?P<imy>.*),(?P<imz>.*)#T-gyr:(?P<itgyr>.*)#Gm-Raw:(?P<igx>.*),(?P<igy>.*),(?P<igz>.*)"                      
     SETUP_READSEN_RE = re.compile(SETUP_READSEN)
     
     SETUP_COMPHEAD  = "##S#comp_head#mag_x:(?P<imag_x>.*)#mag_y:(?P<imag_y>.*)#MAG_Heading:(?P<imag_head>.*)"
@@ -447,4 +447,5 @@ if __name__ == '__main__':
     
     for line in open(file_path):
         res = parser.parse_line(line)
+        print("line = %s\n" % (line))
         print("line result = %s\n" % (res))
