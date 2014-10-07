@@ -409,19 +409,20 @@ class DebugParser(Parser):
         """
            try to parse a formatted line
         """
-        try:
-            #use the dispatcher to find the right line to call
-            result = self._dispatcher[ self.LINE_SEQ[self._cursor] ](line)
-        finally:
-            # increment cursor whatever happen
+        
+        #use the dispatcher to find the right line to call
+        result = self._dispatcher[ self.LINE_SEQ[self._cursor] ](line)
+        
+        if result != {}:
+            # increment cursor if line was matched
             if self._cursor < len(self.LINE_SEQ)-1:
                 self._cursor += 1
             else:
                 #reset the cursor to parse a new line sequence
                 self._cursor = 0
             
-            self._nb_line += 1
-                  
+            self._nb_line += 1        
+                      
         return result
    
     def nb_lines(self):
