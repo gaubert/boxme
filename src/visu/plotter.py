@@ -260,7 +260,7 @@ def read_new_sample_data(file_path):
     
     return data_elems, min_max_all_axes
 
-def test_1():
+def test_1:
     """
        play fix set of data
     """
@@ -285,7 +285,7 @@ def test_1():
             print 'exiting'
             break 
 
-def test_2():
+def test_2:
     """
        read a sample file and play it in loop
     """

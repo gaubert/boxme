@@ -151,14 +151,8 @@ class DebugParser(Parser):
                           'SETUP_COMPHEAD'     : getattr(self, 'match_setup_compphead'),
                           'SETUP_IYPR'         : getattr(self, 'match_setup_iypr'),
                           'SETUP_IDM'          : getattr(self, 'match_setup_idm'),
-                          'LOOP_TIM'           : getattr(self, 'match_loop_tim'),
-                          'LOOP_READSEN'       : getattr(self, 'match_loop_readsen'),
-                          'LOOP_COMP'          : getattr(self, 'match_loop_comp'),
-                          'LOOP_COMPHEAD'      : getattr(self, 'match_loop_comphead'),
-                          'LOOP_UPDMAT'        : getattr(self, 'match_loop_updmat'),
-                          'LOOP_NORM'          : getattr(self, 'match_loop_norm'),
-                          'LOOP_DRIFT'         : getattr(self, 'match_loop_drift'),
-                          'LOOP_EULER'         : getattr(self, 'match_loop_euler'),
+                          'SETUP_LOOP_TIM'     : getattr(self, 'match_setup_loop_tim'),
+                          'SETUP_LOOP_READSEN' : getattr(self, 'match_setup_loop_readsen'),
                         }
         
     def test(self):
@@ -353,56 +347,16 @@ class DebugParser(Parser):
                    }
         else:
             return {}
-
-    def match_loop_drift(self, line):
-        
-        expre_matched = DebugParser.LOOP_DRIFT_RE.match(line)
-       
-        if expre_matched:
-            return {
-                     'err_course'       : float(expre_matched.group('DM00')),
-                     'errorYaw0'        : float(expre_matched.group('errorYaw0')),
-                     'errorYaw1'        : float(expre_matched.group('errorYaw1')),
-                     'errorYaw2'        : float(expre_matched.group('errorYaw2')),
-                     'Scaled_Omega_P0'  : float(expre_matched.group('Scaled_Omega_P0')),
-                     'Scaled_Omega_P1'  : float(expre_matched.group('Scaled_Omega_P1')),
-                     'Scaled_Omega_P2'  : float(expre_matched.group('Scaled_Omega_P2')),
-                     'Omega_P0'         : float(expre_matched.group('Omega_P0')),
-                     'Omega_P1'         : float(expre_matched.group('Omega_P1')),
-                     'Omega_P2'         : float(expre_matched.group('Omega_P2')),
-                     'Scaled_Omega_I0'  : float(expre_matched.group('Scaled_Omega_I0')),
-                     'Scaled_Omega_I1'  : float(expre_matched.group('Scaled_Omega_I1')),
-                     'Scaled_Omega_I2'  : float(expre_matched.group('Scaled_Omega_I2')),
-                     'Omega_I0'         : float(expre_matched.group('Omega_I0')),
-                     'Omega_I1'         : float(expre_matched.group('Omega_I1')),
-                     'Omega_I2'         : float(expre_matched.group('Omega_I2'))     
-                   }
-        else:
-            return {}
    
     
-    def match_loop_euler(self, line):
+    LOOP_DRIFT      = "##L#Drift_corr#errorCourse:(?P<err_course>.*)#errorYaw[0],[1],[2]:(?P<errorYaw0>.*),(?P<errorYaw1>.*),(?P<errorYaw2>.*)#Scaled_Omega_P[0],[1],[2]:(?P<Scaled_Omega_P0>.*),(?P<Scaled_Omega_P1>.*),(?P<Scaled_Omega_P2>.*)#Omega_P[0],[1],[2]:(?P<Omega_P0>.*),(?P<Omega_P1>.*),(?P<Omega_P2>.*)#Scaled_Omega_I[0],[1],[2]:(?P<Scaled_Omega_I0>.*),(?P<Scaled_Omega_I1>.*),(?P<Scaled_Omega_I2>.*)#Omega_I[0],[1],[2]:(?P<Omega_I0>.*),(?P<Omega_I1>.*),(?P<Omega_I2>.*)"
+    LOOP_DRIFT_RE   = re.compile(LOOP_DRIFT)
+    
+    LOOP_EULER      = "##L#Eul_ang#pitch:(?P<pitch>.*)#roll:(?P<roll>.*)#yaw:(?P<yaw>.*)#final_DM:(?P<fDM00>.*),(?P<fDM01>.*),(?P<fDM02>.*),;(?P<fDM10>.*),(?P<fDM11>.*),(?P<fDM12>.*),;(?P<fDM20>.*),(?P<fDM21>.*),(?P<fDM22>.*)"
+    LOOP_EULER_RE   = re.compile(LOOP_EULER)
+    
+    
         
-        expre_matched = DebugParser.LOOP_EULER_RE.match(line)
-       
-        if expre_matched:
-            return {
-                     'pitch'         : float(expre_matched.group('DM00')),
-                     'roll'          : float(expre_matched.group('errorYaw0')),
-                     'yaw'           : float(expre_matched.group('errorYaw1')),
-                     'fDM00'         : float(expre_matched.group('fDM00')),
-                     'fDM01'         : float(expre_matched.group('fDM01')),
-                     'fDM02'         : float(expre_matched.group('fDM02')),
-                     'fDM10'         : float(expre_matched.group('fDM10')),
-                     'fDM11'         : float(expre_matched.group('fDM11')),
-                     'fDM12'         : float(expre_matched.group('fDM12')),
-                     'fDM20'         : float(expre_matched.group('fDM20')),
-                     'fDM21'         : float(expre_matched.group('fDM21')),
-                     'fDM22'         : float(expre_matched.group('fDM22'))   
-                   }
-        else:
-            return {}
-         
     def parse_line(self, line):
         """
            try to parse a formatted line
@@ -437,11 +391,6 @@ class DebugParser(Parser):
 
 if __name__ == '__main__':
     
-    parser    = DebugParser()
-    
-    the_dir = "../.."
-    file_path = "%s/etc/data_sample1" % (the_dir)
-    
-    
+    parser = DebugParser
     
     parser.test
