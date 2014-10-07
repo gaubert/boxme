@@ -619,7 +619,7 @@ class DCMizer(object):
            Inertial frame axes are the Earth fixed axis
            USe the dcm to do the conversion
         """
-        return self._dcm_matrix.dot(vec)
+        return np.squeeze(np.asarray(self._dcm_matrix.dot(vec)))
     
         
 # 
