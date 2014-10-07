@@ -619,7 +619,8 @@ class DCMizer(object):
            Inertial frame axes are the Earth fixed axis
            USe the dcm to do the conversion
         """
-        return self._dcm_matrix.dot(vec)
+#         return self._dcm_matrix.dot(vec)
+        return np.dot(self._dcm_matrix,vec)
     
         
 # 
@@ -709,8 +710,8 @@ def read_data(filename):
             
             #Project accel data from mobile to fixed inertial reference frame
             ifixed_acc_vec = dcmizer._project_to_inertial_frame(iacc_vec)
-            print("1st accel_vec= %s\r" % (iacc_vec))
-            print("1st fixed_accel_vec= %s\n" % (ifixed_acc_vec))
+            print("1st accel_vec       = %s\r" % (iacc_vec))
+            print("1st fixed_accel_vec = %s\n" % (ifixed_acc_vec))
             
         else: 
             # Loop through normal steps
@@ -733,8 +734,8 @@ def read_data(filename):
             
             #Project accel data from mobile to fixed inertial reference frame
             fixed_acc_vec = dcmizer._project_to_inertial_frame(acc_vec)
-            print("accel_vec= %s\r" % (acc_vec))
-            print("fixed_accel_vec= %s\n" % (fixed_acc_vec))
+            print("accel_vec       = %s\r" % (acc_vec))
+            print("fixed_accel_vec = %s\n" % (fixed_acc_vec))
 
 if __name__ == '__main__':
     
