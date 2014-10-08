@@ -134,6 +134,9 @@ class DebugParser(Parser):
     LOOP_EULER      = "##L#Eul_ang\(\)#pitch:(?P<pitch>.*),#roll:(?P<roll>.*),#yaw:(?P<yaw>.*)#final_DM:(?P<fDM00>.*),(?P<fDM01>.*),(?P<fDM02>.*),;(?P<fDM10>.*),(?P<fDM11>.*),(?P<fDM12>.*),;(?P<fDM20>.*),(?P<fDM21>.*),(?P<fDM22>.*),"
     LOOP_EULER_RE   = re.compile(LOOP_EULER)
     
+    REG_EXPR_ORDER = [ SETUP_READSEN, SETUP_COMPHEAD, SETUP_IYPR, SETUP_IDM, LOOP_TIM, 
+                       LOOP_READSEN, LOOP_COMP, LOOP_COMPHEAD, LOOP_UPDMAT,  LOOP_NORM, 
+                       LOOP_DRIFT, LOOP_EULER]
     
     LINE_SEQ = [ 'SETUP_READSEN', 'SETUP_COMPHEAD', 'SETUP_IYPR', 'SETUP_IDM', 'LOOP_TIM', 
                  'LOOP_READSEN', 'LOOP_COMP', 'LOOP_COMPHEAD', 'LOOP_UPDMAT',  'LOOP_NORM', 
@@ -403,18 +406,23 @@ class DebugParser(Parser):
         """
            try to parse a formatted line
         """
-        #use the dispatcher to find the right line to call
-        result = self._dispatcher[ self.LINE_SEQ[self._cursor] ](line)
+        result = {}
         
-        if result != {}:
-            # increment cursor if line was matched
-            if self._cursor < len(self.LINE_SEQ)-1:
-                self._cursor += 1
-            else:
-                #reset the cursor to parse a new line sequence
-                self._cursor = 4 # to avoid the four first init steps and only do them once.
+        if line not in ("\n","\r\n"): #eat carriage return
+            #use the dispatcher to find the right line to call
+            result = self._dispatcher[ self.LINE_SEQ[self._cursor] ](line)
             
-            self._nb_line += 1        
+            if result != {}:
+                # increment cursor if line was matched
+                if self._cursor < len(self.LINE_SEQ)-1:
+                    self._cursor += 1
+                else:
+                    #reset the cursor to parse a new line sequence
+                    self._cursor = 4 # to avoid the four first init steps and only do them once.
+            else: #error handling
+                raise Exception("Error, Unvalid line nb %d. Received %s.......Was expecting  [%s]" % (self._nb_line, line, self.REG_EXPR_ORDER[self._cursor]))
+            
+        self._nb_line += 1   
                       
         return result
    
@@ -439,6 +447,5 @@ if __name__ == '__main__':
     file_path = "%s/etc/samples/test_sample_debug" % (the_dir)
     
     for line in open(file_path):
-        if line not in ("\n","\r\n"): #eat carriage return 
-            res = parser.parse_line(line)
-            print("line = %s\n result = %s\n" % (line,res))
+        res = parser.parse_line(line)    
+        print("line = %s\n result = %s\n" % (line,res))
