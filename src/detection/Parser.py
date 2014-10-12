@@ -20,9 +20,10 @@ class Parser(object):
 class CardSingleLineParser(Parser):
     """
        Class allowing to parse always the same line for the card in operational mode
+        
                       
-    """             
-    LOOP_READSEN    = "##L#read_sens#gDt:(?P<dt>.*)#T-acc:(?P<tacc>.*)#Am-Raw:(?P<amx>.*),(?P<amy>.*),(?P<amz>.*)#T-gyr:(?P<tgyr>.*)#Gm-Raw:(?P<gx>.*),(?P<gy>.*),(?P<gz>.*)#T-mag:(?P<tmag>.*)#Mm-Raw:(?P<mx>.*),(?P<my>.*),(?P<mz>.*)"
+    """              
+    LOOP_READSEN    = "##L#read_sens\(\)#gyro_Dt:(?P<dt>.*)#T-acc:(?P<tacc>.*)#Am-Raw:(?P<amx>.*),(?P<amy>.*),(?P<amz>.*)#T-mag:(?P<tmag>.*)#Mm-Raw:(?P<mx>.*),(?P<my>.*),(?P<mz>.*)#T-gyr:(?P<tgyr>.*)#Gm-Raw:(?P<gx>.*),(?P<gy>.*),(?P<gz>.*)"
     LOOP_READSEN_RE = re.compile(LOOP_READSEN)
     
     def __init__(self):
@@ -97,7 +98,7 @@ class DebugParser(Parser):
        Class allowing to parse a card in debug mode with lots of information provided
     """
                        
-    SETUP_READSEN    = "##S##read_sens\(\)##T-acc:(?P<itacc>.*)#Am-Raw:(?P<iamx>.*),(?P<iamy>.*),(?P<iamz>.*)#T-mag:(?P<itmag>.*)#Mm-Raw:(?P<imx>.*),(?P<imy>.*),(?P<imz>.*)#T-gyr:(?P<itgyr>.*)#Gm-Raw:(?P<igx>.*),(?P<igy>.*),(?P<igz>.*)"                      
+    SETUP_READSEN    = "##S##read_sens\(\)#T-acc:(?P<itacc>.*)#Am-Raw:(?P<iamx>.*),(?P<iamy>.*),(?P<iamz>.*)#T-mag:(?P<itmag>.*)#Mm-Raw:(?P<imx>.*),(?P<imy>.*),(?P<imz>.*)#T-gyr:(?P<itgyr>.*)#Gm-Raw:(?P<igx>.*),(?P<igy>.*),(?P<igz>.*)"                      
     SETUP_READSEN_RE = re.compile(SETUP_READSEN)
     
     SETUP_COMPHEAD    = "##S#comp_head\(\)#mag_x:(?P<imag_x>.*)#mag_y:(?P<imag_y>.*)#MAG_Heading:(?P<imag_head>.*)"
@@ -112,7 +113,7 @@ class DebugParser(Parser):
     LOOP_TIM        = "##L#old_ts:(?P<tstep_old>.*)#new_ts:(?P<tstep_new>.*)#gyro_Dt:(?P<dt>.*)"
     LOOP_TIM_RE     = re.compile(LOOP_TIM)
                       
-    LOOP_READSEN    = "##L#read_sens\(\)##T-acc:(?P<tacc>.*)#Am-Raw:(?P<amx>.*),(?P<amy>.*),(?P<amz>.*)#T-mag:(?P<tmag>.*)#Mm-Raw:(?P<mx>.*),(?P<my>.*),(?P<mz>.*)#T-gyr:(?P<tgyr>.*)#Gm-Raw:(?P<gx>.*),(?P<gy>.*),(?P<gz>.*)"
+    LOOP_READSEN    = "##L#read_sens\(\)#T-acc:(?P<tacc>.*)#Am-Raw:(?P<amx>.*),(?P<amy>.*),(?P<amz>.*)#T-mag:(?P<tmag>.*)#Mm-Raw:(?P<mx>.*),(?P<my>.*),(?P<mz>.*)#T-gyr:(?P<tgyr>.*)#Gm-Raw:(?P<gx>.*),(?P<gy>.*),(?P<gz>.*)"
     LOOP_READSEN_RE = re.compile(LOOP_READSEN)
                        
     LOOP_COMP       = "##L#Comp_error\(\)#\(NOTcompensate magn error\)##AFTER##acc\[0,1,2\]:(?P<acc_vec0>.*),(?P<acc_vec1>.*),(?P<acc_vec2>.*)#magnetom\[0,1,2\]:(?P<mag_vec0>.*),(?P<mag_vec1>.*),(?P<mag_vec2>.*)#gyro\[0,1,2\]:(?P<gyr_vec0>.*),(?P<gyr_vec1>.*),(?P<gyr_vec2>.*)"
@@ -130,7 +131,6 @@ class DebugParser(Parser):
     LOOP_DRIFT      = "##L#Drift_corr\(\)#errorCourse:(?P<err_course>.*)#errorYaw\[0\],\[1\],\[2\]:(?P<errorYaw0>.*),(?P<errorYaw1>.*),(?P<errorYaw2>.*)#Scaled_Omega_P\[0\],\[1\],\[2\]:(?P<Scaled_Omega_P0>.*),(?P<Scaled_Omega_P1>.*),(?P<Scaled_Omega_P2>.*)#Omega_P\[0\],\[1\],\[2\]:(?P<Omega_P0>.*),(?P<Omega_P1>.*),(?P<Omega_P2>.*)#Scaled_Omega_I\[0\],\[1\],\[2\]:(?P<Scaled_Omega_I0>.*),(?P<Scaled_Omega_I1>.*),(?P<Scaled_Omega_I2>.*)#Omega_I\[0\],\[1\],\[2\]:(?P<Omega_I0>.*),(?P<Omega_I1>.*),(?P<Omega_I2>.*)"
     LOOP_DRIFT_RE   = re.compile(LOOP_DRIFT)
     
-                       ##L#Eul_ang()#pitch:-0.509584,#roll:-1.217660,         #yaw:0.727833   #final_DM:0.651758          ,0.111663,-0.750162    ,;0.580731     ,0.562706     ,0.588313     ,;0.487814     ,-0.819080,0.301902,;
     LOOP_EULER      = "##L#Eul_ang\(\)#pitch:(?P<pitch>.*),#roll:(?P<roll>.*),#yaw:(?P<yaw>.*)#final_DM:(?P<fDM00>.*),(?P<fDM01>.*),(?P<fDM02>.*),;(?P<fDM10>.*),(?P<fDM11>.*),(?P<fDM12>.*),;(?P<fDM20>.*),(?P<fDM21>.*),(?P<fDM22>.*),"
     LOOP_EULER_RE   = re.compile(LOOP_EULER)
     
@@ -444,7 +444,7 @@ if __name__ == '__main__':
     parser    = DebugParser()
     
     the_dir = "."
-    file_path = "%s/etc/samples/test_sample_debug" % (the_dir)
+    file_path = "%s/etc/samples/test_sample_debug2" % (the_dir)
     
     for line in open(file_path):
         res = parser.parse_line(line)    
