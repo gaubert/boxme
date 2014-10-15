@@ -1,3 +1,4 @@
 Code 1: original Arduino code from https://github.com/ptrbrtz/razor-9dof-ahrs/wiki/Tutorial
 Code 2: modified code to output only uncalibrated sensor data
 Code 3: modified code to output all debug info with format to be easily ingested by boxme validation suite
+Code 4: Latest code with debug option: (line 139: DEBUG_P=true=outputs all debug info, false=outputs only uncalibrated sensor data
