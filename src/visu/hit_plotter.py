@@ -20,7 +20,7 @@ class AnalogData(object):
         if len(buf) < self.maxLen:
             buf.append(val)
         else:
-            buf.pop
+            buf.pop()
             buf.appendleft(val)
             
     def add(self, data):
@@ -69,7 +69,7 @@ class Plotter(object):
         self._ayline = None
         self._azline = None
         
-        self._create_plot
+        self._create_plot()
             
     
     def _create_plot(self):
@@ -81,7 +81,7 @@ class Plotter(object):
         self._xdata = [0] * 100
         self._zdata = [0] * 100
         
-        plt.ion
+        plt.ion()
         fig = plt.figure(figsize=(20, 15))
             
         self._sub_plot_x = fig.add_subplot(311)
@@ -108,7 +108,7 @@ class Plotter(object):
         """
            clean matplotlib resources
         """
-        plt.close
+        plt.close()
         
     def update(self, analogData):
         """
@@ -140,7 +140,7 @@ class Plotter(object):
         self._azline.set_xdata(np.arange(len(self._zdata)))
         self._azline.set_ydata(self._zdata)  # update the data
     
-        plt.draw # update the plot
+        plt.draw() # update the plot
         
 class CardOutputParser(object):
     
@@ -215,12 +215,12 @@ def test_with_file(filename):
     """
        Test with a file
     """
-    the_dir = "../.."
-    file_path = "%s/etc/%s" % (the_dir, filename)
+    the_dir = "."
+    file_path = "%s/etc/samples/others/%s" % (the_dir, filename)
     
     min_max = { "min" : 4096.00, "max": -4096.00, }
     
-    parser = CardOutputParser
+    parser = CardOutputParser()
     
     analogData = AnalogData(500)
     
@@ -229,26 +229,14 @@ def test_with_file(filename):
     for line in open(file_path):
         vals, min_max = parser.parse_line(line, min_max)
         analogData.add((vals['ax'], vals['ay'], vals['az'])) 
-        plotter.update(analogData)   
+        plotter.update(analogData) 
+        
+    try:
+        plt.show()
+        plt.close()
+    except AttributeError, _:
+        pass  
          
-def old_test:
-    """
-    """
-    # start data collection
-    data_x = xrange(0,500)
-    data_y = xrange(500,1000)
-    data_z = xrange(1000,1500)
-    
-    analogData = AnalogData(500)
-    
-    plotter = Plotter(analogData, 0, 2000)
-
-    for i in xrange(0,500):
-        analogData.add((data_x[i], data_y[i], data_z[i]))
-    
-    while len(analogData.ax) > 0:
-        plotter.update(analogData)
-
 if __name__ == '__main__':
     
     test_with_file("new_acc_data_scenario1_without_impact")
